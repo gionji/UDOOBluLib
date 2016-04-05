@@ -407,7 +407,7 @@ public class UdooBluService extends Service {
             mLEScanner = mBtAdapter.getBluetoothLeScanner();
             if (enable && mScanning.compareAndSet(false, true)) {
                 mLEScanner.startScan(scanCallback);
-                Handler handler = new Handler();
+                Handler handler = new Handler(getMainLooper());
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

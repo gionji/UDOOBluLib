@@ -15,6 +15,10 @@ import org.udoo.udooblulib.manager.UdooBluManager;
 
 import org.udoo.bluneocar.fragment.BlueNeoFragment;
 
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class MainActivity extends AppCompatActivity {
     private String address;
 
@@ -45,21 +49,21 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
 
                 final UdooBluManager udooBluManager = ((BluNeoCarApplication) getApplication()).getBluManager();
-
-                udooBluManager.connect(address, new IBleDeviceListener() {
+                udooBluManager.connect(address).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Boolean>() {
                     @Override
-                    public void onDeviceConnected() {
-                        udooBluManager.discoveryServices(address);
-                    }
-
-                    @Override
-                    public void onServicesDiscoveryCompleted() {
+                    public void onCompleted() {
                         getFragmentManager().beginTransaction().replace(R.id.container, BlueNeoFragment.Builder(address)).commit();
                     }
 
                     @Override
-                    public void onDeviceDisconnect() {
+                    public void onError(Throwable e) {
 
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean)
+                            udooBluManager.discoveryServices(address);
                     }
                 });
 

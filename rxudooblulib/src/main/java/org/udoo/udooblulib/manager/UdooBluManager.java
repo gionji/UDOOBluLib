@@ -48,8 +48,8 @@ import rx.Subscriber;
 public class UdooBluManager {
     private boolean mBound;
     private UdooBluService mUdooBluService;
-    private HashMap<String, IBleDeviceListener> mDeviceListenerMap;
-    private HashMap<String, OnCharacteristicsListener> mOnCharacteristicsListenerMap;
+    private HashMap<String, Subscriber<? super Boolean>> mDeviceListenerMap;
+    private HashMap<String, Subscriber<? super CharacteristicModel>> mOnCharacteristicsListenerMap;
 
     private Handler mHandler;
     private boolean mScanning;
@@ -64,7 +64,6 @@ public class UdooBluManager {
         context.bindService(new Intent(context, UdooBluService.class), mConnection, Context.BIND_AUTO_CREATE);
         context.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         mHandler = new Handler(Looper.getMainLooper());
-
     }
 
     private String TAG = "BluManager";
@@ -85,17 +84,16 @@ public class UdooBluManager {
         }
     };
 
-    public Observable<BluetoothDevice> scanLeDevice(final boolean enable) {
-        return Observable.create(new Observable.OnSubscribe<BluetoothDevice>() {
+    public Observable<ScanResult> scanLeDevice(final boolean enable) {
+        return Observable.create(new Observable.OnSubscribe<ScanResult>() {
             @Override
-            public void call(final Subscriber<? super BluetoothDevice> subscriber) {
+            public void call(final Subscriber<? super ScanResult> subscriber) {
                 mUdooBluService.scanLeDevice(enable, new BluScanCallBack() {
                     @Override
                     public void onScanResult(int callbackType, ScanResult result) {
                         super.onScanResult(callbackType, result);
-                        BluetoothDevice device = result.getDevice();
-                        if (device != null) {
-                            subscriber.onNext(device);
+                        if (result != null) {
+                            subscriber.onNext(result);
                         }
                     }
 
@@ -115,11 +113,11 @@ public class UdooBluManager {
         });
     }
 
-    public Observable<IBleDeviceListener> connect(final String address, final IBleDeviceListener iBleDeviceListener) {
-        return Observable.create(new Observable.OnSubscribe<IBleDeviceListener>() {
+    public Observable<Boolean> connect(final String address) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
-            public void call(Subscriber<? super IBleDeviceListener> subscriber) {
-                mDeviceListenerMap.put(address, iBleDeviceListener);
+            public void call(Subscriber<? super Boolean> subscriber) {
+                mDeviceListenerMap.put(address, subscriber);
                 mUdooBluService.connect(address);
             }
         });
@@ -149,22 +147,31 @@ public class UdooBluManager {
         return success;
     }
 
-    public boolean enableNotification(String address, boolean enable, UDOOBLESensor sensor, OnCharacteristicsListener onCharacteristicsListener) {
-        boolean success = false;
-        UUID servUuid = sensor.getService();
-        UUID dataUuid = sensor.getData();
-        BluetoothGattService serv = mUdooBluService.getService(address, servUuid);
+    public Observable<CharacteristicModel> enableNotification(final String address, final boolean enable, final UDOOBLESensor sensor) {
+        return Observable.create(new Observable.OnSubscribe<CharacteristicModel>() {
+            @Override
+            public void call(Subscriber<? super CharacteristicModel> subscriber) {
 
-        if (serv != null) {
-            BluetoothGattCharacteristic charac = serv.getCharacteristic(dataUuid);
-            success = mUdooBluService.setCharacteristicNotification(address, charac, enable);
-            mUdooBluService.waitIdle(Constant.GATT_TIMEOUT);
-            if(success){
-                mOnCharacteristicsListenerMap.put(address + charac.getUuid().toString(), onCharacteristicsListener);
-                Log.i(TAG, "enableNotifications service " + servUuid.toString() + " is null: ");
+                boolean success;
+                UUID servUuid = sensor.getService();
+                UUID dataUuid = sensor.getData();
+                BluetoothGattService serv = mUdooBluService.getService(address, servUuid);
+
+                if (serv != null) {
+                    BluetoothGattCharacteristic charac = serv.getCharacteristic(dataUuid);
+                    success = mUdooBluService.setCharacteristicNotification(address, charac, enable);
+                    mUdooBluService.waitIdle(Constant.GATT_TIMEOUT);
+                    if (success) {
+                        mOnCharacteristicsListenerMap.put(address + charac.getUuid().toString(), subscriber);
+                        Log.i(TAG, "enableNotifications service " + servUuid.toString() + " is null: ");
+                    }else {
+                        subscriber.onError(new Throwable("error on set property for this CharacteristicModel"));
+                    }
+                }else {
+                    subscriber.onError(new Throwable("error not service for this CharacteristicModel"));
+                }
             }
-        }
-        return success;
+        });
     }
 
     public boolean setNotificationPeriod(String address, UDOOBLESensor sensor) {
@@ -353,41 +360,43 @@ public class UdooBluManager {
             String uuidStr = intent.getStringExtra(UdooBluService.EXTRA_UUID);
             String address = intent.getStringExtra(UdooBluService.EXTRA_ADDRESS);
 
+            CharacteristicModel characteristicModel = CharacteristicModel.Builder(action, uuidStr, value , status);
             if (UdooBluService.ACTION_GATT_CONNECTED.equals(action)) {
                 if (mDeviceListenerMap.containsKey(address)) {
-                    IBleDeviceListener iBleDeviceListener = mDeviceListenerMap.get(address);
-                    if (iBleDeviceListener != null)
-                        iBleDeviceListener.onDeviceConnected();
+                    Subscriber<? super Boolean> subscriberConnection = mDeviceListenerMap.get(address);
+                    if (subscriberConnection != null)
+                        subscriberConnection.onNext(true);
                 }
             } else if (UdooBluService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     if (mDeviceListenerMap.containsKey(address)) {
-                        IBleDeviceListener iBleDeviceListener = mDeviceListenerMap.get(address);
-                        if (iBleDeviceListener != null)
-                            iBleDeviceListener.onServicesDiscoveryCompleted();
-                    } else {
-                        Toast.makeText(context, "Service discovery failed", Toast.LENGTH_LONG).show();
-                        return;
+                        Subscriber<? super Boolean> subscriberConnection = mDeviceListenerMap.get(address);
+                        if (subscriberConnection != null)
+                            subscriberConnection.onCompleted();
                     }
+                } else {
+                    Toast.makeText(context, "Service discovery failed", Toast.LENGTH_LONG).show();
+                    //TODO ERROR ON subscribe
+                    return;
                 }
             } else if ((UdooBluService.ACTION_DATA_NOTIFY.equals(action) ||
                     UdooBluService.ACTION_DATA_WRITE.equals(action) ||
                     UdooBluService.ACTION_DATA_READ.equals(action))) {
                 String keySearch = address + uuidStr;
                 if (mOnCharacteristicsListenerMap.containsKey(keySearch)) {
-                    OnCharacteristicsListener onCharacteristicsListener = mOnCharacteristicsListenerMap.get(keySearch);
-
+                    Subscriber<? super CharacteristicModel> subscriberCharModel = mOnCharacteristicsListenerMap.get(keySearch);
                     if (UdooBluService.ACTION_DATA_NOTIFY.equals(action)) {
+
                         // Notification
-                        if (onCharacteristicsListener != null)
-                            onCharacteristicsListener.onCharacteristicChanged(uuidStr, value);
+                        if (subscriberCharModel != null)
+                            subscriberCharModel.onNext(characteristicModel);
 
                     } else if (UdooBluService.ACTION_DATA_WRITE.equals(action)) {
                         // Data written
 
                     } else if (UdooBluService.ACTION_DATA_READ.equals(action)) {
-                        if (onCharacteristicsListener != null)
-                            onCharacteristicsListener.onCharacteristicsRead(uuidStr, value, status);
+//                        if (onCharacteristicsListener != null)
+//                            onCharacteristicsListener.onCharacteristicsRead(uuidStr, value, status);
                     }
                 }
             }

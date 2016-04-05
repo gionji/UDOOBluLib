@@ -3,6 +3,7 @@ package org.udoo.bluneocar.scan;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,13 +19,20 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.udoo.bluneocar.BluNeoCarApplication;
 import org.udoo.bluneocar.R;
 import org.udoo.bluneocar.interfaces.IFragmentToActivity;
+import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.model.BleItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import rx.Observer;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by harlem88 on 16/02/16.
@@ -42,6 +50,13 @@ public class UdooScanFragment extends Fragment {
     private ProgressBar mProgressBar;
     private Button mBleScanRunStopBtn;
     private TextView mTvNoItem;
+    private UdooBluManager mUooUdooBluManager;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mUooUdooBluManager = ((BluNeoCarApplication) getActivity().getApplication()).getBluManager();
+    }
 
     @Nullable
     @Override
@@ -88,30 +103,6 @@ public class UdooScanFragment extends Fragment {
         scanLeDevice(true);
     }
 
-    private BluetoothAdapter.LeScanCallback mLeScanCallback;
-
-    {
-        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(final BluetoothDevice device, final int rssi,
-                                 byte[] scanRecord) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (device != null && device.getAddress().startsWith("B0:B4:48")) {
-                            mTvNoItem.setVisibility(View.GONE);
-                            if (!bleItemMap.containsKey(device.getAddress())) {
-                                bleItemMap.put(device.getAddress(), BleItem.Builder(device, String.valueOf(rssi)));
-                                mBleItemAdapter.addDevice(bleItemMap.get(device.getAddress()));
-                                mBleItemAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    }
-                });
-            }
-        };
-    }
-
     private Button.OnClickListener runStopClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -119,20 +110,6 @@ public class UdooScanFragment extends Fragment {
         }
     };
 
-    private Runnable stopBleCallbackRunnable = new Runnable() {
-        @Override
-        public void run() {
-
-            mScanning = false;
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            mBleScanRunStopBtn.setText("START");
-            mProgressBar.setVisibility(View.GONE);
-
-        }
-    };
-
-    // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 20000;
 
     private void scanLeDevice(final boolean enable) {
         if (enable) {
@@ -140,17 +117,45 @@ public class UdooScanFragment extends Fragment {
             mBleScanRunStopBtn.setText("STOP");
             mTvNoItem.setVisibility(View.VISIBLE);
             mBleItemAdapter.clear();
-
-            mHandler.postDelayed(stopBleCallbackRunnable, SCAN_PERIOD);
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
             mScanning = true;
         } else {
             mScanning = false;
             mBleScanRunStopBtn.setText("START");
             mProgressBar.setVisibility(View.GONE);
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            mHandler.removeCallbacks(stopBleCallbackRunnable);
         }
+
+        mUooUdooBluManager.scanLeDevice(enable).onBackpressureBuffer()
+                .subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ScanResult>() {
+            @Override
+            public void onCompleted() {
+                mBleScanRunStopBtn.setText("START");
+                mProgressBar.setVisibility(View.GONE);
+                mScanning = false;
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mScanning = false;
+                mBleScanRunStopBtn.setText("START");
+                mProgressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onNext(ScanResult scanResult) {
+                BluetoothDevice device = scanResult.getDevice();
+                if (device != null && device.getAddress().startsWith("B0:B4:48")) {
+                    mTvNoItem.setVisibility(View.GONE);
+                    if (!bleItemMap.containsKey(device.getAddress())) {
+                        bleItemMap.put(device.getAddress(), BleItem.Builder(device, String.valueOf(scanResult.getRssi())));
+                        mBleItemAdapter.addDevice(bleItemMap.get(device.getAddress()));
+                        mBleItemAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
     }
 
 }
