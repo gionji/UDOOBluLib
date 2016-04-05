@@ -3,9 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/UDOOBluLib.iml" filepath="$PROJECT_DIR$/UDOOBluLib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bluGloveCarExample/bluGloveCar.iml" filepath="$PROJECT_DIR$/bluGloveCarExample/bluGloveCar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bluGloveCarExample/bluGloveCarExample.iml" filepath="$PROJECT_DIR$/bluGloveCarExample/bluGloveCarExample.iml" />
-      <module fileurl="file://$PROJECT_DIR$/udooblulib/udooblulib.iml" filepath="$PROJECT_DIR$/udooblulib/udooblulib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bluCar/bluCar.iml" filepath="$PROJECT_DIR$/bluCar/bluCar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rxudooblulib/rxudooblulib.iml" filepath="$PROJECT_DIR$/rxudooblulib/rxudooblulib.iml" />
     </modules>
   </component>
 </project>
