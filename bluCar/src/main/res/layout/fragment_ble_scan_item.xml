@@ -25,7 +25,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/circle" />
+                android:src="@drawable/udooblu" />
 
             <ImageView
                 android:id="@+id/rssi"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/min_space_material"
             android:text="@{bleItem.name}"
-            tools:text="blue1" />
+            tools:text="blu1" />
 
 
         <TextView

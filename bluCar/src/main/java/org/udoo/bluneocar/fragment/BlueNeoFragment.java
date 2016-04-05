@@ -21,6 +21,8 @@ import org.udoo.udooblulib.model.CharacteristicModel;
 import org.udoo.udooblulib.sensor.UDOOBLESensor;
 import org.udoo.udooblulib.utils.Point3D;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -77,8 +79,8 @@ public class BlueNeoFragment extends Fragment {
         udooBluManager.enableSensor(mAddress, UDOOBLESensor.MAGNETOMETER, true);
         udooBluManager.setNotificationPeriod(mAddress, UDOOBLESensor.MAGNETOMETER);
 
-        Observable<CharacteristicModel> accelerationObservable = udooBluManager.enableNotification(mAddress, true, UDOOBLESensor.ACCELEROMETER);
-        Observable<CharacteristicModel> magnetometerObservable = udooBluManager.enableNotification(mAddress, true, UDOOBLESensor.MAGNETOMETER);
+        Observable<CharacteristicModel> accelerationObservable = udooBluManager.enableNotification(mAddress, true, UDOOBLESensor.ACCELEROMETER).onBackpressureBuffer();
+        Observable<CharacteristicModel> magnetometerObservable = udooBluManager.enableNotification(mAddress, true, UDOOBLESensor.MAGNETOMETER).onBackpressureBuffer();
 
         Observable.zip(accelerationObservable, magnetometerObservable, new Func2<CharacteristicModel, CharacteristicModel, float[]>() {
             @Override
@@ -90,7 +92,6 @@ public class BlueNeoFragment extends Fragment {
                 //pitch   1
                 //roll    2
                 Log.i("call: ", vv[0] + " " + vv[1] + " " + vv[2]);
-                vv[2] -= 170;
                 return vv;
             }
         }).onBackpressureBuffer().subscribeOn(Schedulers.io())
@@ -103,7 +104,7 @@ public class BlueNeoFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e("onError: ", e.getMessage());
                     }
 
                     @Override
