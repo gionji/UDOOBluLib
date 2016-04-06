@@ -2,7 +2,7 @@
 
 ![alt tag](http://www.udoo.org/wp-content/uploads/2014/12/logoogo.png)
 
-Library for control Udoo Blu board 
+Library for Udoo Blu board 
 
 # Usage
 
@@ -76,12 +76,12 @@ Library for control Udoo Blu board
                     }
                 });
 
-  5. Enable notification
+  5. Enable notifications
 
             udooBluManager.enableSensor(address1, UDOOBLESensor.ACCELEROMETER, true);
             udooBluManager.setNotificationPeriod(address1, UDOOBLESensor.ACCELEROMETER);
 
-  5. Listen notification
+  5. Listen notifications
             
             udooBluManager.enableNotification(address1, true, UDOOBLESensor.ACCELEROMETER)
             .onBackpressureBuffer().subscribeOn(Schedulers.io())
