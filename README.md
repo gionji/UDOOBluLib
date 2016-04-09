@@ -21,8 +21,14 @@ Library for Udoo Blu board
         dependencies {
             compile 'org.udoo:rxudooblulib:0.1'
         }
+        
+  2. Add in your `AndroidManifest.xml` UdooBluService class
+        
+            <service
+              android:name="org.udoo.udooblulib.service.UdooBluService"
+              android:exported="false" />      
 
-  2. In your `onCreate` method in Application class, bind the `UdooBluManager`.
+  3. In your `onCreate` method in Application class, bind the `UdooBluManager`.
 
              @Override
              public void onCreate() {
@@ -35,7 +41,7 @@ Library for Udoo Blu board
                  return mUdooBluManager;
              }
              
-  3. Scan ble device :
+  4. Scan ble device :
             
           mUooUdooBluManager.scanLeDevice(enable)
                 .subscribeOn(Schedulers.io()).
@@ -56,7 +62,7 @@ Library for Udoo Blu board
             }
         });   
 
-  4. Connect ble device:
+  5. Connect ble device:
 
             udooBluManager.connect(address).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Boolean>() {
                     @Override
@@ -76,12 +82,12 @@ Library for Udoo Blu board
                     }
                 });
 
-  5. Enable notifications
+  6. Enable notifications
 
             udooBluManager.enableSensor(address1, UDOOBLESensor.ACCELEROMETER, true);
             udooBluManager.setNotificationPeriod(address1, UDOOBLESensor.ACCELEROMETER);
 
-  5. Listen notifications
+  7. Listen notifications
             
             udooBluManager.enableNotification(address1, true, UDOOBLESensor.ACCELEROMETER)
             .onBackpressureBuffer().subscribeOn(Schedulers.io())
@@ -103,6 +109,6 @@ Library for Udoo Blu board
                     }
                 });
             
-  6. Digital write
+  8. Digital write
             
           mUdooBluManager.digitalWrite(address1, IOPIN_VALUE.HIGH, IOPIN.D6);
