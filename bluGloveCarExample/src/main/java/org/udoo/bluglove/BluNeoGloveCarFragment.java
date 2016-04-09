@@ -12,6 +12,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 import org.udoo.udooblulib.interfaces.OnCharacteristicsListener;
 import org.udoo.udooblulib.manager.UdooBluManager;
+import org.udoo.udooblulib.model.IOPin;
 import org.udoo.udooblulib.sensor.Constant;
 import org.udoo.udooblulib.sensor.UDOOBLE;
 import org.udoo.udooblulib.sensor.UDOOBLESensor;
@@ -70,8 +71,19 @@ public class BluNeoGloveCarFragment extends Fragment {
 //        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.MAGNETOMETER, true);
 //        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.MAGNETOMETER);
 
+        udooBluManager.enableSensor(mCarAddress, UDOOBLESensor.IOPIN, true);
         udooBluManager.setIoPinMode(mCarAddress, Constant.IOPIN.A4, Constant.IOPIN_TYPE.ANALOG, Constant.IOPIN_MODE.INPUT);
-        udooBluManager.digitalWrite()
+        udooBluManager.digitalRead(mCarAddress, new OnCharacteristicsListener() {
+            @Override
+            public void onCharacteristicsRead(String uuidStr, byte[] value, int status) {
+                Log.i(" ", IOPin.Builder(value[0]).iopin.name());
+            }
+
+            @Override
+            public void onCharacteristicChanged(String uuidStr, byte[] rawValue) {
+
+            }
+        });
         udooBluManager.setNotificationPeriod(mCarAddress, UDOOBLESensor.IOPIN);
 
          Observable.create(new Observable.OnSubscribe<float[]>() {
