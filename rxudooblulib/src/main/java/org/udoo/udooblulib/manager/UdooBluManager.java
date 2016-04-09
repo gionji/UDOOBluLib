@@ -163,11 +163,11 @@ public class UdooBluManager {
                     mUdooBluService.waitIdle(Constant.GATT_TIMEOUT);
                     if (success) {
                         mOnCharacteristicsListenerMap.put(address + charac.getUuid().toString(), subscriber);
-                        Log.i(TAG, "enableNotifications service " + servUuid.toString() + " is null: ");
-                    }else {
+                        Log.i(TAG, "enableNotifications service " + servUuid.toString());
+                    } else {
                         subscriber.onError(new Throwable("error on set property for this CharacteristicModel"));
                     }
-                }else {
+                } else {
                     subscriber.onError(new Throwable("error not service for this CharacteristicModel"));
                 }
             }
@@ -208,7 +208,7 @@ public class UdooBluManager {
             if (iopin_type == IOPIN_TYPE.ANALOG && iopin_mode == IOPIN_MODE.INPUT && iopin != IOPIN.D6 && iopin != IOPIN.D7) {
                 service = UDOOBLE.UUID_IOPIN_SERV;
                 characteristic = UDOOBLE.UUID_IOPIN_ANALOG_CONF;
-                byte bPos = getBytePos(true, iopin);
+                byte bPos = getByteMorePos(true, iopin);
                 msg = new byte[2];
                 msg[0] = 0;
                 msg[1] = bPos;
@@ -217,29 +217,20 @@ public class UdooBluManager {
                 service = UDOOBLE.UUID_IOPIN_SERV;
                 characteristic = UDOOBLE.UUID_IOPIN_DIGITAL_CONF;
                 msg = new byte[1];
-                msg[0] = getBytePos(iopin_mode == IOPIN_MODE.INPUT, iopin);
+                msg[0] = getByteMorePos(iopin_mode == IOPIN_MODE.INPUT, iopin);
             }
 
             if (msg != null) {
                 BluetoothGattService serv = mUdooBluService.getService(address, service);
                 if (serv != null) {
                     BluetoothGattCharacteristic charac = serv.getCharacteristic(characteristic);
-                    try {
-                        mUdooBluService.writeCharacteristic(address, charac, msg, new Observer() {
-                            @Override
-                            public void update(java.util.Observable observable, Object data) {
-                                //TODO
-                            }
-                        });
-                        success = true;
-                    } catch (InterruptedException e) {
-                        if (BuildConfig.DEBUG)
-                            Log.e(TAG, "setIoPinMode: " + e.getMessage());
-                    }
-
-                    if (BuildConfig.DEBUG)
-                        BitUtility.LogBinValue(msg, false);
+                    mUdooBluService.writeCharacteristic(address, charac, msg);
+                    mUdooBluService.waitIdle(Constant.GATT_TIMEOUT);
+                    success = true;
                 }
+
+                if (BuildConfig.DEBUG)
+                    BitUtility.LogBinValue(msg, false);
             }
         }
         return success;
@@ -251,42 +242,37 @@ public class UdooBluManager {
         return digitalWrite(address, getBytePos(iopin_value == IOPIN_VALUE.HIGH, iopin));
     }
 
-    private boolean digitalWrite(String address, byte value){
-            boolean success = false;
-            byte[] msg;
-            UUID service = UDOOBLE.UUID_IOPIN_SERV, characteristic;
-            characteristic = UDOOBLE.UUID_IOPIN_DIGITAL_DATA;
-            msg = new byte[1];
-            msg[0] = value;
-            BluetoothGattService serv = mUdooBluService.getService(address, service);
-            if (serv != null) {
-                BluetoothGattCharacteristic charac = serv.getCharacteristic(characteristic);
-                try {
-                    mUdooBluService.writeCharacteristic(address, charac, msg, new Observer() {
-                        @Override
-                        public void update(java.util.Observable observable, Object data) {
-                            //TODO
-                        }
-                    });
-                    success = true;
-                } catch (InterruptedException e) {
-                    if (BuildConfig.DEBUG)
-                        Log.e(TAG, "digitalWrite: " + e.getMessage());
-                }
-                BitUtility.LogBinValue(msg, false);
+    private boolean digitalWrite(String address, byte value) {
+        boolean success = false;
+        byte[] msg;
+        UUID service = UDOOBLE.UUID_IOPIN_SERV, characteristic;
+        characteristic = UDOOBLE.UUID_IOPIN_DIGITAL_DATA;
+        msg = new byte[1];
+        msg[0] = value;
+        BluetoothGattService serv = mUdooBluService.getService(address, service);
+        if (serv != null) {
+            BluetoothGattCharacteristic charac = serv.getCharacteristic(characteristic);
+            try {
+                mUdooBluService.writeCharacteristic(address, charac, msg, new Observer() {
+                    @Override
+                    public void update(java.util.Observable observable, Object data) {
+                        //TODO
+                    }
+                });
+                success = true;
+            } catch (InterruptedException e) {
+                if (BuildConfig.DEBUG)
+                    Log.e(TAG, "digitalWrite: " + e.getMessage());
             }
-            return success;
+            BitUtility.LogBinValue(msg, false);
+        }
+        return success;
 
     }
 
     public boolean digitalWrite(String address, IOPIN_VALUE iopin_value, IOPIN... iopins) {
         byte bPos = getByteMorePos(iopin_value == IOPIN_VALUE.HIGH, iopins);
         return digitalWrite(address, bPos);
-    }
-
-    public byte[] digitalRead(String address, IOPIN iopin) {
-        byte[] value = new byte[2];
-        return value;
     }
 
     public boolean analogRead(final String address, IOPIN iopin) {
@@ -351,6 +337,33 @@ public class UdooBluManager {
         return succendSend;
     }
 
+    public Observable<CharacteristicModel> digitalRead(final String address) {
+        return Observable.create(new Observable.OnSubscribe<CharacteristicModel>() {
+            @Override
+            public void call(Subscriber<? super CharacteristicModel> subscriber) {
+
+                boolean success;
+                UUID servUuid = UDOOBLE.UUID_IOPIN_SERV;
+                UUID dataUuid = UDOOBLE.UUID_IOPIN_DIGITAL_DATA;
+
+                BluetoothGattService serv = mUdooBluService.getService(address, servUuid);
+
+                if (serv != null) {
+                    BluetoothGattCharacteristic charac = serv.getCharacteristic(dataUuid);
+                    success = mUdooBluService.readCharacteristic(address, charac);
+                    mUdooBluService.waitIdle(Constant.GATT_TIMEOUT);
+                    if (success) {
+                        mOnCharacteristicsListenerMap.put(address + charac.getUuid().toString(), subscriber);
+                    } else {
+                        subscriber.onError(new Throwable("error on set property for this CharacteristicModel"));
+                    }
+                } else {
+                    subscriber.onError(new Throwable("error not service for this CharacteristicModel"));
+                }
+            }
+        });
+    }
+
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -360,7 +373,7 @@ public class UdooBluManager {
             String uuidStr = intent.getStringExtra(UdooBluService.EXTRA_UUID);
             String address = intent.getStringExtra(UdooBluService.EXTRA_ADDRESS);
 
-            CharacteristicModel characteristicModel = CharacteristicModel.Builder(action, uuidStr, value , status);
+            CharacteristicModel characteristicModel = CharacteristicModel.Builder(action, uuidStr, value, status);
             if (UdooBluService.ACTION_GATT_CONNECTED.equals(action)) {
                 if (mDeviceListenerMap.containsKey(address)) {
                     Subscriber<? super Boolean> subscriberConnection = mDeviceListenerMap.get(address);
@@ -395,6 +408,9 @@ public class UdooBluManager {
                         // Data written
 
                     } else if (UdooBluService.ACTION_DATA_READ.equals(action)) {
+                        if (subscriberCharModel != null)
+                            subscriberCharModel.onNext(characteristicModel);
+
 //                        if (onCharacteristicsListener != null)
 //                            onCharacteristicsListener.onCharacteristicsRead(uuidStr, value, status);
                     }
@@ -418,9 +434,9 @@ public class UdooBluManager {
         return BitUtility.setOnlyValuePosByte(high, getPinIntPos(iopin));
     }
 
-    private byte getByteMorePos(boolean high, IOPIN... iopins){
-        int values [] = new int[iopins.length];
-        for (int i = 0; i<iopins.length; i++){
+    private byte getByteMorePos(boolean high, IOPIN... iopins) {
+        int values[] = new int[iopins.length];
+        for (int i = 0; i < iopins.length; i++) {
             values[i] = getPinIntPos(iopins[i]);
         }
         return BitUtility.setValuesPosByte(high, values);
@@ -470,11 +486,14 @@ public class UdooBluManager {
             characteristic = UDOOBLE.UUID_GYR_PERI;
         } else if (confUuid.equals(UDOOBLE.UUID_TEM_CONF)) {
             characteristic = UDOOBLE.UUID_TEM_PERI;
+        } else if (confUuid.equals(UDOOBLE.UUID_IOPIN_ANALOG_CONF)) {
+            characteristic = UDOOBLE.UUID_IOPIN_ANALOG_CONF;
         }
+
         return characteristic;
     }
 
     public boolean discoveryServices(String address) {
-       return mUdooBluService.scanServices(address);
+        return mUdooBluService.scanServices(address);
     }
 }

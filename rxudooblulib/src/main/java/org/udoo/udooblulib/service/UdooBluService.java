@@ -310,6 +310,7 @@ public class UdooBluService extends Service {
                     characteristic.setValue(b);
                     mBusy = true;
                     result = bluetoothGatt.writeCharacteristic(characteristic);
+                    waitIdle(Constant.GATT_TIMEOUT);
                 }
                 return result;
             }
