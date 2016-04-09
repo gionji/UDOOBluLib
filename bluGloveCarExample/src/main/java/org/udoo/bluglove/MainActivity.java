@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
 
             @Override
             public void onServicesDiscoveryCompleted() {
+                onBluConnected.set(true);
                 lunchGloveFragment(address1, address2);
             }
 
@@ -143,22 +144,22 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
             }
         });
 
-        udooBluManager.connect(address2, new IBleDeviceListener() {
-            @Override
-            public void onDeviceConnected() {
-                udooBluManager.discoveryServices(address2);
-            }
-
-            @Override
-            public void onServicesDiscoveryCompleted() {
-                lunchGloveFragment(address1, address2);
-            }
-
-            @Override
-            public void onDeviceDisconnect() {
-
-            }
-        });
+//        udooBluManager.connect(address2, new IBleDeviceListener() {
+//            @Override
+//            public void onDeviceConnected() {
+//                udooBluManager.discoveryServices(address2);
+//            }
+//
+//            @Override
+//            public void onServicesDiscoveryCompleted() {
+//                lunchGloveFragment(address1, address2);
+//            }
+//
+//            @Override
+//            public void onDeviceDisconnect() {
+//
+//            }
+//        });
     }
 
     private void lunchGloveFragment(String address1, String address2){

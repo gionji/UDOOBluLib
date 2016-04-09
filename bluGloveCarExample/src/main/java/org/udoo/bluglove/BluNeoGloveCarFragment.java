@@ -13,8 +13,11 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import org.udoo.udooblulib.interfaces.OnCharacteristicsListener;
 import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.sensor.Constant;
+import org.udoo.udooblulib.sensor.UDOOBLE;
 import org.udoo.udooblulib.sensor.UDOOBLESensor;
 import org.udoo.udooblulib.utils.Point3D;
+
+import java.util.UUID;
 
 import rx.Observable;
 import rx.Observer;
@@ -61,94 +64,97 @@ public class BluNeoGloveCarFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.ACCELEROMETER, true);
-        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.ACCELEROMETER);
+//        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.ACCELEROMETER, true);
+//        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.ACCELEROMETER);
+//
+//        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.MAGNETOMETER, true);
+//        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.MAGNETOMETER);
 
-        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.MAGNETOMETER, true);
-        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.MAGNETOMETER);
+        udooBluManager.setIoPinMode(mCarAddress, Constant.IOPIN.A4, Constant.IOPIN_TYPE.ANALOG, Constant.IOPIN_MODE.INPUT);
+        udooBluManager.digitalWrite()
+        udooBluManager.setNotificationPeriod(mCarAddress, UDOOBLESensor.IOPIN);
 
-        final Observable<float[]> accelerometerObservable = Observable.create(new Observable.OnSubscribe<float[]>() {
+         Observable.create(new Observable.OnSubscribe<float[]>() {
             @Override
             public void call(final Subscriber<? super float[]> subscriber) {
-                udooBluManager.enableNotification(mGloveAddress, true, UDOOBLESensor.ACCELEROMETER, new OnCharacteristicsListener() {
+                udooBluManager.enableNotification(mCarAddress, true, UDOOBLESensor.IOPIN, new OnCharacteristicsListener() {
                     @Override
                     public void onCharacteristicsRead(String uuidStr, byte[] value, int status) {
                     }
 
                     @Override
                     public void onCharacteristicChanged(String uuidStr, byte[] rawValue) {
-                        Point3D point3D = UDOOBLESensor.ACCELEROMETER.convert(rawValue);
-                        if (point3D != null)
-                            subscriber.onNext(point3D.toFloatArray());
+                        float value = UDOOBLESensor.IOPIN.convertADC(rawValue);
+                        Log.i("onCharacteristicChanged: ", " " + value);
                     }
                 });
             }
         });
 
-        final Observable<float[]> magnetomerterObservable = Observable.create(new Observable.OnSubscribe<float[]>() {
-            @Override
-            public void call(final Subscriber<? super float[]> subscriber) {
-                udooBluManager.enableNotification(mGloveAddress, true, UDOOBLESensor.MAGNETOMETER, new OnCharacteristicsListener() {
-                    @Override
-                    public void onCharacteristicsRead(String uuidStr, byte[] value, int status) {
-                    }
-
-                    @Override
-                    public void onCharacteristicChanged(String uuidStr, byte[] rawValue) {
-                        Point3D point3D = UDOOBLESensor.MAGNETOMETER.convert(rawValue);
-                        if (point3D != null)
-                            subscriber.onNext(point3D.toFloatArray());
-                    }
-                });
-            }
-        });
-
-        Observable.zip(accelerometerObservable, magnetomerterObservable, new Func2<float[], float[], float[]>() {
-                    @Override
-                    public float[] call(float[] values1, float[] values2) {
-                        float vv[] = Util.GetOrientationValues(values1, values2);
-
-                        //azimuth 0
-                        //pitch   1
-                        //roll    2
-                        Log.i("call: ", vv[0] + " " + vv[1] + " " + vv[2]);
-                        vv[2] -= 170;
-                        Constant.IOPIN ioPin[] = null;
-                        Constant.IOPIN_VALUE value = Constant.IOPIN_VALUE.LOW;
-                        if(vv[1] <  - 60) {
-                            ioPin = new Constant.IOPIN[4];
-                            ioPin[0] = Constant.IOPIN.D6;
-                            ioPin[1] = Constant.IOPIN.A0;
-                            ioPin[2] = Constant.IOPIN.A1;
-                            ioPin[3] = Constant.IOPIN.A2;
-                            value = Constant.IOPIN_VALUE.HIGH;
-                            udooBluManager.digitalWrite(mCarAddress, value, ioPin);
-                        }else{
-                            ioPin = new Constant.IOPIN[0];
-                            value = Constant.IOPIN_VALUE.LOW;
-                            udooBluManager.digitalWrite(mCarAddress, value, ioPin);
-                        }
-                        return vv;
-                    }
-                }
-
-        ).onBackpressureBuffer()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<float[]>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(float[] floats) {
-
-                    }
-                });
+//        final Observable<float[]> magnetomerterObservable = Observable.create(new Observable.OnSubscribe<float[]>() {
+//            @Override
+//            public void call(final Subscriber<? super float[]> subscriber) {
+//                udooBluManager.enableNotification(mGloveAddress, true, UDOOBLESensor.MAGNETOMETER, new OnCharacteristicsListener() {
+//                    @Override
+//                    public void onCharacteristicsRead(String uuidStr, byte[] value, int status) {
+//                    }
+//
+//                    @Override
+//                    public void onCharacteristicChanged(String uuidStr, byte[] rawValue) {
+//                        Point3D point3D = UDOOBLESensor.MAGNETOMETER.convert(rawValue);
+//                        if (point3D != null)
+//                            subscriber.onNext(point3D.toFloatArray());
+//                    }
+//                });
+//            }
+//        });
+//
+//        Observable.zip(accelerometerObservable, magnetomerterObservable, new Func2<float[], float[], float[]>() {
+//                    @Override
+//                    public float[] call(float[] values1, float[] values2) {
+//                        float vv[] = Util.GetOrientationValues(values1, values2);
+//
+//                        //azimuth 0
+//                        //pitch   1
+//                        //roll    2
+//                        Log.i("call: ", vv[0] + " " + vv[1] + " " + vv[2]);
+//                        vv[2] -= 170;
+//                        Constant.IOPIN ioPin[] = null;
+//                        Constant.IOPIN_VALUE value = Constant.IOPIN_VALUE.LOW;
+//                        if(vv[1] <  - 60) {
+//                            ioPin = new Constant.IOPIN[4];
+//                            ioPin[0] = Constant.IOPIN.D6;
+//                            ioPin[1] = Constant.IOPIN.A0;
+//                            ioPin[2] = Constant.IOPIN.A1;
+//                            ioPin[3] = Constant.IOPIN.A2;
+//                            value = Constant.IOPIN_VALUE.HIGH;
+//                            udooBluManager.digitalWrite(mCarAddress, value, ioPin);
+//                        }else{
+//                            ioPin = new Constant.IOPIN[0];
+//                            value = Constant.IOPIN_VALUE.LOW;
+//                            udooBluManager.digitalWrite(mCarAddress, value, ioPin);
+//                        }
+//                        return vv;
+//                    }
+//                }
+//
+//        ).onBackpressureBuffer()
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new Observer<float[]>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(float[] floats) {
+//
+//                    }
+//                });
     }
 }

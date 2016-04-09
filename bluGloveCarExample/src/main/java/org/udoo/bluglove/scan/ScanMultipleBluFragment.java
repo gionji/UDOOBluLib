@@ -82,8 +82,8 @@ public class ScanMultipleBluFragment extends Fragment {
             public void onItemClickListener(BleItem item) {
                 mItemClicked.add(item.address);
 
-                if (mItemClicked.size() > 1 && mIFragmentToActivity != null) {
-                    mIFragmentToActivity.onTwoBluSelected(mItemClicked.get(0), mItemClicked.get(1));
+                if (mItemClicked.size() > 0 && mIFragmentToActivity != null) {
+                    mIFragmentToActivity.onTwoBluSelected(mItemClicked.get(0), "");
                 }
 
             }
