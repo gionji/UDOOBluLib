@@ -72,36 +72,50 @@ public class BluNeoGloveCarFragment extends Fragment {
 //        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.MAGNETOMETER);
 
         udooBluManager.enableSensor(mCarAddress, UDOOBLESensor.IOPIN, true);
-        udooBluManager.setIoPinMode(mCarAddress, Constant.IOPIN.A4, Constant.IOPIN_TYPE.ANALOG, Constant.IOPIN_MODE.INPUT);
-        udooBluManager.digitalRead(mCarAddress, new OnCharacteristicsListener() {
-            @Override
-            public void onCharacteristicsRead(String uuidStr, byte[] value, int status) {
-                Log.i(" ", IOPin.Builder(value[0]).iopin.name());
-            }
+        udooBluManager.setIoPinMode(mCarAddress, Constant.IOPIN.D6, Constant.IOPIN_TYPE.DIGITAL, Constant.IOPIN_MODE.INPUT);
 
+        new Thread(new Runnable() {
             @Override
-            public void onCharacteristicChanged(String uuidStr, byte[] rawValue) {
+            public void run() {
+                while (true) {
+                    udooBluManager.digitalRead(mCarAddress, new OnCharacteristicsListener() {
+                        @Override
+                        public void onCharacteristicsRead(String uuidStr, byte[] value, int status) {
+                            Log.i("onCharacteristicsRead: ", " " + value[0]);
+                        }
 
-            }
-        });
-        udooBluManager.setNotificationPeriod(mCarAddress, UDOOBLESensor.IOPIN);
+                        @Override
+                        public void onCharacteristicChanged(String uuidStr, byte[] rawValue) {
 
-         Observable.create(new Observable.OnSubscribe<float[]>() {
-            @Override
-            public void call(final Subscriber<? super float[]> subscriber) {
-                udooBluManager.enableNotification(mCarAddress, true, UDOOBLESensor.IOPIN, new OnCharacteristicsListener() {
-                    @Override
-                    public void onCharacteristicsRead(String uuidStr, byte[] value, int status) {
+                        }
+                    });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+                }
+            }}).start();
 
-                    @Override
-                    public void onCharacteristicChanged(String uuidStr, byte[] rawValue) {
-                        float value = UDOOBLESensor.IOPIN.convertADC(rawValue);
-                        Log.i("onCharacteristicChanged: ", " " + value);
-                    }
-                });
-            }
-        });
+
+//                udooBluManager.setNotificationPeriod(mCarAddress, UDOOBLESensor.IOPIN);
+//
+//         Observable.create(new Observable.OnSubscribe<float[]>() {
+//            @Override
+//            public void call(final Subscriber<? super float[]> subscriber) {
+//                udooBluManager.enableNotification(mCarAddress, true, UDOOBLESensor.IOPIN, new OnCharacteristicsListener() {
+//                    @Override
+//                    public void onCharacteristicsRead(String uuidStr, byte[] value, int status) {
+//                    }
+//
+//                    @Override
+//                    public void onCharacteristicChanged(String uuidStr, byte[] rawValue) {
+//                        float value = UDOOBLESensor.IOPIN.convertADC(rawValue);
+//                        Log.i("onCharacteristicChanged: ", " " + value);
+//                    }
+//                });
+//            }
+//        });
 
 //        final Observable<float[]> magnetomerterObservable = Observable.create(new Observable.OnSubscribe<float[]>() {
 //            @Override
