@@ -20,6 +20,7 @@ import org.udoo.bluglove.scan.ScanMultipleBluFragment;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
 import org.udoo.udooblulib.manager.UdooBluManager;
 
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements IFragmentToActivity{
@@ -123,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
         }
     }
 
+
+
     @Override
     public void onTwoBluSelected(final String address1, final String address2) {
         final UdooBluManager udooBluManager = ((BluNeoGloveCarApplication) getApplication()).getBluManager();
@@ -133,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
             }
 
             @Override
-            public void onServicesDiscoveryCompleted() {
+            public void onServicesDiscoveryCompleted(String address) {
                 onBluConnected.set(true);
                 lunchGloveFragment(address1, address2);
             }
@@ -167,5 +170,26 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
         }else{
             getFragmentManager().beginTransaction().replace(R.id.container, BluNeoGloveCarFragment.Builder(address1, address2)).commit();
         }
+    }
+
+    public void connects() {
+        final UdooBluManager udooBluManager = ((BluNeoGloveCarApplication) getApplication()).getBluManager();
+        udooBluManager.connects(new IBleDeviceListener() {
+            @Override
+            public void onDeviceConnected() {
+
+            }
+
+            @Override
+            public void onServicesDiscoveryCompleted(String address1) {
+                onBluConnected.set(true);
+                lunchGloveFragment(address1 , address1);
+            }
+
+            @Override
+            public void onDeviceDisconnect() {
+
+            }
+        });
     }
 }

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.udoo.bluglove.BluNeoGloveCarApplication;
+import org.udoo.bluglove.MainActivity;
 import org.udoo.bluglove.R;
 import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.model.BleItem;
@@ -46,6 +48,7 @@ public class ScanMultipleBluFragment extends Fragment {
     private UdooBluManager udooBluManager;
     private List<String> mItemClicked;
     private IFragmentToActivity mIFragmentToActivity;
+    private boolean mScan;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,14 +99,13 @@ public class ScanMultipleBluFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                udooBluManager.scanLeDevice(true, scanCallback);
-                mProgressBar.setVisibility(View.VISIBLE);
-                mBleScanRunStopBtn.setText("STOP");
-            }
-        }, 100);
+
+      udooBluManager.setIBluManagerCallback(new UdooBluManager.IBluManagerCallback() {
+          @Override
+          public void onBluManagerReady() {
+              udooBluManager.scanLeDevice(true, scanCallback);
+          }
+      });
 
         mItemClicked = new ArrayList<>();
     }
@@ -117,6 +119,7 @@ public class ScanMultipleBluFragment extends Fragment {
             super.onScanResult(callbackType, result);
             BluetoothDevice device = result.getDevice();
             if (device != null && device.getAddress().startsWith("B0:B4:48")) {
+                ParcelUuid parcelUuids[] = device.getUuids();
                 mTvNoItem.setVisibility(View.GONE);
                 if (!bleItemMap.containsKey(device.getAddress())) {
                     bleItemMap.put(device.getAddress(), BleItem.Builder(device, String.valueOf(result.getRssi())));
@@ -130,12 +133,14 @@ public class ScanMultipleBluFragment extends Fragment {
         public void onScanFinished() {
             super.onScanFinished();
             mBleScanRunStopBtn.setText("START");
+            mScan = false;
             mProgressBar.setVisibility(View.GONE);
         }
 
         @Override
         public void onScanFailed(int errorCode) {
             super.onScanFailed(errorCode);
+            mScan = false;
             mBleScanRunStopBtn.setText("START");
             mProgressBar.setVisibility(View.GONE);
         }
@@ -144,7 +149,17 @@ public class ScanMultipleBluFragment extends Fragment {
     private Button.OnClickListener runStopClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            udooBluManager.scanLeDevice(false, scanCallback);
+            if(mScan){
+                udooBluManager.scanLeDevice(false, scanCallback);
+                mProgressBar.setVisibility(View.GONE);
+                mBleScanRunStopBtn.setText("START");
+                mScan = false;
+            }else{
+                udooBluManager.scanLeDevice(true, scanCallback);
+                mProgressBar.setVisibility(View.VISIBLE);
+                mBleScanRunStopBtn.setText("STOP");
+                mScan = true;
+            }
         }
     };
 
