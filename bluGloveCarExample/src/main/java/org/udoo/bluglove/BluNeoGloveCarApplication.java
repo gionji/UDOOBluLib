@@ -2,18 +2,18 @@ package org.udoo.bluglove;
 
 import android.app.Application;
 
-import org.udoo.udooblulib.manager.UdooBluManager;
+import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 
 /**
  * Created by harlem88 on 24/03/16.
  */
 public class BluNeoGloveCarApplication extends Application {
-    private UdooBluManager mUdooBluManager;
+    private UdooBluManagerImpl mUdooBluManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mUdooBluManager = new UdooBluManager(this);
+        mUdooBluManager = new UdooBluManagerImpl(this);
 
     }
 
@@ -24,7 +24,7 @@ public class BluNeoGloveCarApplication extends Application {
         //mUdooBluManager.clear();
     }
 
-    public UdooBluManager getBluManager(){
+    public UdooBluManagerImpl getBluManager(){
         return mUdooBluManager;
     }
 }

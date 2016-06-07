@@ -1,15 +1,9 @@
 package org.udoo.bluglove.scan;
 
 import android.app.Fragment;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,9 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.udoo.bluglove.BluNeoGloveCarApplication;
-import org.udoo.bluglove.MainActivity;
 import org.udoo.bluglove.R;
-import org.udoo.udooblulib.manager.UdooBluManager;
+import org.udoo.udooblulib.exceptions.UdooBluException;
+import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 import org.udoo.udooblulib.model.BleItem;
 import org.udoo.udooblulib.scan.BluScanCallBack;
 
@@ -45,7 +39,7 @@ public class ScanMultipleBluFragment extends Fragment {
     private ProgressBar mProgressBar;
     private Button mBleScanRunStopBtn;
     private TextView mTvNoItem;
-    private UdooBluManager udooBluManager;
+    private UdooBluManagerImpl udooBluManager;
     private List<String> mItemClicked;
     private IFragmentToActivity mIFragmentToActivity;
     private boolean mScan;
@@ -100,7 +94,7 @@ public class ScanMultipleBluFragment extends Fragment {
         super.onResume();
 
 
-      udooBluManager.setIBluManagerCallback(new UdooBluManager.IBluManagerCallback() {
+      udooBluManager.setIBluManagerCallback(new UdooBluManagerImpl.IBluManagerCallback() {
           @Override
           public void onBluManagerReady() {
               udooBluManager.scanLeDevice(true, scanCallback);
@@ -118,7 +112,7 @@ public class ScanMultipleBluFragment extends Fragment {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
             BluetoothDevice device = result.getDevice();
-            if (device != null && device.getAddress().startsWith("B0:B4:48")) {
+            if (device != null) {
                 ParcelUuid parcelUuids[] = device.getUuids();
                 mTvNoItem.setVisibility(View.GONE);
                 if (!bleItemMap.containsKey(device.getAddress())) {
@@ -131,10 +125,14 @@ public class ScanMultipleBluFragment extends Fragment {
 
         @Override
         public void onScanFinished() {
-            super.onScanFinished();
             mBleScanRunStopBtn.setText("START");
             mScan = false;
             mProgressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onError(UdooBluException runtimeException) {
+
         }
 
         @Override

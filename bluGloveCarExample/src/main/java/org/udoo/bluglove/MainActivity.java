@@ -17,10 +17,10 @@ import android.widget.Toast;
 
 import org.udoo.bluglove.scan.IFragmentToActivity;
 import org.udoo.bluglove.scan.ScanMultipleBluFragment;
+import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
-import org.udoo.udooblulib.manager.UdooBluManager;
+import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 
-import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements IFragmentToActivity{
@@ -128,10 +128,11 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
 
     @Override
     public void onTwoBluSelected(final String address1, final String address2) {
-        final UdooBluManager udooBluManager = ((BluNeoGloveCarApplication) getApplication()).getBluManager();
+        final UdooBluManagerImpl udooBluManager = ((BluNeoGloveCarApplication) getApplication()).getBluManager();
         udooBluManager.connect(address1, new IBleDeviceListener() {
             @Override
             public void onDeviceConnected() {
+
                 udooBluManager.discoveryServices(address1);
             }
 
@@ -143,6 +144,11 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
 
             @Override
             public void onDeviceDisconnect() {
+
+            }
+
+            @Override
+            public void onError(UdooBluException runtimeException) {
 
             }
         });
@@ -173,23 +179,23 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
     }
 
     public void connects() {
-        final UdooBluManager udooBluManager = ((BluNeoGloveCarApplication) getApplication()).getBluManager();
-        udooBluManager.connects(new IBleDeviceListener() {
-            @Override
-            public void onDeviceConnected() {
-
-            }
-
-            @Override
-            public void onServicesDiscoveryCompleted(String address1) {
-                onBluConnected.set(true);
-                lunchGloveFragment(address1 , address1);
-            }
-
-            @Override
-            public void onDeviceDisconnect() {
-
-            }
-        });
+        final UdooBluManagerImpl udooBluManager = ((BluNeoGloveCarApplication) getApplication()).getBluManager();
+//        udooBluManager.connects(new IBleDeviceListener() {
+//            @Override
+//            public void onDeviceConnected() {
+//
+//            }
+//
+//            @Override
+//            public void onServicesDiscoveryCompleted(String address1) {
+//                onBluConnected.set(true);
+//                lunchGloveFragment(address1 , address1);
+//            }
+//
+//            @Override
+//            public void onDeviceDisconnect() {
+//
+//            }
+//        });
     }
 }
