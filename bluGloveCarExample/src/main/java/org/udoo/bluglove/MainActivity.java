@@ -136,11 +136,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
                 udooBluManager.discoveryServices(address1);
             }
 
-            @Override
-            public void onServicesDiscoveryCompleted(String address) {
-                onBluConnected.set(true);
-                lunchGloveFragment(address1, address2);
-            }
 
             @Override
             public void onDeviceDisconnect() {
