@@ -8,13 +8,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.udoo.udooblulib.exceptions.UdooBluException;
+import org.udoo.udooblulib.interfaces.IReaderListener;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 import org.udoo.udooblulib.sensor.Constant;
+import org.udoo.udooblulib.sensor.UDOOBLE;
+import org.udoo.udooblulib.sensor.UDOOBLESensor;
+import org.udoo.udooblulib.utils.Point3D;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by harlem88 on 02/04/16.
  */
 public class BluNeoGloveCarFragment extends Fragment {
+
+    private static final String TAG = "BluFRa";
 
     public static BluNeoGloveCarFragment Builder(String address1, String address2) {
         BluNeoGloveCarFragment fragment = new BluNeoGloveCarFragment();
@@ -48,13 +58,33 @@ public class BluNeoGloveCarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        
 
-        boolean [] sensors = udooBluManager.getSensorDetected();
-        int i = 0;
-        for(boolean sensor : sensors){
-            Log.i("sensorDetected" , "Sensor "+i++ +": "+sensor);
-        }
+        Timer job = new Timer();
+        job.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                udooBluManager.readHumidity(mCarAddress, new IReaderListener<byte[]>() {
+                    @Override
+                    public void oRead(byte[] value) {
+                        if (value != null) {
+                            Log.i(TAG, "oRead: " + UDOOBLESensor.HUMIDITY.convertHumidity(value));
+//                    Log.i(TAG, "oRead: " + UDOOBLESensor.MAGNETOMETER.convert(value).y);
+//                    Log.i(TAG, "oRead: " + UDOOBLESensor.MAGNETOMETER.convert(value).z);
+                        }
+                    }
+
+                    @Override
+                    public void onError(UdooBluException runtimeException) {
+                        Log.e(TAG, "onError: " + runtimeException.getReason());
+                    }
+                });
+
+
+            }
+        }, 2000, 2000);
+
+
 //        udooBluManager.digitalWrite(mCarAddress, Constant.IOPIN_VALUE.HIGH, Constant.IOPIN.D6);
 //        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.ACCELEROMETER, true);
 //        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.ACCELEROMETER);
