@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
     private static BluetoothManager mBluetoothManager = null;
     private BluetoothAdapter mBtAdapter = null;
     private final String TAG = "MainActivity";
-    private AtomicBoolean onBluConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
 
         mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBtAdapter = mBluetoothManager.getAdapter();
-
-        onBluConnected = new AtomicBoolean(false);
 
         if (mBtAdapter == null || !mBtAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -132,8 +129,7 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
         udooBluManager.connect(address1, new IBleDeviceListener() {
             @Override
             public void onDeviceConnected() {
-
-                udooBluManager.discoveryServices(address1);
+                lunchGloveFragment(address1, address2);
             }
 
 
@@ -144,33 +140,14 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
 
             @Override
             public void onError(UdooBluException runtimeException) {
-
+                Log.i(TAG, "onError: " + runtimeException.getReason());
             }
         });
-
-//        udooBluManager.connect(address2, new IBleDeviceListener() {
-//            @Override
-//            public void onDeviceConnected() {
-//                udooBluManager.discoveryServices(address2);
-//            }
-//
-//            @Override
-//            public void onServicesDiscoveryCompleted() {
-//                lunchGloveFragment(address1, address2);
-//            }
-//
-//            @Override
-//            public void onDeviceDisconnect() {
-//
-//            }
-//        });
     }
 
-    private void lunchGloveFragment(String address1, String address2){
-        if(onBluConnected.compareAndSet(false, true)){
-        }else{
-            getFragmentManager().beginTransaction().replace(R.id.container, BluNeoGloveCarFragment.Builder(address1, address2)).commit();
-        }
+    private void lunchGloveFragment(String address1, String address2) {
+        getFragmentManager().beginTransaction().replace(R.id.container, BluNeoGloveCarFragment.Builder(address1, address2)).commit();
+
     }
 
     public void connects() {

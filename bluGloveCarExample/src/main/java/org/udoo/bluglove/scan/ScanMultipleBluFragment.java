@@ -108,7 +108,6 @@ public class ScanMultipleBluFragment extends Fragment {
 
     private BluScanCallBack scanCallback = new BluScanCallBack() {
 
-
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);

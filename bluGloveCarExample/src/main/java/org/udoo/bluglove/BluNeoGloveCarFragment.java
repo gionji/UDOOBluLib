@@ -3,6 +3,7 @@ package org.udoo.bluglove;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,13 @@ public class BluNeoGloveCarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        
 
+        boolean [] sensors = udooBluManager.getSensorDetected();
+        int i = 0;
+        for(boolean sensor : sensors){
+            Log.i("sensorDetected" , "Sensor "+i++ +": "+sensor);
+        }
 //        udooBluManager.digitalWrite(mCarAddress, Constant.IOPIN_VALUE.HIGH, Constant.IOPIN.D6);
 //        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.ACCELEROMETER, true);
 //        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.ACCELEROMETER);
