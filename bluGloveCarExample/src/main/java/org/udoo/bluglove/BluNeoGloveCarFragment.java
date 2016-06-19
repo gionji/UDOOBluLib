@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IReaderListener;
+import org.udoo.udooblulib.interfaces.OnBluOperationResult;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
+import org.udoo.udooblulib.model.IOPin;
 import org.udoo.udooblulib.sensor.Constant;
 import org.udoo.udooblulib.sensor.UDOOBLE;
 import org.udoo.udooblulib.sensor.UDOOBLESensor;
@@ -59,18 +61,18 @@ public class BluNeoGloveCarFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+
         Timer job = new Timer();
         job.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
 
-                udooBluManager.readHumidity(mCarAddress, new IReaderListener<byte[]>() {
+                udooBluManager.readDigital(mCarAddress, new IReaderListener<byte[]>() {
                     @Override
                     public void oRead(byte[] value) {
-                        if (value != null) {
-                            Log.i(TAG, "oRead: " + UDOOBLESensor.HUMIDITY.convertHumidity(value));
-//                    Log.i(TAG, "oRead: " + UDOOBLESensor.MAGNETOMETER.convert(value).y);
-//                    Log.i(TAG, "oRead: " + UDOOBLESensor.MAGNETOMETER.convert(value).z);
+                        boolean [] values = UDOOBLESensor.IOPINDIGITAL.convertIOPinDigital(value);
+                        for(int i = 0; i < values.length; i++){
+                            Log.i(TAG, "oRead: " + i + ": "+values[i]);
                         }
                     }
 
@@ -78,11 +80,9 @@ public class BluNeoGloveCarFragment extends Fragment {
                     public void onError(UdooBluException runtimeException) {
                         Log.e(TAG, "onError: " + runtimeException.getReason());
                     }
-                });
-
-
-            }
-        }, 2000, 2000);
+                }, IOPin.Builder(IOPin.IOPIN_PIN.D6, IOPin.IOPIN_MODE.DIGITAL_INPUT),
+                        IOPin.Builder(IOPin.IOPIN_PIN.A1, IOPin.IOPIN_MODE.DIGITAL_INPUT));
+            }}, 2000, 2000);
 
 
 //        udooBluManager.digitalWrite(mCarAddress, Constant.IOPIN_VALUE.HIGH, Constant.IOPIN.D6);
