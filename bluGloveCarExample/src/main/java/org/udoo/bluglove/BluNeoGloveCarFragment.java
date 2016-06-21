@@ -62,38 +62,27 @@ public class BluNeoGloveCarFragment extends Fragment {
         super.onResume();
 
 
-        Timer job = new Timer();
-        job.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                final IOPin[] iopins = new IOPin[8];
-                iopins[0] = IOPin.Builder(IOPin.IOPIN_PIN.A0, IOPin.IOPIN_MODE.DIGITAL_INPUT);
-                iopins[1] = IOPin.Builder(IOPin.IOPIN_PIN.A1, IOPin.IOPIN_MODE.DIGITAL_INPUT);
-                iopins[2] = IOPin.Builder(IOPin.IOPIN_PIN.A2, IOPin.IOPIN_MODE.DIGITAL_INPUT);
-                iopins[3] = IOPin.Builder(IOPin.IOPIN_PIN.A3, IOPin.IOPIN_MODE.DIGITAL_INPUT);
-                iopins[4] = IOPin.Builder(IOPin.IOPIN_PIN.A4, IOPin.IOPIN_MODE.DIGITAL_INPUT);
-                iopins[5] = IOPin.Builder(IOPin.IOPIN_PIN.A5, IOPin.IOPIN_MODE.DIGITAL_INPUT);
-                iopins[6] = IOPin.Builder(IOPin.IOPIN_PIN.D6, IOPin.IOPIN_MODE.DIGITAL_INPUT);
-                iopins[7] = IOPin.Builder(IOPin.IOPIN_PIN.D7, IOPin.IOPIN_MODE.DIGITAL_INPUT);
-                udooBluManager.readDigital(mCarAddress, new IReaderListener<byte[]>() {
+//        Timer job = new Timer();
+//        job.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+
+                udooBluManager.setPwm(mCarAddress, IOPin.IOPIN_PIN.D7, 976000, 50, new OnBluOperationResult<Boolean>() {
                     @Override
-                    public void oRead(byte[] value) {
-                        boolean [] values = UDOOBLESensor.IOPINDIGITAL.convertIOPinDigital(value, iopins);
-                        for(int i = 0; i < values.length; i++){
-                            Log.i(TAG, "oRead: " + i + ": "+values[i]);
-                        }
+                    public void onSuccess(Boolean aBoolean) {
+                        Log.i(TAG, "oRead: " + aBoolean);
                     }
 
                     @Override
                     public void onError(UdooBluException runtimeException) {
                         Log.e(TAG, "onError: " + runtimeException.getReason());
                     }
-                }, iopins);
+                });
 
 
-            }}, 2000, 2000);
-
-
+//            }
+//        }, 4000, 4000);
+    }
 //        udooBluManager.digitalWrite(mCarAddress, Constant.IOPIN_VALUE.HIGH, Constant.IOPIN.D6);
 //        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.ACCELEROMETER, true);
 //        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.ACCELEROMETER);
@@ -218,4 +207,3 @@ public class BluNeoGloveCarFragment extends Fragment {
 //                    }
 //                });
     }
-}
