@@ -66,11 +66,19 @@ public class BluNeoGloveCarFragment extends Fragment {
         job.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-
+                final IOPin[] iopins = new IOPin[8];
+                iopins[0] = IOPin.Builder(IOPin.IOPIN_PIN.A0, IOPin.IOPIN_MODE.DIGITAL_INPUT);
+                iopins[1] = IOPin.Builder(IOPin.IOPIN_PIN.A1, IOPin.IOPIN_MODE.DIGITAL_INPUT);
+                iopins[2] = IOPin.Builder(IOPin.IOPIN_PIN.A2, IOPin.IOPIN_MODE.DIGITAL_INPUT);
+                iopins[3] = IOPin.Builder(IOPin.IOPIN_PIN.A3, IOPin.IOPIN_MODE.DIGITAL_INPUT);
+                iopins[4] = IOPin.Builder(IOPin.IOPIN_PIN.A4, IOPin.IOPIN_MODE.DIGITAL_INPUT);
+                iopins[5] = IOPin.Builder(IOPin.IOPIN_PIN.A5, IOPin.IOPIN_MODE.DIGITAL_INPUT);
+                iopins[6] = IOPin.Builder(IOPin.IOPIN_PIN.D6, IOPin.IOPIN_MODE.DIGITAL_INPUT);
+                iopins[7] = IOPin.Builder(IOPin.IOPIN_PIN.D7, IOPin.IOPIN_MODE.DIGITAL_INPUT);
                 udooBluManager.readDigital(mCarAddress, new IReaderListener<byte[]>() {
                     @Override
                     public void oRead(byte[] value) {
-                        boolean [] values = UDOOBLESensor.IOPINDIGITAL.convertIOPinDigital(value);
+                        boolean [] values = UDOOBLESensor.IOPINDIGITAL.convertIOPinDigital(value, iopins);
                         for(int i = 0; i < values.length; i++){
                             Log.i(TAG, "oRead: " + i + ": "+values[i]);
                         }
@@ -80,8 +88,9 @@ public class BluNeoGloveCarFragment extends Fragment {
                     public void onError(UdooBluException runtimeException) {
                         Log.e(TAG, "onError: " + runtimeException.getReason());
                     }
-                }, IOPin.Builder(IOPin.IOPIN_PIN.D6, IOPin.IOPIN_MODE.DIGITAL_INPUT),
-                        IOPin.Builder(IOPin.IOPIN_PIN.A1, IOPin.IOPIN_MODE.DIGITAL_INPUT));
+                }, iopins);
+
+
             }}, 2000, 2000);
 
 
