@@ -67,17 +67,32 @@ public class BluNeoGloveCarFragment extends Fragment {
 //            @Override
 //            public void run() {
 
-                udooBluManager.setPwm(mCarAddress, IOPin.IOPIN_PIN.D7, 976000, 50, new OnBluOperationResult<Boolean>() {
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                        Log.i(TAG, "oRead: " + aBoolean);
-                    }
 
-                    @Override
-                    public void onError(UdooBluException runtimeException) {
-                        Log.e(TAG, "onError: " + runtimeException.getReason());
-                    }
-                });
+        udooBluManager.readAnalog(mCarAddress, IOPin.IOPIN_PIN.A1, new IReaderListener<byte[]>() {
+            @Override
+            public void oRead(byte[] value) {
+                Log.i(TAG, "oRead: " + value);
+
+            }
+
+            @Override
+            public void onError(UdooBluException runtimeException) {
+                Log.e(TAG, "onError: " + runtimeException.getReason());
+
+            }
+        });
+
+//        udooBluManager.setPwm(mCarAddress, IOPin.IOPIN_PIN.D7, 50, 30, new OnBluOperationResult<Boolean>() {
+//            @Override
+//            public void onSuccess(Boolean aBoolean) {
+//                Log.i(TAG, "oRead: " + aBoolean);
+//            }
+//
+//            @Override
+//            public void onError(UdooBluException runtimeException) {
+//                Log.e(TAG, "onError: " + runtimeException.getReason());
+//            }
+//        });
 
 
 //            }
