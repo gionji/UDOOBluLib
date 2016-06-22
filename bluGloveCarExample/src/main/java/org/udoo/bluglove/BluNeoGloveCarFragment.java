@@ -2,6 +2,7 @@ package org.udoo.bluglove;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,17 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.udoo.udooblulib.exceptions.UdooBluException;
-import org.udoo.udooblulib.interfaces.IReaderListener;
+import org.udoo.udooblulib.interfaces.INotificationListener;
 import org.udoo.udooblulib.interfaces.OnBluOperationResult;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 import org.udoo.udooblulib.model.IOPin;
-import org.udoo.udooblulib.sensor.Constant;
-import org.udoo.udooblulib.sensor.UDOOBLE;
 import org.udoo.udooblulib.sensor.UDOOBLESensor;
 import org.udoo.udooblulib.utils.Point3D;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by harlem88 on 02/04/16.
@@ -67,20 +63,20 @@ public class BluNeoGloveCarFragment extends Fragment {
 //            @Override
 //            public void run() {
 
-
-        udooBluManager.readAnalog(mCarAddress, IOPin.IOPIN_PIN.A1, new IReaderListener<byte[]>() {
-            @Override
-            public void oRead(byte[] value) {
-                Log.i(TAG, "oRead: " + value);
-
-            }
-
-            @Override
-            public void onError(UdooBluException runtimeException) {
-                Log.e(TAG, "onError: " + runtimeException.getReason());
-
-            }
-        });
+//
+//        udooBluManager.readAnalog(mCarAddress, IOPin.IOPIN_PIN.A1, new IReaderListener<byte[]>() {
+//            @Override
+//            public void oRead(byte[] value) {
+//                Log.i(TAG, "oRead: " + value);
+//
+//            }
+//
+//            @Override
+//            public void onError(UdooBluException runtimeException) {
+//                Log.e(TAG, "onError: " + runtimeException.getReason());
+//
+//            }
+//        });
 
 //        udooBluManager.setPwm(mCarAddress, IOPin.IOPIN_PIN.D7, 50, 30, new OnBluOperationResult<Boolean>() {
 //            @Override
@@ -97,8 +93,29 @@ public class BluNeoGloveCarFragment extends Fragment {
 
 //            }
 //        }, 4000, 4000);
+
+        udooBluManager.subscribeNotificationAnalog(mCarAddress, IOPin.IOPIN_PIN.A2, new INotificationListener<byte[]>() {
+            @Override
+            public void onNext(byte[] value) {
+                float val = UDOOBLESensor.IOPIN_ANALOG.convertADC(value);
+                Log.i(TAG, "onNext: " + val);
+            }
+
+            @Override
+            public void onError(UdooBluException runtimeException) {
+                Log.e(TAG, "onError: " + runtimeException.getReason());
+            }
+        });
+
+
     }
-//        udooBluManager.digitalWrite(mCarAddress, Constant.IOPIN_VALUE.HIGH, Constant.IOPIN.D6);
+
+
+
+
+
+
+//        udooBluManager.writeDigital(mCarAddress, Constant.IOPIN_VALUE.HIGH, Constant.IOPIN.D6);
 //        udooBluManager.enableSensor(mGloveAddress, UDOOBLESensor.ACCELEROMETER, true);
 //        udooBluManager.setNotificationPeriod(mGloveAddress, UDOOBLESensor.ACCELEROMETER);
 //
@@ -193,11 +210,11 @@ public class BluNeoGloveCarFragment extends Fragment {
 //                            ioPin[2] = Constant.IOPIN.A1;f
 //                            ioPin[3] = Constant.IOPIN.A2;
 //                            value = Constant.IOPIN_VALUE.HIGH;
-//                            udooBluManager.digitalWrite(mCarAddress, value, ioPin);
+//                            udooBluManager.writeDigital(mCarAddress, value, ioPin);
 //                        }else{
 //                            ioPin = new Constant.IOPIN[0];
 //                            value = Constant.IOPIN_VALUE.LOW;
-//                            udooBluManager.digitalWrite(mCarAddress, value, ioPin);
+//                            udooBluManager.writeDigital(mCarAddress, value, ioPin);
 //                        }
 //                        return vv;
 //                    }
