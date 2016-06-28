@@ -83,17 +83,14 @@ public class ScanMultipleBluFragment extends Fragment {
                 if (mItemClicked.size() > 0 && mIFragmentToActivity != null) {
                     mIFragmentToActivity.onTwoBluSelected(mItemClicked.get(0), "");
                 }
-
             }
         });
-
         mBleScanRunStopBtn.setOnClickListener(runStopClickListener);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
 
       udooBluManager.setIBluManagerCallback(new UdooBluManagerImpl.IBluManagerCallback() {
           @Override

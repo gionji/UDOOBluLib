@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">BluHomeExample</string>
+    <string name="bt_not_supported">Bluetooth is not supported</string>
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="bt_on">Bluetooth was turned  on</string>
+    <string name="bt_not_on">Bluetooth was not turned on</string>
+    <string name="title_section1">Home</string>
+    <string name="title_section2">Accelerometer</string>
+    <string name="title_section3">Gyroscope</string>
+    <string name="title_section4">Magnetometer</string>
+    <string name="title_section5">IOPins</string>
+    <!--<string name="title_section5">Barometer</string>-->
+    <!--<string name="title_section6">Temperature</string>-->
+</resources>
