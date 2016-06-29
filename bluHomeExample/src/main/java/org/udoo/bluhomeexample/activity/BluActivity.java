@@ -26,6 +26,7 @@ import org.udoo.bluhomeexample.R;
 import org.udoo.bluhomeexample.databinding.BluActivityLayoutBinding;
 import org.udoo.bluhomeexample.databinding.EditDialogBinding;
 import org.udoo.bluhomeexample.databinding.UdoobluHeaderBinding;
+import org.udoo.bluhomeexample.fragment.ManagerHomeSensorFragment;
 import org.udoo.bluhomeexample.view.ViewHolderHeader;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
@@ -181,12 +182,10 @@ public class BluActivity extends AppCompatActivity {
                     break;
                 default:
                     if (mItemSelected != ITEM_SELECTED.HOME) {
-//                        mTitle = getString(R.string.title_section1);
-//                        showMainToolbar();
-//                        ManagerHomeSensorFragment managerHomeSensorFragment = new ManagerHomeSensorFragment();
-//                        managerHomeSensorFragment.setBleItem(mBleItem);
-//                        replaceFragmentAndInit(managerHomeSensorFragment, ITEM_SELECTED.HOME.name(), false);
-//                        mItemSelected = ITEM_SELECTED.HOME;
+                        mTitle = getString(R.string.title_section1);
+                        showMainToolbar();
+                        replaceFragmentAndInit(ManagerHomeSensorFragment.Builder(mBluItem.address), ITEM_SELECTED.HOME.name(), false);
+                        mItemSelected = ITEM_SELECTED.HOME;
                     }
             }
 

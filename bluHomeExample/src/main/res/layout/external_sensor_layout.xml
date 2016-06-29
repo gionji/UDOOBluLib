@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="temperature"
+            type="org.udoo.udooblulib.model.Temperature" />
+
+        <variable
+            name="barometer"
+            type="org.udoo.udooblulib.model.Barometer" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/external_view_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/min_space_material"
+            android:text="External Sensor"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/rl_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/min_space_material">
+
+                <ImageView
+                    android:id="@+id/sensor_temperature_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/temperature" />
+
+                <TextView
+                    android:id="@+id/sensor_temperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/min_space_material"
+                    android:layout_toRightOf="@id/sensor_temperature_image"
+                    android:text="Temperature:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+
+                <TextView
+                    android:id="@+id/sensor_temp_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:temperature="@{temperature.value}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    tools:text="0,004" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/min_space_material">
+
+                <ImageView
+                    android:id="@+id/sensor_barometer_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/barometer" />
+
+                <TextView
+                    android:id="@+id/sensor_barometer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/min_space_material"
+                    android:layout_toRightOf="@id/sensor_barometer_image"
+                    android:text="Barometer:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                <TextView
+                    android:id="@+id/sensor_bar_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:barometer="@{barometer.value}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    tools:text="0,004" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+</layout>
