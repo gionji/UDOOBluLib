@@ -1,4 +1,4 @@
-package org.udoo.udooblulib.utils;
+package org.udoo.bluhomeexample.util;
 
 import android.databinding.BaseObservable;
 

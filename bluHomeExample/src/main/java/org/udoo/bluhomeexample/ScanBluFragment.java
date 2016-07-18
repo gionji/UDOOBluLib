@@ -16,9 +16,9 @@ import android.widget.Button;
 
 import org.udoo.bluhomeexample.databinding.FragmentBleScanBinding;
 import org.udoo.bluhomeexample.interfaces.IFragmentToActivity;
+import org.udoo.bluhomeexample.model.BluItem;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
-import org.udoo.udooblulib.model.BluItem;
 import org.udoo.udooblulib.scan.BluScanCallBack;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class ScanBluFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         mViewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ble_scan, container, false);
-        return mViewBinding.getRoot();
+        return mViewBinding.root;
     }
 
     @Override

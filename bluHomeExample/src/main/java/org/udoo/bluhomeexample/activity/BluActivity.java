@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +16,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,14 +25,17 @@ import org.udoo.bluhomeexample.R;
 import org.udoo.bluhomeexample.databinding.BluActivityLayoutBinding;
 import org.udoo.bluhomeexample.databinding.EditDialogBinding;
 import org.udoo.bluhomeexample.databinding.UdoobluHeaderBinding;
+import org.udoo.bluhomeexample.fragment.AccelerometerFragment;
+import org.udoo.bluhomeexample.fragment.GyroscopeFragment;
+import org.udoo.bluhomeexample.fragment.MagnetometerFragment;
 import org.udoo.bluhomeexample.fragment.ManagerHomeSensorFragment;
+import org.udoo.bluhomeexample.model.BluItem;
 import org.udoo.bluhomeexample.view.ViewHolderHeader;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
 import org.udoo.udooblulib.interfaces.OnResult;
 import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
-import org.udoo.udooblulib.model.BluItem;
 
 /**
  * Created by harlem88 on 28/06/16.
@@ -47,14 +49,16 @@ public class BluActivity extends AppCompatActivity {
     private BluActivityLayoutBinding mViewBinding;
     private String mTitle;
     private int mPositionSelected;
+    private Handler mHandler;
 
     public enum ITEM_SELECTED {NOITEM, HOME, ACCELEROMETER, GYROSCOPE, MAGNETOMETER, IOPins}
 
     private ITEM_SELECTED mItemSelected;
 
+
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mViewBinding = DataBindingUtil.setContentView(this, R.layout.blu_activity_layout);
 
         if (savedInstanceState == null) {
@@ -70,6 +74,7 @@ public class BluActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        mHandler = new Handler();
         mViewBinding.pbBusy.setVisibility(View.VISIBLE);
 
         mViewBinding.navView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
@@ -150,26 +155,26 @@ public class BluActivity extends AppCompatActivity {
             switch (menuItem.getItemId()) {
                 case R.id.nav_accelerometer:
                     if (mItemSelected != ITEM_SELECTED.ACCELEROMETER) {
-//                        mTitle = getString(R.string.title_section2);
-//                        showMainToolbar();
-//                        replaceFragmentAndInit(new ManagerAccelerometer(), ITEM_SELECTED.ACCELEROMETER.name(), false);
-//                        mItemSelected = ITEM_SELECTED.ACCELEROMETER;
+                        mTitle = getString(R.string.title_section2);
+                        showMainToolbar();
+                        replaceFragmentAndInit(AccelerometerFragment.Builder(mBluItem.address), ITEM_SELECTED.ACCELEROMETER.name(), false);
+                        mItemSelected = ITEM_SELECTED.ACCELEROMETER;
                     }
                     break;
                 case R.id.nav_gyroscope:
                     if (mItemSelected != ITEM_SELECTED.GYROSCOPE) {
-//                        mTitle = getString(R.string.title_section3);
-//                        showMainToolbar();
-//                        replaceFragmentAndInit(new ManagerGyroscopeFragment(), ITEM_SELECTED.GYROSCOPE.name(), false);
-//                        mItemSelected = ITEM_SELECTED.GYROSCOPE;
+                        mTitle = getString(R.string.title_section3);
+                        showMainToolbar();
+                        replaceFragmentAndInit(GyroscopeFragment.Builder(mBluItem.address), ITEM_SELECTED.GYROSCOPE.name(), false);
+                        mItemSelected = ITEM_SELECTED.GYROSCOPE;
                     }
                     break;
                 case R.id.nav_magnetometer:
                     if (mItemSelected != ITEM_SELECTED.MAGNETOMETER) {
-//                        mTitle = getString(R.string.title_section4);
-//                        showMainToolbar();
-//                        replaceFragmentAndInit(new ManagerMagnetometerFragment(), ITEM_SELECTED.MAGNETOMETER.name(), false);
-//                        mItemSelected = ITEM_SELECTED.MAGNETOMETER;
+                        mTitle = getString(R.string.title_section4);
+                        showMainToolbar();
+                        replaceFragmentAndInit(MagnetometerFragment.Builder(mBluItem.address), ITEM_SELECTED.MAGNETOMETER.name(), false);
+                        mItemSelected = ITEM_SELECTED.MAGNETOMETER;
                     }
                     break;
                 case R.id.nav_io_pins:
@@ -212,8 +217,7 @@ public class BluActivity extends AppCompatActivity {
      * @param tag       name class fragment
      * @param backstack enable move to backStack
      */
-    private void replaceFragmentAndInit(Fragment fragment, String tag, boolean backstack) {
-
+    private void replaceFragmentAndInit(final Fragment fragment,final String tag, final boolean backstack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
@@ -230,7 +234,6 @@ public class BluActivity extends AppCompatActivity {
             fragmentManager.popBackStack();
 
         ft.commit();
-
     }
 
     @Override
@@ -254,7 +257,14 @@ public class BluActivity extends AppCompatActivity {
                             public void onSuccess(String o) {
                                 if (o == null || o.length() == 0)
                                     showChangeNameDialog();
-
+                                else {
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
+                                        }
+                                    });
+                                }
                                 mViewBinding.pbBusy.setVisibility(View.GONE);
                             }
 
@@ -281,28 +291,34 @@ public class BluActivity extends AppCompatActivity {
     }
 
     public void showChangeNameDialog() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        final EditDialogBinding viewDialogBinding = DataBindingUtil.inflate(inflater, R.layout.edit_dialog, null, false);
-        dialogBuilder.setView(viewDialogBinding.getRoot());
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(BluActivity.this);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
 
-        dialogBuilder.setTitle("Custom dialog");
-        dialogBuilder.setMessage("Enter text below");
-        dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                Editable edit = viewDialogBinding.edit.getText();
-                if (edit != null) {
-                    String name = edit.toString();
-                    if (name.length() > 0)
-                        mUdooBluManager.saveBluItem(getBaseContext(), mBluItem.address, name);
-                }
+                final EditDialogBinding viewDialogBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.edit_dialog, null, false);
+                dialogBuilder.setView(viewDialogBinding.getRoot());
+
+                dialogBuilder.setTitle("Custom dialog");
+                dialogBuilder.setMessage("Enter text below");
+                dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Editable edit = viewDialogBinding.edit.getText();
+                        if (edit != null) {
+                            String name = edit.toString();
+                            if (name.length() > 0)
+                                mUdooBluManager.saveBluItem(getApplicationContext(), mBluItem.address, name);
+                        }
+                        onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
+                    }
+                });
+                dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
             }
         });
-        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            }
-        });
-        AlertDialog b = dialogBuilder.create();
-        b.show();
     }
 }

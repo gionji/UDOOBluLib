@@ -1,0 +1,105 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="iopin"
+            type="org.udoo.bluhomeexample.model.IOPinModel" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/iopin"
+            android:layout_width="33dp"
+            android:layout_height="31dp"
+            android:layout_centerVertical="true"
+            tools:text="A0" />
+
+        <RadioGroup
+            android:id="@+id/iopin_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/iopin">
+
+            <RadioButton
+                android:id="@+id/iopin_dig_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/gpio_out" />
+
+
+            <RadioButton
+                android:id="@+id/iopin_dig_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/gpio_in" />
+
+            <RadioButton
+                android:id="@+id/iopin_analog_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/analog_read" />
+
+            <RadioButton
+                android:id="@+id/iopin_pwm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/pwm" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toEndOf="@+id/iopin_group"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/iopin_out_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gpio_value"
+                android:visibility="@{iopin.getPinMode == 0 ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:id="@+id/iopin_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{(iopin.getPinMode == 1 || iopin.pinMode == 2 )? View.VISIBLE : View.GONE}"
+                tools:text="0" />
+
+            <Button
+                android:id="@+id/btn_iopin_dig_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{(iopin.getPinMode == 1 || iopin.pinMode == 2 )? View.VISIBLE : View.GONE}" />
+
+
+            <Spinner
+                android:id="@+id/spinner_pwm_freq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{iopin.getPinMode == 3 ? View.VISIBLE : View.GONE}" />
+
+
+            <Spinner
+                android:id="@+id/spinner_pwm_duty_cycle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{iopin.getPinMode == 3 ? View.VISIBLE : View.GONE}" />
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

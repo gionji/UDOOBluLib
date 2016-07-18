@@ -1,10 +1,8 @@
 package org.udoo.bluhomeexample.fragment;
 
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,14 +17,16 @@ import org.udoo.bluhomeexample.adapter.LedAdapter;
 import org.udoo.bluhomeexample.adapter.XYZSensorSummaryAdapter;
 import org.udoo.bluhomeexample.databinding.ExternalSensorLayoutBinding;
 import org.udoo.bluhomeexample.databinding.FragmentSensorHomeBinding;
+import org.udoo.bluhomeexample.model.Barometer;
+import org.udoo.bluhomeexample.model.Humidity;
+import org.udoo.bluhomeexample.model.Led;
+import org.udoo.bluhomeexample.model.Light;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.INotificationListener;
+import org.udoo.udooblulib.interfaces.OnBluOperationResult;
+import org.udoo.bluhomeexample.model.Temperature;
 import org.udoo.udooblulib.manager.UdooBluManager;
-import org.udoo.udooblulib.model.Barometer;
-import org.udoo.udooblulib.model.Led;
-import org.udoo.udooblulib.model.Temperature;
 import org.udoo.udooblulib.model.XYZSensor;
-import org.udoo.udooblulib.sensor.Constant;
 import org.udoo.udooblulib.sensor.UDOOBLESensor;
 import org.udoo.udooblulib.utils.Point3D;
 
@@ -34,13 +34,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.support.v7.widget.StaggeredGridLayoutManager.TAG;
-
 /**
  * Created by harlem88 on 28/06/16.
  */
 
-public class ManagerHomeSensorFragment extends Fragment {
+public class ManagerHomeSensorFragment extends UdooFragment {
     private RecyclerView mLedList;
     private RecyclerView.LayoutManager mIntSensorLayoutManager, mLedLayoutManager;
 
@@ -51,19 +49,17 @@ public class ManagerHomeSensorFragment extends Fragment {
     private List<XYZSensor> mXyzIntSensors;
     private Barometer mBarometer = new Barometer();
     private Temperature mTemperature = new Temperature();
+    private Humidity mHumidity = new Humidity();
+    private Light mLight = new Light();
     private FragmentSensorHomeBinding mViewHomeBinding;
-    private UdooBluManager mUdooBluManager;
     private static final String ADDRESS = "addr";
-    private String mBluAddress;
     DecimalFormat df = new DecimalFormat("#.##");
+    private final static String TAG = "Home";
 
 
-    public static ManagerHomeSensorFragment Builder(String address){
-        ManagerHomeSensorFragment managerHomeSensorFragment = new ManagerHomeSensorFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ADDRESS, address);
-        managerHomeSensorFragment.setArguments(bundle);
-        return managerHomeSensorFragment;
+
+    public static UdooFragment Builder(String address){
+        return Builder(new ManagerHomeSensorFragment(), address);
     }
 
     @Nullable
@@ -94,11 +90,10 @@ public class ManagerHomeSensorFragment extends Fragment {
         mLedAdapter = new LedAdapter(mLeds);
         mXyzSensorAdapter = new XYZSensorSummaryAdapter(mXyzIntSensors);
 
-        ExternalSensorLayoutBinding externalSensorLayoutBinding = ExternalSensorLayoutBinding.bind(view.findViewById(R.id.external_view_root));
-        externalSensorLayoutBinding.setBarometer(mBarometer);
-        externalSensorLayoutBinding.setTemperature(mTemperature);
+        mViewHomeBinding.setBarometer(mBarometer);
+        mViewHomeBinding.setTemperature(mTemperature);
 
-        mLedList.setAdapter(mLedAdapter);
+        //mLedList.setAdapter(mLedAdapter);
         mViewHomeBinding.xyzSensorInternalList.setAdapter(mXyzSensorAdapter);
 
 //        mIFragmentToActivity = (IFragmentToActivity) getActivity();
@@ -106,7 +101,7 @@ public class ManagerHomeSensorFragment extends Fragment {
             @Override
             public void onItemClickListener(int pos) {
                 Led led = mLeds[pos];
-                byte func = led.onoff.get() ? Constant.LED_OFF : Constant.LED_ON;
+//                byte func = led.onoff.get() ? Constant.LED_OFF : Constant.LED_ON;
 //                if (mIBleBrickOp != null && mIBleBrickOp.turnLed(pos + 1, func, 100))
 //                    led.onoff.set(func == Constant.LED_ON);
             }
@@ -114,7 +109,7 @@ public class ManagerHomeSensorFragment extends Fragment {
             @Override
             public void onBlinkListener(int pos, boolean blink) {
                 Led led = mLeds[pos];
-                byte func = led.blink.get() ? Constant.LED_OFF : Constant.BLINK_ON;
+//                byte func = led.blink.get() ? Constant.LED_OFF : Constant.BLINK_ON;
 //                if (mIBleBrickOp != null && mIBleBrickOp.turnLed(pos + 1, func, 100)) {
 //                    if (func == Constant.LED_OFF) {
 //                        led.blink.set(false);
@@ -132,23 +127,21 @@ public class ManagerHomeSensorFragment extends Fragment {
             }
         });
 
-        if(savedInstanceState == null)
-            mBluAddress = getArguments().getString(ADDRESS);
     }
 
     private Led[] getLedsDefault() {
-        Led[] leds = new Led[3];
-        Led led = Led.BuilderDefault();
-        led.color.set(Color.GREEN);
-        leds[0] = led;
-        led = Led.BuilderDefault();
-        led.color.set(Color.YELLOW);
-        leds[1] = led;
-        led = Led.BuilderDefault();
-        led.color.set(Color.RED);
-        leds[2] = led;
+//        Led[] leds = new Led[3];
+//        Led led = Led.BuilderDefault();
+//        led.color.set(Color.GREEN);
+//        leds[0] = led;
+//        led = Led.BuilderDefault();
+//        led.color.set(Color.YELLOW);
+//        leds[1] = led;
+//        led = Led.BuilderDefault();
+//        led.color.set(Color.RED);
+//        leds[2] = led;
 
-        return leds;
+        return null;
     }
 
     private List<XYZSensor> getIntSensors() {
@@ -163,7 +156,10 @@ public class ManagerHomeSensorFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mUdooBluManager = ((BluHomeApplication)getActivity().getApplication()).getBluManager();
+        subscribeNotification();
+    }
 
+    private void subscribeNotification(){
         mUdooBluManager.subscribeNotificationAccelerometer(mBluAddress, new INotificationListener<byte[]>() {
             @Override
             public void onNext(byte[] rawValue) {
@@ -180,10 +176,150 @@ public class ManagerHomeSensorFragment extends Fragment {
                 Log.e(TAG, "onError: "+runtimeException.getReason());
             }
         });
+
+        mUdooBluManager.subscribeNotificationGyroscope(mBluAddress, new INotificationListener<byte[]>() {
+            @Override
+            public void onNext(byte[] rawValue) {
+                Point3D v = UDOOBLESensor.GYROSCOPE.convert(rawValue);
+                XYZSensor xyzSensor = mXyzIntSensors.get(1);
+                xyzSensor.x = String.valueOf(df.format(v.x)) + " rad/s";
+                xyzSensor.y = String.valueOf(df.format(v.y)) + " rad/s";
+                xyzSensor.z = String.valueOf(df.format(v.z)) + " rad/s";
+                mXyzSensorAdapter.notifyItemChanged(1, xyzSensor);
+            }
+
+            @Override
+            public void onError(UdooBluException runtimeException) {
+                Log.e(TAG, "onError: "+runtimeException.getReason());
+            }
+        });
+
+        mUdooBluManager.subscribeNotificationMagnetometer(mBluAddress, new INotificationListener<byte[]>() {
+            @Override
+            public void onNext(byte[] rawValue) {
+                Point3D v = UDOOBLESensor.MAGNETOMETER.convert(rawValue);
+                XYZSensor xyzSensor = mXyzIntSensors.get(2);
+                xyzSensor.x = String.valueOf(df.format(v.x)) + " uT";
+                xyzSensor.y = String.valueOf(df.format(v.y)) + " uT";
+                xyzSensor.z = String.valueOf(df.format(v.z)) + " uT";
+                mXyzSensorAdapter.notifyItemChanged(2, xyzSensor);
+            }
+
+            @Override
+            public void onError(UdooBluException runtimeException) {
+                Log.e(TAG, "onError: "+runtimeException.getReason());
+            }
+        });
+
+        if(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.HUM)){
+            mHumidity.setDetect(true);
+            mUdooBluManager.subscribeNotificationHumidity(mBluAddress, new INotificationListener<byte[]>() {
+                @Override
+                public void onNext(byte[] value) {
+
+                }
+
+                @Override
+                public void onError(UdooBluException runtimeException) {
+
+                }
+            });
+        }else{
+            mHumidity.setDetect(false);
+        }
+        if(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.AMB_LIG)){
+            mLight.setDetect(true);
+            mUdooBluManager.subscribeNotificationAmbientLight(mBluAddress, new INotificationListener<byte[]>() {
+                @Override
+                public void onNext(byte[] value) {
+
+                }
+
+                @Override
+                public void onError(UdooBluException runtimeException) {
+
+                }
+            });
+        }else{
+            mLight.setDetect(false);
+        }
+
+
+        if(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP)){
+            mTemperature.setDetect(true);
+            mUdooBluManager.subscribeNotificationTemperature(mBluAddress, new INotificationListener<byte[]>() {
+                @Override
+                public void onNext(byte[] value) {
+
+                }
+
+                @Override
+                public void onError(UdooBluException runtimeException) {
+
+                }
+            });
+        }else{
+            mTemperature.setDetect(false);
+        }
+        if(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.BAR)){
+            mBarometer.setDetect(true);
+            mUdooBluManager.subscribeNotificationBarometer(mBluAddress, new INotificationListener<byte[]>() {
+                @Override
+                public void onNext(byte[] value) {
+
+                }
+
+                @Override
+                public void onError(UdooBluException runtimeException) {
+
+                }
+            });
+        }else{
+            mBarometer.setDetect(false);
+        }
+    }
+
+    private void unsubscribeNotification(){
+        mUdooBluManager.unSubscribeNotificationAccelerometer(mBluAddress, new OnBluOperationResult<Boolean>() {
+            @Override
+            public void onSuccess(Boolean aBoolean) {
+                Log.i(TAG, "onSuccess unsub: acc" + aBoolean);
+            }
+
+            @Override
+            public void onError(UdooBluException runtimeException) {
+                Log.e(TAG, "onError unsub: acc" + runtimeException.getReason());
+            }
+        });
+
+        mUdooBluManager.unSubscribeNotificationGyroscope(mBluAddress, new OnBluOperationResult<Boolean>() {
+            @Override
+            public void onSuccess(Boolean aBoolean) {
+                Log.i(TAG, "onSuccess unsub: gyro" + aBoolean);
+            }
+
+            @Override
+            public void onError(UdooBluException runtimeException) {
+                Log.e(TAG, "onError unsub: gyro" + runtimeException.getReason());
+            }
+        });
+
+        mUdooBluManager.unSubscribeNotificationMagnetometer(mBluAddress, new OnBluOperationResult<Boolean>() {
+            @Override
+            public void onSuccess(Boolean aBoolean) {
+                Log.i(TAG, "onSuccess unsub: magn" + aBoolean);
+            }
+
+            @Override
+            public void onError(UdooBluException runtimeException) {
+                Log.e(TAG, "onError unsub: magn" + runtimeException.getReason());
+            }
+        });
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        unsubscribeNotification();
     }
 }

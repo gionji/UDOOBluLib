@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import org.udoo.bluhomeexample.databinding.FragmentLedManagerItemBinding;
-import org.udoo.udooblulib.model.Led;
+import org.udoo.bluhomeexample.model.Led;
 
 /**
  * Created by harlem88 on 09/02/16.
@@ -30,7 +30,8 @@ public class LedAdapter extends RecyclerView.Adapter<LedAdapter.LedViewHolder> {
         public FragmentLedManagerItemBinding itemBinding;
 
         public LedViewHolder(FragmentLedManagerItemBinding fragmentLedManagerItemBinding) {
-            super(fragmentLedManagerItemBinding.getRoot());
+//            super(fragmentLedManagerItemBinding);
+            super(null);
             itemBinding = fragmentLedManagerItemBinding;
         }
 
@@ -55,7 +56,7 @@ public class LedAdapter extends RecyclerView.Adapter<LedAdapter.LedViewHolder> {
         if (led != null) {
             holder.getBinding().setLed(led);
         }else
-            holder.getBinding().setLed(Led.BuilderDefault());
+            holder.getBinding().setLed(led);
 
         holder.getBinding().ledImage.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.udoo.bluhomeexample.databinding.FragmentBleScanItemBinding;
-import org.udoo.udooblulib.model.BluItem;
+import org.udoo.bluhomeexample.model.BluItem;
 
 import java.util.List;
 

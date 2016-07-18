@@ -1,10 +1,10 @@
-package org.udoo.udooblulib.model;
+package org.udoo.bluhomeexample.model;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.udoo.udooblulib.utils.BindableBoolean;
+import org.udoo.bluhomeexample.util.BindableBoolean;
 
 /**
  * Created by harlem88 on 16/02/16.

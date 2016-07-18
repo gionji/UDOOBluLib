@@ -1,9 +1,9 @@
-package org.udoo.udooblulib.model;
+package org.udoo.bluhomeexample.model;
 
 import android.graphics.Color;
 
-import org.udoo.udooblulib.utils.BindableBoolean;
-import org.udoo.udooblulib.utils.BindableInt;
+import org.udoo.bluhomeexample.util.BindableBoolean;
+import org.udoo.bluhomeexample.util.BindableInt;
 
 /**
  * Created by harlem88 on 09/02/16.

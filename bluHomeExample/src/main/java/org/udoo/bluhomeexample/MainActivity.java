@@ -10,15 +10,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.udoo.bluhomeexample.activity.BluActivity;
 import org.udoo.bluhomeexample.interfaces.IFragmentToActivity;
 import org.udoo.udooblulib.exceptions.UdooBluException;
-import org.udoo.udooblulib.model.BluItem;
+import org.udoo.bluhomeexample.model.BluItem;
 
 public class MainActivity extends AppCompatActivity implements IFragmentToActivity{
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;

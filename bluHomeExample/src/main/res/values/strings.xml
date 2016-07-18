@@ -9,6 +9,11 @@
     <string name="title_section3">Gyroscope</string>
     <string name="title_section4">Magnetometer</string>
     <string name="title_section5">IOPins</string>
+    <string name="gpio_out">GPIO OUT</string>
+    <string name="gpio_in">GPIO IN</string>
+    <string name="analog_read">ANALOG READ</string>
+    <string name="pwm">PWM</string>
+    <string name="gpio_value">0-1</string>
     <!--<string name="title_section5">Barometer</string>-->
     <!--<string name="title_section6">Temperature</string>-->
 </resources>
