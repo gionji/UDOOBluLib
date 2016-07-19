@@ -196,7 +196,6 @@ public class GyroscopeFragment extends UdooFragment {
     @Override
     public void onStop() {
         super.onStop();
-
         mUdooBluManager.unSubscribeNotificationGyroscope(mBluAddress, new OnBluOperationResult<Boolean>() {
             public void onSuccess(Boolean aBoolean) {
                 Log.i(TAG, "onSuccess unsub" + aBoolean);

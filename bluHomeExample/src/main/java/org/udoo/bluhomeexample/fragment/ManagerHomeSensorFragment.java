@@ -27,6 +27,7 @@ import org.udoo.udooblulib.interfaces.OnBluOperationResult;
 import org.udoo.bluhomeexample.model.Temperature;
 import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.model.XYZSensor;
+import org.udoo.udooblulib.sensor.UDOOBLE;
 import org.udoo.udooblulib.sensor.UDOOBLESensor;
 import org.udoo.udooblulib.utils.Point3D;
 
@@ -216,12 +217,12 @@ public class ManagerHomeSensorFragment extends UdooFragment {
             mUdooBluManager.subscribeNotificationHumidity(mBluAddress, new INotificationListener<byte[]>() {
                 @Override
                 public void onNext(byte[] value) {
-
+                    mHumidity.setValue(""+UDOOBLESensor.HUMIDITY.convertHumidity(value));
                 }
 
                 @Override
                 public void onError(UdooBluException runtimeException) {
-
+                    Log.e(TAG, "onErrorHumidity: "+runtimeException.getReason());
                 }
             });
         }else{
@@ -232,12 +233,12 @@ public class ManagerHomeSensorFragment extends UdooFragment {
             mUdooBluManager.subscribeNotificationAmbientLight(mBluAddress, new INotificationListener<byte[]>() {
                 @Override
                 public void onNext(byte[] value) {
-
+                    mLight.setValue(""+UDOOBLESensor.AMBIENT_LIGHT.convertAmbientLight(value));
                 }
 
                 @Override
                 public void onError(UdooBluException runtimeException) {
-
+                    Log.e(TAG, "onErrorLight: "+runtimeException.getReason());
                 }
             });
         }else{
@@ -250,12 +251,12 @@ public class ManagerHomeSensorFragment extends UdooFragment {
             mUdooBluManager.subscribeNotificationTemperature(mBluAddress, new INotificationListener<byte[]>() {
                 @Override
                 public void onNext(byte[] value) {
-
+                    mTemperature.setValue(""+ UDOOBLESensor.TEMPERATURE.convertTemp(value));
                 }
 
                 @Override
                 public void onError(UdooBluException runtimeException) {
-
+                    Log.i(TAG, "onErrorTEmp: "+runtimeException.getReason());
                 }
             });
         }else{
@@ -266,12 +267,12 @@ public class ManagerHomeSensorFragment extends UdooFragment {
             mUdooBluManager.subscribeNotificationBarometer(mBluAddress, new INotificationListener<byte[]>() {
                 @Override
                 public void onNext(byte[] value) {
-
+                    mBarometer.setValue(""+UDOOBLESensor.BAROMETER_P.convertBar(value));
                 }
 
                 @Override
                 public void onError(UdooBluException runtimeException) {
-
+                    Log.i(TAG, "onErrorBarometer: "+runtimeException.getReason());
                 }
             });
         }else{

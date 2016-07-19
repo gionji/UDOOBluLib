@@ -101,7 +101,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/min_space_material"
                     android:layout_toRightOf="@id/sensor_light_image"
-                    android:text="Barometer:"
+                    android:text="Light:"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 <TextView
@@ -111,7 +111,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    app:barometer="@{barometer.value}"
+                    app:light="@{light.value}"
                     tools:text="0,004" />
             </RelativeLayout>
 
@@ -134,7 +134,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/min_space_material"
                     android:layout_toRightOf="@id/sensor_humidity_image"
-                    android:text="Barometer:"
+                    android:text="Humidity:"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 <TextView
@@ -144,7 +144,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    app:barometer="@{barometer.value}"
+                    app:humidity="@{humidity.value}"
                     tools:text="0,004" />
             </RelativeLayout>
 

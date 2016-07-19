@@ -34,4 +34,18 @@ public class ExternalSensorViewModel {
             view.setAlpha(value.get() ? 1 : 0.1f);
         }
     }
+
+    @BindingAdapter({"light"})
+    public static void setLight(TextView view, BindableString value) {
+        if (value != null) {
+            view.setText(value.get());
+        }
+    }
+
+    @BindingAdapter({"humidity"})
+    public static void setHumidity(TextView view, BindableString value) {
+        if (value != null) {
+            view.setText(value.get());
+        }
+    }
 }
