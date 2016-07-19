@@ -36,7 +36,6 @@ public class ScanBluFragment extends Fragment {
     private Map<String, BluItem> bleItemMap;
 
     private UdooBluManagerImpl udooBluManager;
-    private List<String> mItemClicked;
     private IFragmentToActivity mIFragmentToActivity;
     private boolean mScan;
     private FragmentBleScanBinding mViewBinding;
@@ -89,7 +88,6 @@ public class ScanBluFragment extends Fragment {
                 mViewBinding.buttonRunStopBleScan.setText("STOP");
             }
         });
-        mItemClicked = new ArrayList<>();
     }
 
     private BluScanCallBack scanCallback = new BluScanCallBack() {

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="temperature"
+            type="org.udoo.udoobluwearexample.model.Temperature"/>
+
+        <variable
+            name="barometer"
+            type="org.udoo.udoobluwearexample.model.Barometer"/>
+
+        <variable
+            name="humidity"
+            type="org.udoo.udoobluwearexample.model.Humidity" />
+        <variable
+            name="light"
+            type="org.udoo.udoobluwearexample.model.Light"/>
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/sensor_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="External Sensor"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/sensor_x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Temperature:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+
+                <TextView
+                    android:id="@+id/sensor_x_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    app:temperature="@{temperature.value}"
+                    tools:text="0,004" />
+
+                <TextView
+                    android:id="@+id/sensor_y"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/sensor_x"
+                    android:text="Barometer:"/>
+
+                <TextView
+                    android:id="@+id/sensor_y_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/sensor_x"
+                    app:barometer="@{barometer.value}"
+                    tools:text="0,004" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+</layout>

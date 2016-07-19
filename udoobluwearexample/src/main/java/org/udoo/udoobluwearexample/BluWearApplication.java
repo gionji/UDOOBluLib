@@ -1,15 +1,15 @@
-package org.udoo.bluhomeexample;
+package org.udoo.udoobluwearexample;
 
 import android.app.Application;
 
-import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 
 /**
- * Created by harlem88 on 24/03/16.
+ * Created by harlem88 on 19/07/16.
  */
-public class BluHomeApplication extends Application {
-    private UdooBluManager mUdooBluManager;
+
+public class BluWearApplication extends Application{
+    private UdooBluManagerImpl mUdooBluManager;
 
     @Override
     public void onCreate() {
@@ -21,11 +21,9 @@ public class BluHomeApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        //mUdooBluManager.stop();
-        //mUdooBluManager.clear();
     }
 
-    public UdooBluManager getBluManager(){
+    public UdooBluManagerImpl getBluManager(){
         return mUdooBluManager;
     }
 }

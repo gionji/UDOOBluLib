@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import org.udoo.bluhomeexample.BluHomeApplication;
-import org.udoo.udooblulib.manager.UdooBluManagerImpl;
+import org.udoo.udooblulib.manager.UdooBluManager;
 
 /**
  * Created by harlem88 on 29/06/16.
@@ -15,7 +15,7 @@ public class UdooFragment extends Fragment {
 
     private static final String ADDRESS = "addr";
     protected String mBluAddress;
-    protected UdooBluManagerImpl mUdooBluManager;
+    protected UdooBluManager mUdooBluManager;
 
     protected static UdooFragment Builder(UdooFragment udooFragment, String address){
         if (udooFragment != null) {
