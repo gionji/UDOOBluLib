@@ -5,19 +5,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import org.udoo.bluhomeexample.BluHomeApplication;
+import org.udoo.bluhomeexample.interfaces.BluListener;
 import org.udoo.udooblulib.manager.UdooBluManager;
 
 /**
  * Created by harlem88 on 29/06/16.
  */
 
-public class UdooFragment extends Fragment {
+public class UdooFragment extends Fragment implements BluListener {
 
     private static final String ADDRESS = "addr";
     protected String mBluAddress;
     protected UdooBluManager mUdooBluManager;
 
-    protected static UdooFragment Builder(UdooFragment udooFragment, String address){
+    protected static UdooFragment Builder(UdooFragment udooFragment, String address) {
         if (udooFragment != null) {
             Bundle bundle = new Bundle();
             bundle.putString(ADDRESS, address);
@@ -35,6 +36,12 @@ public class UdooFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mUdooBluManager = ((BluHomeApplication)getActivity().getApplication()).getBluManager();
+        mUdooBluManager = ((BluHomeApplication) getActivity().getApplication()).getBluManager();
     }
+
+    @Override
+    public void onConnect() {}
+
+    @Override
+    public void onDisconnect() {}
 }

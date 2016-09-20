@@ -13,6 +13,8 @@ public class Barometer {
     public Barometer() {
         value = new BindableString();
         value.set("");
+        detect = new BindableBoolean();
+        detect.set(false);
     }
 
     public void setValue(String value) {

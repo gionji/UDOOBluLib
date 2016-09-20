@@ -18,12 +18,13 @@ import org.udoo.bluhomeexample.databinding.FragmentBleScanBinding;
 import org.udoo.bluhomeexample.interfaces.IFragmentToActivity;
 import org.udoo.bluhomeexample.model.BluItem;
 import org.udoo.udooblulib.exceptions.UdooBluException;
+import org.udoo.udooblulib.interfaces.IBluManagerCallback;
+import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 import org.udoo.udooblulib.scan.BluScanCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +36,7 @@ public class ScanBluFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private Map<String, BluItem> bleItemMap;
 
-    private UdooBluManagerImpl udooBluManager;
+    private UdooBluManager udooBluManager;
     private IFragmentToActivity mIFragmentToActivity;
     private boolean mScan;
     private FragmentBleScanBinding mViewBinding;
@@ -80,7 +81,7 @@ public class ScanBluFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        udooBluManager.setIBluManagerCallback(new UdooBluManagerImpl.IBluManagerCallback() {
+        udooBluManager.setIBluManagerCallback(new IBluManagerCallback() {
             @Override
             public void onBluManagerReady() {
                 udooBluManager.scanLeDevice(true, scanCallback);
@@ -149,5 +150,4 @@ public class ScanBluFragment extends Fragment {
             }
         }
     };
-
 }

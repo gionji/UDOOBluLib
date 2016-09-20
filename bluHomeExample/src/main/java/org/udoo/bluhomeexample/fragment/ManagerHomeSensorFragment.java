@@ -2,6 +2,7 @@ package org.udoo.bluhomeexample.fragment;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +57,7 @@ public class ManagerHomeSensorFragment extends UdooFragment {
     private static final String ADDRESS = "addr";
     DecimalFormat df = new DecimalFormat("#.##");
     private final static String TAG = "Home";
+    private boolean isDisconnected;
 
 
 
@@ -93,8 +95,10 @@ public class ManagerHomeSensorFragment extends UdooFragment {
 
         mViewHomeBinding.setBarometer(mBarometer);
         mViewHomeBinding.setTemperature(mTemperature);
+        mViewHomeBinding.setHumidity(mHumidity);
+        mViewHomeBinding.setLight(mLight);
 
-        //mLedList.setAdapter(mLedAdapter);
+                //mLedList.setAdapter(mLedAdapter);
         mViewHomeBinding.xyzSensorInternalList.setAdapter(mXyzSensorAdapter);
 
 //        mIFragmentToActivity = (IFragmentToActivity) getActivity();
@@ -160,6 +164,21 @@ public class ManagerHomeSensorFragment extends UdooFragment {
         subscribeNotification();
     }
 
+    @Override
+    public void onConnect() {
+        super.onConnect();
+        if (isResumed() || isDisconnected) {
+            subscribeNotification();
+            isDisconnected = false;
+        }
+    }
+
+    @Override
+    public void onDisconnect() {
+        super.onDisconnect();
+        isDisconnected = true;
+    }
+
     private void subscribeNotification(){
         mUdooBluManager.subscribeNotificationAccelerometer(mBluAddress, new INotificationListener<byte[]>() {
             @Override
@@ -178,6 +197,10 @@ public class ManagerHomeSensorFragment extends UdooFragment {
             }
         });
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
         mUdooBluManager.subscribeNotificationGyroscope(mBluAddress, new INotificationListener<byte[]>() {
             @Override
             public void onNext(byte[] rawValue) {
@@ -194,23 +217,32 @@ public class ManagerHomeSensorFragment extends UdooFragment {
                 Log.e(TAG, "onError: "+runtimeException.getReason());
             }
         });
-
-        mUdooBluManager.subscribeNotificationMagnetometer(mBluAddress, new INotificationListener<byte[]>() {
-            @Override
-            public void onNext(byte[] rawValue) {
-                Point3D v = UDOOBLESensor.MAGNETOMETER.convert(rawValue);
-                XYZSensor xyzSensor = mXyzIntSensors.get(2);
-                xyzSensor.x = String.valueOf(df.format(v.x)) + " uT";
-                xyzSensor.y = String.valueOf(df.format(v.y)) + " uT";
-                xyzSensor.z = String.valueOf(df.format(v.z)) + " uT";
-                mXyzSensorAdapter.notifyItemChanged(2, xyzSensor);
             }
+        }, 400);
 
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onError(UdooBluException runtimeException) {
-                Log.e(TAG, "onError: "+runtimeException.getReason());
+            public void run() {
+
+                mUdooBluManager.subscribeNotificationMagnetometer(mBluAddress, new INotificationListener<byte[]>() {
+                    @Override
+                    public void onNext(byte[] rawValue) {
+                        Point3D v = UDOOBLESensor.MAGNETOMETER.convert(rawValue);
+                        XYZSensor xyzSensor = mXyzIntSensors.get(2);
+                        xyzSensor.x = String.valueOf(df.format(v.x)) + " uT";
+                        xyzSensor.y = String.valueOf(df.format(v.y)) + " uT";
+                        xyzSensor.z = String.valueOf(df.format(v.z)) + " uT";
+                        mXyzSensorAdapter.notifyItemChanged(2, xyzSensor);
+                    }
+
+                    @Override
+                    public void onError(UdooBluException runtimeException) {
+                        Log.e(TAG, "onError: " + runtimeException.getReason());
+                    }
+                });
+
             }
-        });
+        }, 600);
 
         if(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.HUM)){
             mHumidity.setDetect(true);
@@ -248,17 +280,23 @@ public class ManagerHomeSensorFragment extends UdooFragment {
 
         if(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP)){
             mTemperature.setDetect(true);
-            mUdooBluManager.subscribeNotificationTemperature(mBluAddress, new INotificationListener<byte[]>() {
+            new Handler().postDelayed(new Runnable() {
                 @Override
-                public void onNext(byte[] value) {
-                    mTemperature.setValue(""+ UDOOBLESensor.TEMPERATURE.convertTemp(value));
-                }
+                public void run() {
 
-                @Override
-                public void onError(UdooBluException runtimeException) {
-                    Log.i(TAG, "onErrorTEmp: "+runtimeException.getReason());
+                    mUdooBluManager.subscribeNotificationTemperature(mBluAddress, new INotificationListener<byte[]>() {
+                        @Override
+                        public void onNext(byte[] value) {
+                            mTemperature.setValue("" + UDOOBLESensor.TEMPERATURE.convertTemp(value));
+                        }
+
+                        @Override
+                        public void onError(UdooBluException runtimeException) {
+                            Log.i(TAG, "onErrorTEmp: " + runtimeException.getReason());
+                        }
+                    });
                 }
-            });
+            }, 600);
         }else{
             mTemperature.setDetect(false);
         }

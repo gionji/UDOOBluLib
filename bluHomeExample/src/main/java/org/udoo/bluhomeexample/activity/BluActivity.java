@@ -16,9 +16,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.udoo.bluhomeexample.BluHomeApplication;
 import org.udoo.bluhomeexample.R;
@@ -29,13 +31,18 @@ import org.udoo.bluhomeexample.fragment.AccelerometerFragment;
 import org.udoo.bluhomeexample.fragment.GyroscopeFragment;
 import org.udoo.bluhomeexample.fragment.MagnetometerFragment;
 import org.udoo.bluhomeexample.fragment.ManagerHomeSensorFragment;
+import org.udoo.bluhomeexample.interfaces.BluListener;
 import org.udoo.bluhomeexample.model.BluItem;
 import org.udoo.bluhomeexample.view.ViewHolderHeader;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
+import org.udoo.udooblulib.interfaces.IBluManagerCallback;
 import org.udoo.udooblulib.interfaces.OnResult;
 import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
+import org.udoo.udooblulib.scan.BluScanCallBack;
+
+import java.util.List;
 
 /**
  * Created by harlem88 on 28/06/16.
@@ -51,7 +58,7 @@ public class BluActivity extends AppCompatActivity {
     private int mPositionSelected;
     private Handler mHandler;
 
-    public enum ITEM_SELECTED {NOITEM, HOME, ACCELEROMETER, GYROSCOPE, MAGNETOMETER, IOPins}
+    public enum ITEM_SELECTED {HOME, ACCELEROMETER, GYROSCOPE, MAGNETOMETER, IOPins, NOITEM}
 
     private ITEM_SELECTED mItemSelected;
 
@@ -217,7 +224,7 @@ public class BluActivity extends AppCompatActivity {
      * @param tag       name class fragment
      * @param backstack enable move to backStack
      */
-    private void replaceFragmentAndInit(final Fragment fragment,final String tag, final boolean backstack) {
+    private void replaceFragmentAndInit(final Fragment fragment, final String tag, final boolean backstack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
@@ -236,6 +243,19 @@ public class BluActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    private void sendEventsToFragments(boolean connectionEvent) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if (fragments != null) {
+            for (Fragment fr : fragments) {
+                if (fr instanceof BluListener) {
+                    if (connectionEvent) ((BluListener) fr).onConnect();
+                    else ((BluListener) fr).onDisconnect();
+                }
+            }
+        }
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -244,50 +264,76 @@ public class BluActivity extends AppCompatActivity {
 
 
     private void connect() {
-
-        mUdooBluManager.setIBluManagerCallback(new UdooBluManagerImpl.IBluManagerCallback() {
+        mUdooBluManager.setIBluManagerCallback(new IBluManagerCallback() {
             @Override
             public void onBluManagerReady() {
-                mUdooBluManager.connect(mBluItem.address, new IBleDeviceListener() {
-                    @Override
-                    public void onDeviceConnected() {
-                        isConnected = true;
-                        mUdooBluManager.getBluItem(getBaseContext(), mBluItem.address, new OnResult<String>() {
-                            @Override
-                            public void onSuccess(String o) {
-                                if (o == null || o.length() == 0)
-                                    showChangeNameDialog();
-                                else {
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
-                                        }
-                                    });
-                                }
-                                mViewBinding.pbBusy.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onError(Throwable throwable) {
-                                mViewBinding.pbBusy.setVisibility(View.GONE);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onDeviceDisconnect() {
-                        isConnected = false;
-                    }
-
-                    @Override
-                    public void onError(UdooBluException runtimeException) {
-                        isConnected = false;
-                        mViewBinding.pbBusy.setVisibility(View.GONE);
-                    }
-                });
+                mUdooBluManager.connect(mBluItem.address, iBleDeviceListener);
             }
         });
+    }
+
+    private IBleDeviceListener iBleDeviceListener = new IBleDeviceListener() {
+        @Override
+        public void onDeviceConnected() {
+            isConnected = true;
+            mUdooBluManager.getBluItem(getBaseContext(), mBluItem.address, new OnResult<String>() {
+                @Override
+                public void onSuccess(String o) {
+                    if (o == null || o.length() == 0) {
+                        showChangeNameDialog();
+                        mViewBinding.pbBusy.setVisibility(View.GONE);
+                    } else {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getBaseContext(), "Blu Connected", Toast.LENGTH_LONG).show();
+                                onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        sendEventsToFragments(true);
+                                    }
+                                }, 500);
+
+                                mViewBinding.pbBusy.setVisibility(View.GONE);
+                            }
+                        }, 500);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    mViewBinding.pbBusy.setVisibility(View.GONE);
+                }
+            });
+        }
+
+        @Override
+        public void onDeviceDisconnect() {
+            isConnected = false;
+            Toast.makeText(getBaseContext(), "Blu disconnected...", Toast.LENGTH_LONG).show();
+            reTryConnection();
+        }
+
+        @Override
+        public void onError(UdooBluException runtimeException) {
+            isConnected = false;
+            mViewBinding.pbBusy.setVisibility(View.GONE);
+            if(!isFinishing()) reTryConnection();
+
+        }
+    };
+
+    private void reTryConnection() {
+        Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getBaseContext(), "Retry connection...", Toast.LENGTH_LONG).show();
+                mUdooBluManager.connect(mBluItem.address, iBleDeviceListener);
+            }
+        }, 5000);
     }
 
     public void showChangeNameDialog() {
@@ -299,15 +345,15 @@ public class BluActivity extends AppCompatActivity {
                 final EditDialogBinding viewDialogBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.edit_dialog, null, false);
                 dialogBuilder.setView(viewDialogBinding.getRoot());
 
-                dialogBuilder.setTitle("Custom dialog");
-                dialogBuilder.setMessage("Enter text below");
+                dialogBuilder.setTitle("Blu name");
+                dialogBuilder.setMessage("Insert name below");
                 dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Editable edit = viewDialogBinding.edit.getText();
                         if (edit != null) {
                             String name = edit.toString();
                             if (name.length() > 0)
-                                mUdooBluManager.saveBluItem(getApplicationContext(), mBluItem.address, name);
+                                mUdooBluManager.saveBluItem(getBaseContext(), mBluItem.address, name);
                         }
                         onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
                     }

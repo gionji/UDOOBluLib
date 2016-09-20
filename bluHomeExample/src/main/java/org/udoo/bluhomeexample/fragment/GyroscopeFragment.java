@@ -56,6 +56,12 @@ public class GyroscopeFragment extends UdooFragment {
         init();
     }
 
+    @Override
+    public void onConnect() {
+        super.onConnect();
+    }
+
+
     private void init() {
         mViewBinding.chart.setBackgroundColor(Color.LTGRAY);
         LineData data = new LineData();

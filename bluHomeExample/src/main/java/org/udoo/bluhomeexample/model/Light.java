@@ -14,6 +14,8 @@ public class Light {
     public Light() {
         value = new BindableString();
         value.set("");
+        detect = new BindableBoolean();
+        detect.set(false);
     }
 
     public void setValue(String value) {

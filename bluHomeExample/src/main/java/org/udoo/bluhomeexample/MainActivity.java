@@ -124,45 +124,61 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
     @Override
     public void onBluError(UdooBluException e) {
         if (e != null) {
-            Log.i(TAG, "onBluError: "+e.getReason());
+            Log.i(TAG, "onBluError: " + e.getReason());
+            String err;
             switch (e.getReason()) {
                 case UdooBluException.BLU_SERVICE_NOT_READY:
+                    err = "Service not ready";
                     break;
                 case UdooBluException.BLUETOOTH_CANNOT_START:
+                    err = "Bluetooth not start";
                     break;
                 case UdooBluException.BLUETOOTH_LE_NOT_SUPPORTED:
+                    err = "ble non supported";
                     break;
                 case UdooBluException.BLUETOOTH_DISABLED:
+                    err = "Bluetooth disabled";
                     break;
                 case UdooBluException.BLUETOOTH_NOT_AVAILABLE:
+                    err = "Bluetooth not available";
                     break;
                 case UdooBluException.LOCATION_PERMISSION_MISSING:
+                    err = "Location permission missing";
                     break;
                 case UdooBluException.LOCATION_SERVICES_DISABLED:
+                    err = "Location disabled";
                     break;
                 case UdooBluException.BLU_SEQ_OBSERVER_ERROR:
+                    err = "BluManager error";
                     break;
                 case UdooBluException.BLU_READ_CHARAC_ERROR:
+                    err = "BluManager read char error";
                     break;
                 case UdooBluException.BLU_WRITE_CHARAC_ERROR:
+                    err = "BluManager write char error";
                     break;
                 case UdooBluException.BLU_GATT_SERVICE_NOT_FOUND:
+                    err = "BluManager service gatt not found";
                     break;
                 case UdooBluException.BLU_SENSOR_NOT_FOUND:
+                    err = "BluManager blu sensor not found";
                     break;
                 case UdooBluException.BLU_WRITE_DESCR_ERROR:
+                    err = "BluManager write descr error";
                     break;
                 case UdooBluException.BLU_NOTIFICATION_ERROR:
+                    err = "BluManager notification error";
                     break;
                 case UdooBluException.BLU_WRITE_PERIOD_NOTIFICATION_ERROR:
+                    err = "BluManager write period notification error";
                     break;
                 case UdooBluException.BLU_GENERIC_ERROR:
-                default: {
-
-                }
+                default:
+                    err = "Generic error";
             }
-        }else {
-            Log.e(TAG, "onBluError: "+UdooBluException.BLU_GENERIC_ERROR);
+            Toast.makeText(this, err, Toast.LENGTH_LONG).show();
+        } else {
+            Log.e(TAG, "onBluError: " + UdooBluException.BLU_GENERIC_ERROR);
         }
     }
 
