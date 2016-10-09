@@ -3,7 +3,13 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="min_space_material">8dp</dimen>
+    <dimen name="db_space_material">16dp</dimen>
     <dimen name="dim_item_icon">64dp</dimen>
-    <dimen name="tr_space_material">32dp</dimen>
+    <dimen name="dim_nav_top">48dp</dimen>
+    <dimen name="tr_space_material">24dp</dimen>
+    <dimen name="qd_space_material">32dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="item_margin">4dp</dimen>
+    <dimen name="dim_ic_sensor_ext_item">48dp</dimen>
+    <dimen name="dim_ic_sensor_int_item">32dp</dimen>
 </resources>

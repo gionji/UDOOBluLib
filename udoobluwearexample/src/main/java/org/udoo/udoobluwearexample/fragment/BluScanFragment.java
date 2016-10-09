@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import org.udoo.udooblulib.exceptions.UdooBluException;
+import org.udoo.udooblulib.interfaces.IBluManagerCallback;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 import org.udoo.udooblulib.scan.BluScanCallBack;
 import org.udoo.udoobluwearexample.BluWearApplication;
@@ -78,7 +78,7 @@ public class BluScanFragment extends Fragment {
 
 
     private void startScan(){
-        udooBluManager.setIBluManagerCallback(new UdooBluManagerImpl.IBluManagerCallback() {
+        udooBluManager.setIBluManagerCallback(new IBluManagerCallback() {
             @Override
             public void onBluManagerReady() {
                 udooBluManager.scanLeDevice(true, scanCallback);

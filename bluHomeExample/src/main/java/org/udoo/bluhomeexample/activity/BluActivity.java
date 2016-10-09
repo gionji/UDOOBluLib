@@ -16,7 +16,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 import org.udoo.bluhomeexample.BluHomeApplication;
 import org.udoo.bluhomeexample.R;
 import org.udoo.bluhomeexample.databinding.BluActivityLayoutBinding;
-import org.udoo.bluhomeexample.databinding.EditDialogBinding;
 import org.udoo.bluhomeexample.databinding.UdoobluHeaderBinding;
 import org.udoo.bluhomeexample.fragment.AccelerometerFragment;
 import org.udoo.bluhomeexample.fragment.GyroscopeFragment;
@@ -39,8 +37,6 @@ import org.udoo.udooblulib.interfaces.IBleDeviceListener;
 import org.udoo.udooblulib.interfaces.IBluManagerCallback;
 import org.udoo.udooblulib.interfaces.OnResult;
 import org.udoo.udooblulib.manager.UdooBluManager;
-import org.udoo.udooblulib.manager.UdooBluManagerImpl;
-import org.udoo.udooblulib.scan.BluScanCallBack;
 
 import java.util.List;
 
@@ -51,7 +47,6 @@ import java.util.List;
 public class BluActivity extends AppCompatActivity {
     public static final String EXTRA_BLU_DEVICE = "BLU_ITEM";
     private BluItem mBluItem;
-    private boolean isConnected;
     private UdooBluManager mUdooBluManager;
     private BluActivityLayoutBinding mViewBinding;
     private String mTitle;
@@ -79,6 +74,7 @@ public class BluActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(mBluItem.name);
         }
 
         mHandler = new Handler();
@@ -88,13 +84,16 @@ public class BluActivity extends AppCompatActivity {
         new ViewHolderHeader(mViewBinding.navView);
 
         UdoobluHeaderBinding navDrawerHeaderBinding = UdoobluHeaderBinding.bind(mViewBinding.navView.getHeaderView(0).findViewById(R.id.nav_header_root));
-        navDrawerHeaderBinding.setBleItem(mBluItem);
+        navDrawerHeaderBinding.setBluItem(mBluItem);
 
         mUdooBluManager = ((BluHomeApplication) getApplication()).getBluManager();
 
-        if (!isConnected)
+        if (!mBluItem.isConnected())
             connect();
-
+        else{
+            onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
+            mViewBinding.pbBusy.setVisibility(View.GONE);
+        }
     }
 
     public void showMainToolbar() {
@@ -104,7 +103,7 @@ public class BluActivity extends AppCompatActivity {
         } else {
             mViewBinding.toolbar.getMenu().clear();
         }
-        mViewBinding.toolbar.setTitle(mTitle);
+        mViewBinding.toolbar.setTitle(mBluItem.name);
 
     }
 
@@ -132,7 +131,9 @@ public class BluActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        boolean res = super.onCreateOptionsMenu(menu);
+        getMenuItem(0).setTitle(mBluItem.name);
+        return res;
     }
 
     @Override
@@ -275,12 +276,12 @@ public class BluActivity extends AppCompatActivity {
     private IBleDeviceListener iBleDeviceListener = new IBleDeviceListener() {
         @Override
         public void onDeviceConnected() {
-            isConnected = true;
+            mBluItem.setConnected(true);
             mUdooBluManager.getBluItem(getBaseContext(), mBluItem.address, new OnResult<String>() {
                 @Override
                 public void onSuccess(String o) {
                     if (o == null || o.length() == 0) {
-                        showChangeNameDialog();
+//                        showChangeNameDialog();
                         mViewBinding.pbBusy.setVisibility(View.GONE);
                     } else {
                         mHandler.postDelayed(new Runnable() {
@@ -310,14 +311,14 @@ public class BluActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceDisconnect() {
-            isConnected = false;
+            mBluItem.setConnected(false);
             Toast.makeText(getBaseContext(), "Blu disconnected...", Toast.LENGTH_LONG).show();
             reTryConnection();
         }
 
         @Override
         public void onError(UdooBluException runtimeException) {
-            isConnected = false;
+            mBluItem.setConnected(false);
             mViewBinding.pbBusy.setVisibility(View.GONE);
             if(!isFinishing()) reTryConnection();
 
@@ -336,35 +337,4 @@ public class BluActivity extends AppCompatActivity {
         }, 5000);
     }
 
-    public void showChangeNameDialog() {
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(BluActivity.this);
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                final EditDialogBinding viewDialogBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.edit_dialog, null, false);
-                dialogBuilder.setView(viewDialogBinding.getRoot());
-
-                dialogBuilder.setTitle("Blu name");
-                dialogBuilder.setMessage("Insert name below");
-                dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Editable edit = viewDialogBinding.edit.getText();
-                        if (edit != null) {
-                            String name = edit.toString();
-                            if (name.length() > 0)
-                                mUdooBluManager.saveBluItem(getBaseContext(), mBluItem.address, name);
-                        }
-                        onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
-                    }
-                });
-                dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                });
-                AlertDialog alertDialog = dialogBuilder.create();
-                alertDialog.show();
-            }
-        });
-    }
 }

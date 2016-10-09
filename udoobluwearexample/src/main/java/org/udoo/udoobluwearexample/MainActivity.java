@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,8 +25,14 @@ import android.view.WindowInsets;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
+import org.udoo.udooblulib.interfaces.IBluManagerCallback;
 import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.manager.UdooBluManagerImpl;
 import org.udoo.udoobluwearexample.adapter.VerticalGridPagerAdapter;
@@ -38,7 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends WearableActivity implements IFragmentToActivity{
+public class MainActivity extends WearableActivity implements IFragmentToActivity {
 
     private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
             new SimpleDateFormat("HH:mm", Locale.US);
@@ -53,6 +60,11 @@ public class MainActivity extends WearableActivity implements IFragmentToActivit
     private Handler mHandler;
     private Fragment mCurrentFragment;
     private UdooBluManager mUdooBluManager;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,14 +119,17 @@ public class MainActivity extends WearableActivity implements IFragmentToActivit
                     }
                 });
                 builder.show();
-            }else{
+            } else {
                 showScanBlu();
             }
-        } else  {
+        } else {
             showScanBlu();
         }
 
         mUdooBluManager = ((BluWearApplication) getApplication()).getBluManager();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -149,7 +164,7 @@ public class MainActivity extends WearableActivity implements IFragmentToActivit
         }
     }
 
-    private void showScanBlu(){
+    private void showScanBlu() {
         addFragment(new BluScanFragment());
     }
 
@@ -176,7 +191,7 @@ public class MainActivity extends WearableActivity implements IFragmentToActivit
     @Override
     public void onBluError(UdooBluException e) {
         if (e != null) {
-            Log.i(TAG, "onBluError: "+e.getReason());
+            Log.i(TAG, "onBluError: " + e.getReason());
             switch (e.getReason()) {
                 case UdooBluException.BLU_SERVICE_NOT_READY:
                     break;
@@ -213,14 +228,14 @@ public class MainActivity extends WearableActivity implements IFragmentToActivit
 
                 }
             }
-        }else {
-            Log.e(TAG, "onBluError: "+UdooBluException.BLU_GENERIC_ERROR);
+        } else {
+            Log.e(TAG, "onBluError: " + UdooBluException.BLU_GENERIC_ERROR);
         }
     }
 
     @Override
     public void onConnect(final BluItem bluItem) {
-        mUdooBluManager.setIBluManagerCallback(new UdooBluManagerImpl.IBluManagerCallback() {
+        mUdooBluManager.setIBluManagerCallback(new IBluManagerCallback() {
             @Override
             public void onBluManagerReady() {
                 mUdooBluManager.connect(bluItem.address, new IBleDeviceListener() {
@@ -266,5 +281,41 @@ public class MainActivity extends WearableActivity implements IFragmentToActivit
             getFragmentManager().beginTransaction().remove(fragment).commit();
             fragment = null;
         }
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 }

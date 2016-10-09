@@ -1,0 +1,78 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pair_the_device"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_marginTop="@dimen/tr_space_material">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/blu_default_name" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/address_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textInput"
+            android:layout_marginTop="@dimen/db_space_material"
+            android:text="Address" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/address_title"
+            android:layout_marginTop="@dimen/min_space_material"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/color_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/address"
+            android:layout_marginTop="@dimen/db_space_material"
+            android:text="Color" />
+
+        <android.support.v7.widget.RecyclerView
+
+            android:id="@+id/list_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/color_title"
+            android:layout_marginTop="@dimen/min_space_material" />
+
+
+        <Button
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_pair"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/list_color"
+            android:textColor="@android:color/white"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/qd_space_material"
+            android:text="@string/pair" />
+
+    </RelativeLayout>
+</layout>

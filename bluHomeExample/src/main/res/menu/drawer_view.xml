@@ -8,6 +8,10 @@
             android:checkable="true"
             android:icon="@drawable/home"
             android:title="@string/title_section1" />
+    </group>
+    <group
+        android:id="@+id/group_id2"
+        android:checkableBehavior="none">
         <item
             android:id="@+id/nav_accelerometer"
             android:checkable="true"
@@ -27,7 +31,7 @@
         <item
             android:id="@+id/nav_io_pins"
             android:checkable="true"
-            android:icon="@drawable/magnetometer"
+            android:icon="@drawable/home"
             android:title="@string/title_section5" />
     </group>
 </menu>

@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "org.udoo.udoobluwearexample"
@@ -28,4 +28,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-wearable:9.2.1'
     compile 'com.google.android.wearable:wearable:2.0.0-alpha2'
     compile project(':udooblulib')
+    compile 'com.google.android.gms:play-services-appindexing:9.2.1'
 }

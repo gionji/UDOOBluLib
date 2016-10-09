@@ -12,10 +12,14 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.udoo.bluhomeexample.activity.BluActivity;
+import org.udoo.bluhomeexample.fragment.AccelerometerFragment;
+import org.udoo.bluhomeexample.fragment.IOPINFragment;
+import org.udoo.bluhomeexample.fragment.UdooFragment;
 import org.udoo.bluhomeexample.interfaces.IFragmentToActivity;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.bluhomeexample.model.BluItem;
@@ -32,6 +36,12 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle("Home");
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_LONG).show();
@@ -62,18 +72,23 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
                 });
                 builder.show();
             }else{
-                showScanBlu();
+                showScanBlu(false);
             }
         } else if (savedInstanceState == null && mBleSupported) {
-            showScanBlu();
+            showScanBlu(false);
         } else {
             //Error TODO
         }
     }
 
-    private void showScanBlu(){
-        getFragmentManager().beginTransaction()
-                .add(R.id.container, new ScanBluFragment()).commit();
+    private void showScanBlu(boolean isStateLost) {
+        if (!isStateLost) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, new ScanBluFragment()).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, new ScanBluFragment()).commitAllowingStateLoss();
+        }
     }
 
     @Override
@@ -81,7 +96,12 @@ public class MainActivity extends AppCompatActivity implements IFragmentToActivi
         switch (requestCode) {
             case PERMISSION_REQUEST_COARSE_LOCATION: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "coarse location permission granted");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showScanBlu(true);
+                        }
+                    });
                 } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Functionality limited");

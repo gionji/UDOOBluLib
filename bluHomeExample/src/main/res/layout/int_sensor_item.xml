@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="sensorInt"
+            type="org.udoo.bluhomeexample.model.IntBluSensor" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/db_space_material"
+        android:elevation="@dimen/cardview_default_elevation">
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/min_space_material"
+            android:layout_marginBottom="@dimen/min_space_material"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@id/image"
+                    android:layout_width="@dimen/dim_ic_sensor_int_item"
+                    android:layout_height="@dimen/dim_ic_sensor_int_item"
+                    android:layout_marginStart="@dimen/min_space_material"
+                    android:src="@{sensorInt.resourceImg}"
+                    tools:src="@drawable/accelerometer" />
+
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:text="@{sensorInt.name}"
+                    android:layout_marginStart="@dimen/min_space_material"
+                    tools:text="Accelerometer" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view"
+                android:layout_below="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/divider" />
+
+            <FrameLayout
+                android:layout_below="@id/view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/image_bck"
+                    android:layout_gravity="center"
+                    tools:src="@drawable/accelerometer"
+                    android:layout_width="wrap_content"
+                    android:alpha="0.2"
+                    android:src="@{sensorInt.resourceImg}"
+                    android:layout_height="wrap_content"/>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/min_space_material"
+                    android:layout_marginStart="@dimen/min_space_material">
+
+                    <TextView
+                        android:id="@+id/sensor_x"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="x:"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+
+                    <TextView
+                        android:id="@+id/sensor_x_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        tools:text="0,004" />
+                    <!--android:text="@{sensor_int.x}"-->
+
+                    <TextView
+                        android:id="@+id/sensor_y"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/sensor_x"
+                        android:text="y:"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                    <TextView
+                        android:id="@+id/sensor_y_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/sensor_x"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        tools:text="0,004" />
+                    <!--android:text="@{sensor_int.x}"-->
+
+                    <TextView
+                        android:id="@+id/sensor_z"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/sensor_y"
+                        android:text="z:"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                    <TextView
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:id="@+id/sensor_z_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/sensor_y"
+                        tools:text="0,004" />
+                    <!--android:text="@{sensor_int.z}"-->
+                </RelativeLayout>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</layout>
