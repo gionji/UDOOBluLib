@@ -58,7 +58,7 @@ public class BluSaveDialog extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBluItem = BluItem.Builder(getArguments().getString("address"), "", "", R.color.blue_300);
+        mBluItem = BluItem.Builder(getArguments().getString("address"), "", "", R.color.blue_500);
         mViewBinding.address.setText(mBluItem.address);
         mViewBinding.listColor.setHasFixedSize(true);
         mViewBinding.listColor.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));

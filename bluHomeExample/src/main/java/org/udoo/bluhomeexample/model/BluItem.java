@@ -29,7 +29,7 @@ public class BluItem implements Parcelable {
         bluItem.name = device.getName();
         bluItem.address = device.getAddress();
         bluItem.rssi = rssi;
-        bluItem.color = R.color.blue_300;
+        bluItem.color = R.color.blue_500;
         bluItem.connected = false;
         bluItem.found = false;
         bluItem.paired = false;

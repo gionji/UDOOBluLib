@@ -52,6 +52,12 @@ public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
+    public void updateSensor(int position, BluSensor bluSensor){
+        mDataSet.remove(position);
+        mDataSet.add(position, bluSensor);
+        notifyItemChanged(position);
+    }
+
     @Override
     public int getItemViewType(int position) {
         return position  < LAST_EXT_POS? VIEW_EXT_TYPE : VIEW_INT_TYPE;
