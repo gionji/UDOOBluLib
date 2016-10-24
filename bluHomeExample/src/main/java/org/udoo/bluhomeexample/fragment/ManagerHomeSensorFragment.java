@@ -80,13 +80,6 @@ public class ManagerHomeSensorFragment extends UdooFragment {
 
         mSensorLayoutManager.setSpanSizeLookup(mHomeSensorAdapter.getSpanSizeLookup());
 
-//        mSensorLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//                return (position < 4 ? 2 : 1);
-//            }
-//        });
-
         mViewHomeBinding.sensorList.setLayoutManager(mSensorLayoutManager);
         mViewHomeBinding.sensorList.setAdapter(mHomeSensorAdapter);
 

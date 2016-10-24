@@ -13,6 +13,7 @@
     <string name="ambient_light">Ambient Light</string>
     <string name="humidity">Humidity</string>
     <string name="barometer">Barometer</string>
+    <string name="shop">shop</string>
     <string name="gpio_out">GPIO OUT</string>
     <string name="gpio_in">GPIO IN</string>
     <string name="analog_read">ANALOG READ</string>
@@ -21,6 +22,8 @@
     <string name="blu_default_name">UDOO BLE TAG 1.0</string>
     <string name="pair">PAIR</string>
     <string name="pair_the_device">PAIR THE DEVICE</string>
+    <string name="oad">OAD</string>
+
     <!--<string name="title_section5">Barometer</string>-->
     <!--<string name="title_section6">Temperature</string>-->
 </resources>

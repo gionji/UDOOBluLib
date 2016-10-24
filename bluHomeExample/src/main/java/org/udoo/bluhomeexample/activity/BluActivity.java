@@ -2,6 +2,7 @@ package org.udoo.bluhomeexample.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,8 +30,10 @@ import org.udoo.bluhomeexample.fragment.AccelerometerFragment;
 import org.udoo.bluhomeexample.fragment.GyroscopeFragment;
 import org.udoo.bluhomeexample.fragment.MagnetometerFragment;
 import org.udoo.bluhomeexample.fragment.ManagerHomeSensorFragment;
+import org.udoo.bluhomeexample.fragment.TemperatureFragment;
 import org.udoo.bluhomeexample.interfaces.BluListener;
 import org.udoo.bluhomeexample.model.BluItem;
+import org.udoo.bluhomeexample.model.BluSensor;
 import org.udoo.bluhomeexample.view.ViewHolderHeader;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
@@ -53,7 +56,7 @@ public class BluActivity extends AppCompatActivity {
     private int mPositionSelected;
     private Handler mHandler;
 
-    public enum ITEM_SELECTED {HOME, ACCELEROMETER, GYROSCOPE, MAGNETOMETER, IOPins, NOITEM}
+    public enum ITEM_SELECTED {HOME, TEMPERATURE, AMBLIGHT, HUMIDITY, BAROMETER, ACCELEROMETER, GYROSCOPE, MAGNETOMETER, IOPins, SHOP, OAD, NOITEM}
 
     private ITEM_SELECTED mItemSelected;
 
@@ -93,8 +96,17 @@ public class BluActivity extends AppCompatActivity {
         else{
             onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
             mViewBinding.pbBusy.setVisibility(View.GONE);
+            populateMenuItem();
         }
     }
+
+    private void populateMenuItem() {
+        getMenuItem(1).setVisible(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP));
+        getMenuItem(2).setVisible(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.AMB_LIG));
+        getMenuItem(3).setVisible(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.HUM));
+        getMenuItem(4).setVisible(mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.BAR));
+    }
+
 
     public void showMainToolbar() {
         if (mViewBinding.toolbar.getVisibility() != View.VISIBLE) {
@@ -111,16 +123,34 @@ public class BluActivity extends AppCompatActivity {
         int resMenu;
         switch (position) {
             case 1:
-                resMenu = R.id.nav_accelerometer;
+                resMenu = R.id.nav_temperature;
                 break;
             case 2:
-                resMenu = R.id.nav_gyroscope;
+                resMenu = R.id.nav_ambLight;
                 break;
             case 3:
-                resMenu = R.id.nav_magnetometer;
+                resMenu = R.id.nav_humidity;
                 break;
             case 4:
+                resMenu = R.id.nav_barometer;
+                break;
+            case 5:
+                resMenu = R.id.nav_accelerometer;
+                break;
+            case 6:
+                resMenu = R.id.nav_gyroscope;
+                break;
+            case 7:
+                resMenu = R.id.nav_magnetometer;
+                break;
+            case 8:
                 resMenu = R.id.nav_io_pins;
+                break;
+            case 9:
+                resMenu = R.id.nav_shop;
+                break;
+            case 10:
+                resMenu = R.id.nav_oad;
                 break;
             default:
                 resMenu = R.id.nav_home;
@@ -161,6 +191,38 @@ public class BluActivity extends AppCompatActivity {
             menuItem.setChecked(true);
 
             switch (menuItem.getItemId()) {
+                case R.id.nav_temperature:
+                    if (mItemSelected != ITEM_SELECTED.TEMPERATURE) {
+                        mTitle = getString(R.string.temperature);
+                        showMainToolbar();
+                        replaceFragmentAndInit(TemperatureFragment.Builder(mBluItem.address), ITEM_SELECTED.TEMPERATURE.name(), false);
+                        mItemSelected = ITEM_SELECTED.TEMPERATURE;
+                    }
+                    break;
+                case R.id.nav_ambLight:
+                    if (mItemSelected != ITEM_SELECTED.IOPins) {
+//                        mTitle = getString(R.string.title_section5);
+//                        showMainToolbar();
+//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
+//                        mItemSelected = ITEM_SELECTED.IOPins;
+                    }
+                    break;
+                case R.id.nav_humidity:
+                    if (mItemSelected != ITEM_SELECTED.IOPins) {
+//                        mTitle = getString(R.string.title_section5);
+//                        showMainToolbar();
+//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
+//                        mItemSelected = ITEM_SELECTED.IOPins;
+                    }
+                    break;
+                case R.id.nav_barometer:
+                    if (mItemSelected != ITEM_SELECTED.IOPins) {
+//                        mTitle = getString(R.string.title_section5);
+//                        showMainToolbar();
+//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
+//                        mItemSelected = ITEM_SELECTED.IOPins;
+                    }
+                    break;
                 case R.id.nav_accelerometer:
                     if (mItemSelected != ITEM_SELECTED.ACCELEROMETER) {
                         mTitle = getString(R.string.title_section2);
@@ -191,6 +253,23 @@ public class BluActivity extends AppCompatActivity {
 //                        showMainToolbar();
 //                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
 //                        mItemSelected = ITEM_SELECTED.IOPins;
+                    }
+                    break;
+                case R.id.nav_shop:
+                    if (mItemSelected != ITEM_SELECTED.SHOP) {
+//                        mTitle = getString(R.string.title_section5);
+//                        showMainToolbar();
+//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
+//                        mItemSelected = ITEM_SELECTED.IOPins;
+                    }
+                    break;
+                case R.id.nav_oad:
+                    if (mItemSelected != ITEM_SELECTED.OAD) {
+//                        mTitle = getString(R.string.title_section5);
+//                        showMainToolbar();
+//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
+                        mItemSelected = ITEM_SELECTED.OAD;
+                        startActivity(new Intent(getBaseContext(), OADActivity.class));
                     }
                     break;
                 default:
