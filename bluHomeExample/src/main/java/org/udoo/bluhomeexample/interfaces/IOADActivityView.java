@@ -10,4 +10,9 @@ import java.util.List;
 
 public interface IOADActivityView {
     void addFirmwares(List<OADModel> firmwares);
+    void showProgress(String text, boolean indeterminate);
+    void updateProgress(int value);
+    void dismissProgress();
+    void enableOADUpload(boolean enable);
+    void setOADInfo(String name, String version, String data);
 }

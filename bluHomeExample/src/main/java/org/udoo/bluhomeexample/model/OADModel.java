@@ -10,4 +10,5 @@ public class OADModel {
     public String data;
     public String description;
     public String sha1;
+    public String url;
 }

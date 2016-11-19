@@ -269,7 +269,9 @@ public class BluActivity extends AppCompatActivity {
 //                        showMainToolbar();
 //                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
                         mItemSelected = ITEM_SELECTED.OAD;
-                        startActivity(new Intent(getBaseContext(), OADActivity.class));
+                        Intent intent = new Intent(getBaseContext(), OADActivity.class);
+                        intent.putExtra(EXTRA_BLU_DEVICE, mBluItem);
+                        startActivity(intent);
                     }
                     break;
                 default:

@@ -3,6 +3,7 @@ package org.udoo.bluhomeexample.adapter;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import org.udoo.bluhomeexample.R;
@@ -17,7 +18,15 @@ import java.util.List;
 
 public class OADAdapter extends RecyclerView.Adapter<OADAdapter.OADViewHolder> {
     private List<OADModel> mDataSet;
+    private OnOADFirmwareClickListener mOnOADFirmwareClickListener;
 
+    public interface OnOADFirmwareClickListener{
+        void onOADFirmwareClick(OADModel oadModel);
+    }
+
+    public void setOnOADFirmwareClickListener(OnOADFirmwareClickListener onOADFirmwareClickListener){
+        mOnOADFirmwareClickListener = onOADFirmwareClickListener;
+    }
 
     public static class OADViewHolder extends RecyclerView.ViewHolder {
         private OadItemLayoutBinding mViewBinding;
@@ -59,7 +68,14 @@ public class OADAdapter extends RecyclerView.Adapter<OADAdapter.OADViewHolder> {
 
     @Override
     public void onBindViewHolder(OADViewHolder holder, int position) {
-        OADModel oadModel = mDataSet.get(position);
+        final OADModel oadModel = mDataSet.get(position);
         holder.getViewBinding().setOadModel(oadModel);
+        holder.getViewBinding().getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mOnOADFirmwareClickListener != null)
+                    mOnOADFirmwareClickListener.onOADFirmwareClick(oadModel);
+            }
+        });
     }
 }

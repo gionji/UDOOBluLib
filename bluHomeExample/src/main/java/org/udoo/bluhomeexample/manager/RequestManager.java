@@ -1,7 +1,12 @@
 package org.udoo.bluhomeexample.manager;
 
+import android.app.DownloadManager;
 import android.content.AsyncTaskLoader;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
 
@@ -80,6 +85,30 @@ public class RequestManager {
             }
         });
 
+    }
+
+
+    public static long DownloadOadFirmaware(String name, String url, DownloadManager downloadManager, Context context) {
+        long downloadReference;
+
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+
+        request.setTitle("OAD Download");
+
+        request.setDescription("OAD " + name + " download...");
+
+        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, name);
+        downloadReference = downloadManager.enqueue(request);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        request.setAllowedOverRoaming(false);
+
+//        Button DownloadStatus = (Button) findViewById(R.id.DownloadStatus);
+//        DownloadStatus.setEnabled(true);
+//        Button CancelDownload = (Button) findViewById(R.id.CancelDownload);
+//        CancelDownload.setEnabled(true);
+
+        return downloadReference;
     }
 
 }
