@@ -23,6 +23,7 @@
     <string name="pair">PAIR</string>
     <string name="pair_the_device">PAIR THE DEVICE</string>
     <string name="oad">OAD</string>
+    <string name="oad_dialog_programming_finished">Firmware upgrade finished, the device should now disconnect, this will be evident by the device restarting and LED start blinking again. \r\n\r\nIf this should not happen, upgrade failed, you should try to upgrade again.</string>
 
     <!--<string name="title_section5">Barometer</string>-->
     <!--<string name="title_section6">Temperature</string>-->

@@ -14,6 +14,7 @@ public class Led{
     public BindableInt color;
     public BindableBoolean onoff;
     public BindableBoolean blink;
+    public int led;
 
     public Led(){
         onoff = new BindableBoolean();

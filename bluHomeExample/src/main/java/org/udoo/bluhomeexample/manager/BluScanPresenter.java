@@ -3,20 +3,25 @@ package org.udoo.bluhomeexample.manager;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 
 import org.udoo.bluhomeexample.BluItemAdapter;
 import org.udoo.bluhomeexample.dialog.BluSaveDialog;
 import org.udoo.bluhomeexample.interfaces.IBluScanView;
 import org.udoo.bluhomeexample.interfaces.OnResult;
 import org.udoo.bluhomeexample.model.BluItem;
+import org.udoo.bluhomeexample.model.Led;
 import org.udoo.bluhomeexample.util.Util;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
 import org.udoo.udooblulib.interfaces.IBluManagerCallback;
+import org.udoo.udooblulib.interfaces.IReaderListener;
 import org.udoo.udooblulib.manager.UdooBluManager;
 import org.udoo.udooblulib.scan.BluScanCallBack;
+import org.udoo.udooblulib.sensor.Constant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -148,6 +154,7 @@ public class BluScanPresenter implements SwipeRefreshLayout.OnRefreshListener, O
                             @Override
                             public void run() {
                                 bluItemMap = bluMap;
+
                                 if (bluItemMap.size() > 0 && mIBluScanView != null) {
                                     mIBluScanView.addDevices(new ArrayList<>(bluItemMap.values()));
                                 }
@@ -198,6 +205,13 @@ public class BluScanPresenter implements SwipeRefreshLayout.OnRefreshListener, O
         }else{
             if (mIBluScanView != null)
                 mIBluScanView.onConnectPage(item);
+        }
+    }
+
+    @Override
+    public void onItemLedClickListener(BluItem bluItem, Led ledControl) {
+        if(ledControl != null){
+            mUdooBluManager.blinkLed(bluItem.address, ledControl.led, ledControl.blink.get());
         }
     }
 

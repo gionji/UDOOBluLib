@@ -16,9 +16,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="8dp"
-            app:blink="@{led.blink}"
-            app:color="@{led.color}"
-            app:onoff="@{led.onoff}">
+            app:blink="@{led.blink}">
 
             <ImageView
                 android:id="@+id/led_image"

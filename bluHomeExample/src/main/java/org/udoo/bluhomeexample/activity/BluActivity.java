@@ -1,7 +1,5 @@
 package org.udoo.bluhomeexample.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -16,7 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,11 +31,11 @@ import org.udoo.bluhomeexample.fragment.ManagerHomeSensorFragment;
 import org.udoo.bluhomeexample.fragment.TemperatureFragment;
 import org.udoo.bluhomeexample.interfaces.BluListener;
 import org.udoo.bluhomeexample.model.BluItem;
-import org.udoo.bluhomeexample.model.BluSensor;
 import org.udoo.bluhomeexample.view.ViewHolderHeader;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
 import org.udoo.udooblulib.interfaces.IBluManagerCallback;
+import org.udoo.udooblulib.interfaces.IReaderListener;
 import org.udoo.udooblulib.interfaces.OnResult;
 import org.udoo.udooblulib.manager.UdooBluManager;
 
@@ -86,7 +84,7 @@ public class BluActivity extends AppCompatActivity {
         mViewBinding.navView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
         new ViewHolderHeader(mViewBinding.navView);
 
-        UdoobluHeaderBinding navDrawerHeaderBinding = UdoobluHeaderBinding.bind(mViewBinding.navView.getHeaderView(0).findViewById(R.id.nav_header_root));
+        final UdoobluHeaderBinding navDrawerHeaderBinding = UdoobluHeaderBinding.bind(mViewBinding.navView.getHeaderView(0).findViewById(R.id.nav_header_root));
         navDrawerHeaderBinding.setBluItem(mBluItem);
 
         mUdooBluManager = ((BluHomeApplication) getApplication()).getBluManager();
@@ -96,6 +94,17 @@ public class BluActivity extends AppCompatActivity {
         else{
             onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
             mViewBinding.pbBusy.setVisibility(View.GONE);
+
+            mUdooBluManager.readFirmwareVersion(mBluItem.address, new IReaderListener<byte[]>() {
+                @Override
+                public void oRead(byte[] value) {
+                    mBluItem.version = new String(value);
+                    navDrawerHeaderBinding.setBluItem(mBluItem);
+                }
+
+                @Override
+                public void onError(UdooBluException runtimeException) {}
+            });
             populateMenuItem();
         }
     }

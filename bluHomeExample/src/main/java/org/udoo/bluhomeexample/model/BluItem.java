@@ -19,6 +19,7 @@ public class BluItem implements Parcelable {
     public int color;
     public boolean paired;
     private transient boolean found;
+    public String version;
 
     public BluItem() {
         connected = false;
@@ -69,15 +70,18 @@ public class BluItem implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(address);
+        dest.writeString(version);
         dest.writeString(rssi);
         dest.writeInt(color);
         dest.writeInt(paired ? 1 : 0);
         dest.writeInt(connected ? 1 : 0);
+
     }
 
     private BluItem(Parcel in) {
-        this.name = in.readString();
+        name = in.readString();
         address = in.readString();
+        version = in.readString();
         rssi = in.readString();
         color = in.readInt();
         paired = in.readInt() == 1;

@@ -108,7 +108,7 @@ public class TIOADManager implements IBleDeviceListener{
     private static final int BLOCKS_PER_CONNECTION = 20; // May sent up to four blocks per connection
 
     private static final boolean isOADLocalFile = true;
-    private static final String OADLocalFileName = "v0.4.2A.bin";
+    private static final String OADLocalFileName = "v0.4.2C.bin";
 
 
     // BLE
@@ -398,10 +398,9 @@ public class TIOADManager implements IBleDeviceListener{
     }
 
     private void setConnectionParameters(OnBluOperationResult<Boolean> result) {
-        // Make sure connection interval is long enough for OAD (Android default connection interval is 7.5 ms)
         byte[] value = {Conversion.loUint16(OAD_CONN_INTERVAL), Conversion.hiUint16(OAD_CONN_INTERVAL), Conversion.loUint16(OAD_CONN_INTERVAL),
                 Conversion.hiUint16(OAD_CONN_INTERVAL), 0, 0, Conversion.loUint16(OAD_SUPERVISION_TIMEOUT), Conversion.hiUint16(OAD_SUPERVISION_TIMEOUT)};
-//        mCharConnReq.setValue(value);
+
         mBluManager.writeCharacteristic(mAddress, mCharConnReq, value, result);
     }
 
@@ -422,8 +421,6 @@ public class TIOADManager implements IBleDeviceListener{
             mOadBuffer[1] = Conversion.hiUint16(mProgInfo.iBlocks);
             System.arraycopy(mFileBuffer, mProgInfo.iBytes, mOadBuffer, 2, OAD_BLOCK_SIZE);
 
-            // Send block
-//            mCharBlock.setValue(mOadBuffer);
             boolean success = mBluManager.writeCharacteristicNonBlock(mAddress, mCharBlock, mOadBuffer);
 
             String msg = "";
@@ -433,21 +430,9 @@ public class TIOADManager implements IBleDeviceListener{
                 mProgInfo.iBlocks++;
                 mProgInfo.iBytes += OAD_BLOCK_SIZE;
                 Log.i(TAG, "programBlock: " + packetsSent);
-
 //                        mProgressBar.setProgress((mProgInfo.iBlocks * 100) / mProgInfo.nBlocks);
                 if (mProgInfo.iBlocks == mProgInfo.nBlocks) {
-                    //Set preference to reload device cache when reconnecting later.
-//                            PreferenceWR p = new PreferenceWR(mLeService.getConnectedDeviceAddress(),mDeviceActivity);
-//                            p.setBooleanPreference(PreferenceWR.PREFERENCEWR_NEEDS_REFRESH,true);
-//
-//                            AlertDialog.Builder b = new AlertDialog.Builder(this);
-//
-//                            b.setMessage(R.string.oad_dialog_programming_finished);
-//                            b.setTitle("Programming finished");
-//                            b.setPositiveButton("OK",null);
-//
-//                            AlertDialog d = b.create();
-//                            d.show();
+
                     mProgramming = false;
                     Log.i(TAG, "Programming finished at block " + (mProgInfo.iBlocks + 1) + "\n");
                 }
@@ -459,27 +444,16 @@ public class TIOADManager implements IBleDeviceListener{
                 Log.i(TAG, msg);
             }
 
-            //Log.d("FwUpdateActivity_CC26xx","Sent block :" + mProgInfo.iBlocks);
-
         } else {
             mProgramming = false;
         }
-        if ((mProgInfo.iBlocks % 100) == 0) {
-            // Display statistics each 100th block
-//            runOnUiThread(new Runnable() {
-//                public void run() {
-                    displayStats();
-//                }
-//            });
+        if ((mProgInfo.iBlocks % 10) == 0) {
+            displayStats();
         }
 
         if (!mProgramming) {
-//            runOnUiThread(new Runnable() {
-//                public void run() {
-                    displayStats();
-                    stopProgramming();
-//                }
-//            });
+            displayStats();
+            stopProgramming();
         }
     }
 
@@ -517,8 +491,6 @@ public class TIOADManager implements IBleDeviceListener{
         ImgHdr(byte[] buf, int fileLen) {
             //len in words each is HAL_FLASH_WORD_SIZE
             this.len = (fileLen / (16 / 4));
-//            this.len = (int) Math.ceil(fileLen / (float) HAL_FLASH_WORD_SIZE);
-
             this.ver = 0;
 
             this.uid[0] = this.uid[1] = this.uid[2] = this.uid[3] = 'E';
@@ -562,7 +534,6 @@ public class TIOADManager implements IBleDeviceListener{
 
             pageEnd += pageBeg;
 
-
             while (true) {
                 int oset;
 
@@ -586,8 +557,6 @@ public class TIOADManager implements IBleDeviceListener{
                 page += 1;
                 addr = page * 0x1000;
             }
-
-
         }
 
         short crc16(short crc, byte val) {
@@ -623,12 +592,11 @@ public class TIOADManager implements IBleDeviceListener{
             iBytes = 0;
             iBlocks = 0;
             iTimeElapsed = 0;
-            nBlocks = (short) (mFileImgHdr.len / (OAD_BLOCK_SIZE / HAL_FLASH_WORD_SIZE));
-//          nBlocks = (int) Math.ceil((fileLen / (float)(OAD_BLOCK_SIZE / HAL_FLASH_WORD_SIZE)));
-
+            nBlocks = (short)  (mFileImgHdr.len / (OAD_BLOCK_SIZE / HAL_FLASH_WORD_SIZE));
         }
     }
-    public void waitABit() {
+
+    private void waitABit() {
         int waitTimeout = 20;
         while ((waitTimeout -= 10) > 0) {
             try {

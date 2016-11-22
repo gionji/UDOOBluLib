@@ -102,7 +102,8 @@ public class OADPresenter implements TIOADManager.IOADEvents{
     @Override
     public void onLoadCompleted() {
         if(mIoadActivityView != null){
-            mIoadActivityView.showProgress("Upload Firmware",true);
+            mIoadActivityView.showProgress("Firmware upgrade finished, the device should now disconnect, this will be evident by the device restarting and LED start blinking again." +
+                    "\\r\\n\\r\\nIf this should not happen, upgrade failed, you should try to upgrade again.",true);
         }
     }
 

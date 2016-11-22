@@ -45,6 +45,13 @@
                 android:text="@{bluItem.address}"
                 android:textColor="@android:color/white"
                 tools:text="00:99:77:66:33" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{bluItem.version}"
+                android:textColor="@android:color/white"
+                tools:text="00:99:77:66:33" />
         </LinearLayout>
     </LinearLayout>
 </layout>

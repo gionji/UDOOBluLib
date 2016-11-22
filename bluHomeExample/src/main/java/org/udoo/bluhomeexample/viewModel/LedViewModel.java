@@ -2,11 +2,19 @@ package org.udoo.bluhomeexample.viewModel;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.content.res.ColorStateList;
 import android.databinding.BindingAdapter;
 import android.graphics.Color;
+import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageButton;
 
+import org.udoo.bluhomeexample.R;
 import org.udoo.bluhomeexample.util.BindableBoolean;
 import org.udoo.bluhomeexample.util.BindableInt;
 
@@ -20,28 +28,22 @@ public class LedViewModel {
     private static Map<Integer, ObjectAnimator> animation;
 
 
-    @BindingAdapter({"blink", "color"})
-    public static void blinkColor(View ledVIew, BindableBoolean isBlink, BindableInt color) {
+    @BindingAdapter({"blink"})
+    public static void blinkColor(final View ledVIew, BindableBoolean isBlink) {
         if (isBlink.get()) {
-            if (animation == null) {
-                animation = new HashMap<>();
-            }
-
-            ObjectAnimator objectAnimator = ObjectAnimator.ofObject(ledVIew, "backgroundColor", new ArgbEvaluator(), color.get(), Color.WHITE);
-            objectAnimator.setDuration(1000);
-            objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-            objectAnimator.setRepeatMode(ObjectAnimator.RESTART);
-            objectAnimator.setInterpolator(new AccelerateInterpolator());
-            objectAnimator.start();
-            animation.put(color.get(), objectAnimator);
-            ledVIew.setAlpha(1f);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Animation animation = new AlphaAnimation(1, 0);
+                    animation.setDuration(300);
+                    animation.setInterpolator(new LinearInterpolator());
+                    animation.setRepeatCount(Animation.INFINITE);
+                    animation.setRepeatMode(Animation.REVERSE);
+                    ledVIew.startAnimation(animation);
+                }
+            }, 100);
         } else {
-            if (color != null) {
-                ledVIew.setBackgroundColor(color.get());
-                if (animation != null && animation.containsKey(color.get()))
-                    animation.get(color.get()).cancel();
-            }
-            ledVIew.setAlpha(0.2f);
+            ledVIew.clearAnimation();
         }
     }
 
