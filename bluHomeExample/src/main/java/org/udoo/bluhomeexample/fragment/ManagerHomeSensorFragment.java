@@ -14,9 +14,13 @@ import android.view.ViewGroup;
 
 import org.udoo.bluhomeexample.BluHomeApplication;
 import org.udoo.bluhomeexample.R;
+import org.udoo.bluhomeexample.activity.BluActivity;
+import org.udoo.bluhomeexample.activity.BluActivity.ITEM_SELECTED;
 import org.udoo.bluhomeexample.adapter.HomeSensorAdapter;
 import org.udoo.bluhomeexample.databinding.FragmentSensorHomeBinding;
 import org.udoo.bluhomeexample.decoration.MarginDecoration;
+import org.udoo.bluhomeexample.interfaces.IFragmentToBluActivity;
+import org.udoo.bluhomeexample.interfaces.ITouchOnList;
 import org.udoo.bluhomeexample.model.BluSensor;
 import org.udoo.bluhomeexample.model.IntBluSensor;
 import org.udoo.bluhomeexample.model.Led;
@@ -48,9 +52,16 @@ public class ManagerHomeSensorFragment extends UdooFragment {
     private List<BluSensor> mBluSensors;
     private HomeSensorAdapter mHomeSensorAdapter;
     private int stateLux;
+    private IFragmentToBluActivity mIFragmentToBluActivity;
 
     public static UdooFragment Builder(String address) {
         return Builder(new ManagerHomeSensorFragment(), address);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mIFragmentToBluActivity = (IFragmentToBluActivity) getActivity();
     }
 
     @Nullable
@@ -82,6 +93,14 @@ public class ManagerHomeSensorFragment extends UdooFragment {
 
         mViewHomeBinding.sensorList.setLayoutManager(mSensorLayoutManager);
         mViewHomeBinding.sensorList.setAdapter(mHomeSensorAdapter);
+
+        mHomeSensorAdapter.setITouchOnList(new ITouchOnList<BluSensor>() {
+            @Override
+            public void onClickItem(BluSensor item) {
+                if(mIFragmentToBluActivity != null)
+                    mIFragmentToBluActivity.onBluSensorClicked(item.itemSelected);
+            }
+        });
 
 //        mIFragmentToActivity = (IFragmentToActivity) getActivity();
 //        mLedAdapter.setItemCLickListner(new LedAdapter.ItemCLickListner() {
@@ -134,16 +153,17 @@ public class ManagerHomeSensorFragment extends UdooFragment {
     }
 
     private void addExtSensors() {
-        mBluSensors.add(0, BluSensor.Builder(getString(R.string.temperature), getResources().getDrawable(R.drawable.temperature), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP)));
-        mBluSensors.add(1, BluSensor.Builder(getString(R.string.ambient_light), getResources().getDrawable(R.drawable.ic_light), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.AMB_LIG)));
-        mBluSensors.add(2, BluSensor.Builder(getString(R.string.humidity), getResources().getDrawable(R.drawable.ic_humidity), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.HUM)));
-        mBluSensors.add(3, BluSensor.Builder(getString(R.string.barometer), getResources().getDrawable(R.drawable.barometer), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.BAR)));
+        mBluSensors.add(0, BluSensor.Builder(getString(R.string.temperature), getResources().getDrawable(R.drawable.temperature), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP),  ITEM_SELECTED.TEMPERATURE));
+        mBluSensors.add(1, BluSensor.Builder(getString(R.string.ambient_light), getResources().getDrawable(R.drawable.ic_light), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.AMB_LIG) ,ITEM_SELECTED.AMBLIGHT));
+        mBluSensors.add(2, BluSensor.Builder(getString(R.string.humidity), getResources().getDrawable(R.drawable.ic_humidity), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.HUM), ITEM_SELECTED.HUMIDITY));
+        mBluSensors.add(3, BluSensor.Builder(getString(R.string.barometer), getResources().getDrawable(R.drawable.barometer), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.BAR), ITEM_SELECTED.BAROMETER));
     }
 
     private void addIntSensors() {
-        mBluSensors.add(4, IntBluSensor.Builder(getString(R.string.title_section2), getResources().getDrawable(R.drawable.accelerometer)));
-        mBluSensors.add(5, IntBluSensor.Builder(getString(R.string.title_section3), getResources().getDrawable(R.drawable.gyro)));
-        mBluSensors.add(6, IntBluSensor.Builder(getString(R.string.title_section4), getResources().getDrawable(R.drawable.magnetometer)));
+        mBluSensors.add(4, IntBluSensor.Builder(getString(R.string.title_section2), getResources().getDrawable(R.drawable.accelerometer), ITEM_SELECTED.ACCELEROMETER));
+        mBluSensors.add(5, IntBluSensor.Builder(getString(R.string.title_section3), getResources().getDrawable(R.drawable.gyro), ITEM_SELECTED.GYROSCOPE));
+        mBluSensors.add(6, IntBluSensor.Builder(getString(R.string.title_section4), getResources().getDrawable(R.drawable.magnetometer), ITEM_SELECTED.MAGNETOMETER));
+        mBluSensors.add(7, IntBluSensor.Builder(getString(R.string.title_section5), getResources().getDrawable(R.drawable.udooblu), ITEM_SELECTED.IOPins));
     }
 
 

@@ -3,7 +3,6 @@ package org.udoo.bluhomeexample.activity;
 import android.app.DownloadManager;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -31,18 +30,19 @@ import static org.udoo.bluhomeexample.activity.BluActivity.EXTRA_BLU_DEVICE;
 
 public class OADActivity extends AppCompatActivity implements IOADActivityView{
     private OadLayoutBinding mViewBinding;
-    private Uri image_uri = Uri.parse("http://www.androidtutorialpoint.com/wp-content/uploads/2016/09/Beauty.jpg");
-    private DownloadManager downloadManager;
     private OADAdapter mOADAdapter;
     private OADPresenter mOADPresenter;
     private Handler mUiHandler;
     private static final String TAG = "OADActivity";
     private BluItem mBluItem;
+    private boolean isProgramming;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewBinding = DataBindingUtil.setContentView(this, R.layout.oad_layout);
+
+        setSupportActionBar(mViewBinding.toolbar);
 
         if (savedInstanceState == null) {
             mBluItem = getIntent().getParcelableExtra(EXTRA_BLU_DEVICE);
@@ -100,12 +100,13 @@ public class OADActivity extends AppCompatActivity implements IOADActivityView{
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
+                mViewBinding.progressContentOverlay.setVisibility(View.VISIBLE);
                 mViewBinding.lOADContent.setClickable(false);
                 mViewBinding.lOADContent.setEnabled(false);
                 mViewBinding.textProgress.setText(text);
-                mViewBinding.lOADContent.setAlpha(0.7f);
                 mViewBinding.progressBarOad.setIndeterminate(indeterminate);
                 mViewBinding.lOADProgress.setVisibility(View.VISIBLE);
+                mViewBinding.progressContentOverlay.setAlpha(0.7f);
                 if(!indeterminate){
                     mViewBinding.progressBarOad.setMax(100);
                 }
@@ -130,9 +131,9 @@ public class OADActivity extends AppCompatActivity implements IOADActivityView{
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
+                mViewBinding.progressContentOverlay.setVisibility(View.GONE);
                 mViewBinding.lOADContent.setClickable(true);
                 mViewBinding.lOADContent.setEnabled(true);
-                mViewBinding.lOADContent.setAlpha(1f);
                 mViewBinding.lOADProgress.setVisibility(View.GONE);
             }
         });
@@ -170,5 +171,11 @@ public class OADActivity extends AppCompatActivity implements IOADActivityView{
         super.onDestroy();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         unregisterReceiver(mOADPresenter.mDownloadReceiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!isProgramming)
+            super.onBackPressed();
     }
 }

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="brick"
+            type="org.udoo.bluhomeexample.model.BrickModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image_brick"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/tr_space_material"
+            android:src="@{brick.resourceImg}"
+            tools:src="@drawable/temperature" />
+
+        <TextView
+            android:id="@+id/text_name_brick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/qd_space_material"
+            android:layout_toEndOf="@id/image_brick"
+            android:textStyle="bold"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:text="@{brick.name}"
+            tools:text="Temperature" />
+
+        <TextView
+            android:id="@+id/text_value_brick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/image_brick"
+            android:layout_marginStart="@dimen/db_space_material"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginTop="@dimen/db_space_material"
+            android:layout_toEndOf="@id/image_brick"
+            app:brick="@{brick.value}"
+            tools:text="Temperature" />
+
+
+        <ProgressBar
+            android:id="@+id/progress_value_brick"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_value_brick"
+            android:layout_marginEnd="@dimen/qd_space_material"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/db_space_material"
+            android:layout_toEndOf="@id/image_brick" />
+
+        <View
+            android:id="@+id/divider_brick"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/progress_value_brick"
+            android:layout_marginTop="@dimen/qd_space_material"
+            android:background="@color/divider" />
+
+        <ImageView
+            android:id="@+id/image_shop_brick"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_below="@+id/divider_brick"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/qd_space_material"
+            android:src="@drawable/ic_shop_24dp" />
+
+        <TextView
+            android:id="@+id/text_shop_brick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider_brick"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/qd_space_material"
+            android:textStyle="bold"
+            android:layout_toEndOf="@id/image_brick"
+            android:text="@string/shop" />
+
+        <Button
+            android:id="@+id/btn_shop_brick"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/image_shop_brick"
+            android:layout_marginEnd="@dimen/qd_space_material"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_toEndOf="@id/image_brick"
+            android:drawableStart="@drawable/ic_shop_24dp"
+            android:text='@{brick.name}' />
+
+        <Button
+            android:id="@+id/btn_shop_all_bricks"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_shop_brick"
+            android:layout_marginEnd="@dimen/qd_space_material"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/db_space_material"
+            android:layout_toEndOf="@id/image_brick"
+            android:drawableStart="@drawable/ic_shop_24dp"
+            android:text='@string/buy_all_accessories'
+            />
+    </RelativeLayout>
+</layout>

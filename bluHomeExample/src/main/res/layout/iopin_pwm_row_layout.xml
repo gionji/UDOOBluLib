@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="iopin"
+            type="org.udoo.udooblulib.model.IOPin" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/text_mode"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PWM" />
+
+        <TextView
+            android:id="@+id/text_pin"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/min_space_material"
+            android:layout_toEndOf="@+id/text_mode"
+            android:text="@{iopin.pin.name}"
+            android:textStyle="bold"
+            tools:text="A0" />
+
+        <TextView
+            android:id="@+id/title_freq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_mode"
+            android:layout_marginTop="@dimen/min_space_material"
+            android:text="Frequency" />
+
+        <ImageButton
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_sync"
+            android:id="@+id/btn_sync_pwm"
+            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content" />
+
+        <SeekBar
+            android:id="@+id/seek_bar_frequency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="24000"
+            android:layout_below="@+id/title_freq"
+            android:layout_marginTop="@dimen/item_margin" />
+
+        <TextView
+            android:id="@+id/title_min_freq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/seek_bar_frequency"
+            android:layout_below="@id/seek_bar_frequency"
+            android:text="0 Hz" />
+
+        <TextView
+            android:id="@+id/title_value_freq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/seek_bar_frequency"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/seek_bar_frequency"
+            android:text="0 Hz" />
+
+        <TextView
+            android:id="@+id/title_max_freq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/seek_bar_frequency"
+            android:text="24 MHz" />
+
+
+        <TextView
+            android:id="@+id/title_duty_cycle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_min_freq"
+            android:layout_marginTop="@dimen/min_space_material"
+            android:text="Duty cycle" />
+
+        <SeekBar
+            android:id="@+id/seek_bar_duty_cycle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:layout_below="@+id/title_duty_cycle"
+            android:layout_marginTop="@dimen/item_margin" />
+
+        <TextView
+            android:id="@+id/title_min_duty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/seek_bar_duty_cycle"
+            android:text="0 %" />
+
+        <TextView
+            android:id="@+id/title_value_duty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/seek_bar_duty_cycle"
+            android:text="0 %" />
+
+        <TextView
+            android:id="@+id/title_max_duty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/seek_bar_duty_cycle"
+            android:text="100 %" />
+
+    </RelativeLayout>
+</layout>

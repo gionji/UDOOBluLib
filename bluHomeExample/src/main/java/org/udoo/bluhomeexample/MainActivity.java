@@ -17,9 +17,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.udoo.bluhomeexample.activity.BluActivity;
-import org.udoo.bluhomeexample.fragment.AccelerometerFragment;
-import org.udoo.bluhomeexample.fragment.IOPINFragment;
-import org.udoo.bluhomeexample.fragment.UdooFragment;
 import org.udoo.bluhomeexample.interfaces.IFragmentToActivity;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.bluhomeexample.model.BluItem;

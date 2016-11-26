@@ -13,7 +13,7 @@
     <string name="ambient_light">Ambient Light</string>
     <string name="humidity">Humidity</string>
     <string name="barometer">Barometer</string>
-    <string name="shop">shop</string>
+    <string name="shop">Shop</string>
     <string name="gpio_out">GPIO OUT</string>
     <string name="gpio_in">GPIO IN</string>
     <string name="analog_read">ANALOG READ</string>
@@ -24,6 +24,18 @@
     <string name="pair_the_device">PAIR THE DEVICE</string>
     <string name="oad">OAD</string>
     <string name="oad_dialog_programming_finished">Firmware upgrade finished, the device should now disconnect, this will be evident by the device restarting and LED start blinking again. \r\n\r\nIf this should not happen, upgrade failed, you should try to upgrade again.</string>
+    <string name="iopin">IOPin</string>
+    <string name="iopin_in">INPUT</string>
+    <string name="iopin_out">OUTPUT</string>
+    <string name="iopin_analog">ANALOG READ</string>
+    <string name="iopin_pwm">PWM</string>
+    <string name="save">save</string>
+    <string name="valueAnalog">0</string>
+    <string name="buy">buy</string>
+    <string name="brick">brick</string>
+    <string name="buy_all_accessories">buy all accessories</string>
+
+
 
     <!--<string name="title_section5">Barometer</string>-->
     <!--<string name="title_section6">Temperature</string>-->

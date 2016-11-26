@@ -5,7 +5,6 @@ package org.udoo.bluhomeexample.viewModel;
  */
 
 import android.databinding.BindingAdapter;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 

@@ -28,9 +28,16 @@ import org.udoo.bluhomeexample.fragment.AccelerometerFragment;
 import org.udoo.bluhomeexample.fragment.GyroscopeFragment;
 import org.udoo.bluhomeexample.fragment.MagnetometerFragment;
 import org.udoo.bluhomeexample.fragment.ManagerHomeSensorFragment;
+import org.udoo.bluhomeexample.fragment.ManagerIOPinsFragment;
 import org.udoo.bluhomeexample.fragment.TemperatureFragment;
+import org.udoo.bluhomeexample.fragment.brick.AmbientLuxBrickFragment;
+import org.udoo.bluhomeexample.fragment.brick.BarometerBrickFragment;
+import org.udoo.bluhomeexample.fragment.brick.HumidityBrickFragment;
+import org.udoo.bluhomeexample.fragment.brick.TemperatureBrickFragment;
 import org.udoo.bluhomeexample.interfaces.BluListener;
+import org.udoo.bluhomeexample.interfaces.IFragmentToBluActivity;
 import org.udoo.bluhomeexample.model.BluItem;
+import org.udoo.bluhomeexample.model.BluSensor;
 import org.udoo.bluhomeexample.view.ViewHolderHeader;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
@@ -45,7 +52,7 @@ import java.util.List;
  * Created by harlem88 on 28/06/16.
  */
 
-public class BluActivity extends AppCompatActivity {
+public class BluActivity extends AppCompatActivity implements IFragmentToBluActivity{
     public static final String EXTRA_BLU_DEVICE = "BLU_ITEM";
     private BluItem mBluItem;
     private UdooBluManager mUdooBluManager;
@@ -53,6 +60,7 @@ public class BluActivity extends AppCompatActivity {
     private String mTitle;
     private int mPositionSelected;
     private Handler mHandler;
+
 
     public enum ITEM_SELECTED {HOME, TEMPERATURE, AMBLIGHT, HUMIDITY, BAROMETER, ACCELEROMETER, GYROSCOPE, MAGNETOMETER, IOPins, SHOP, OAD, NOITEM}
 
@@ -204,32 +212,32 @@ public class BluActivity extends AppCompatActivity {
                     if (mItemSelected != ITEM_SELECTED.TEMPERATURE) {
                         mTitle = getString(R.string.temperature);
                         showMainToolbar();
-                        replaceFragmentAndInit(TemperatureFragment.Builder(mBluItem.address), ITEM_SELECTED.TEMPERATURE.name(), false);
+                        replaceFragmentAndInit(TemperatureBrickFragment.Builder(mBluItem.address), ITEM_SELECTED.TEMPERATURE.name(), false);
                         mItemSelected = ITEM_SELECTED.TEMPERATURE;
                     }
                     break;
                 case R.id.nav_ambLight:
-                    if (mItemSelected != ITEM_SELECTED.IOPins) {
-//                        mTitle = getString(R.string.title_section5);
-//                        showMainToolbar();
-//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
-//                        mItemSelected = ITEM_SELECTED.IOPins;
+                    if (mItemSelected != ITEM_SELECTED.AMBLIGHT) {
+                        mTitle = getString(R.string.ambient_light);
+                        showMainToolbar();
+                        replaceFragmentAndInit(AmbientLuxBrickFragment.Builder(mBluItem.address), ITEM_SELECTED.AMBLIGHT.name(), false);
+                        mItemSelected = ITEM_SELECTED.AMBLIGHT;
                     }
                     break;
                 case R.id.nav_humidity:
-                    if (mItemSelected != ITEM_SELECTED.IOPins) {
-//                        mTitle = getString(R.string.title_section5);
-//                        showMainToolbar();
-//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
-//                        mItemSelected = ITEM_SELECTED.IOPins;
+                    if (mItemSelected != ITEM_SELECTED.HUMIDITY) {
+                        mTitle = getString(R.string.humidity);
+                        showMainToolbar();
+                        replaceFragmentAndInit(HumidityBrickFragment.Builder(mBluItem.address), ITEM_SELECTED.HUMIDITY.name(), false);
+                        mItemSelected = ITEM_SELECTED.HUMIDITY;
                     }
                     break;
                 case R.id.nav_barometer:
-                    if (mItemSelected != ITEM_SELECTED.IOPins) {
-//                        mTitle = getString(R.string.title_section5);
-//                        showMainToolbar();
-//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
-//                        mItemSelected = ITEM_SELECTED.IOPins;
+                    if (mItemSelected != ITEM_SELECTED.BAROMETER) {
+                        mTitle = getString(R.string.barometer);
+                        showMainToolbar();
+                        replaceFragmentAndInit(BarometerBrickFragment.Builder(mBluItem.address), ITEM_SELECTED.BAROMETER.name(), false);
+                        mItemSelected = ITEM_SELECTED.IOPins;
                     }
                     break;
                 case R.id.nav_accelerometer:
@@ -258,10 +266,10 @@ public class BluActivity extends AppCompatActivity {
                     break;
                 case R.id.nav_io_pins:
                     if (mItemSelected != ITEM_SELECTED.IOPins) {
-//                        mTitle = getString(R.string.title_section5);
-//                        showMainToolbar();
-//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
-//                        mItemSelected = ITEM_SELECTED.IOPins;
+                        mTitle = getString(R.string.title_section5);
+                        showMainToolbar();
+                        replaceFragmentAndInit(ManagerIOPinsFragment.Builder(mBluItem.address), ITEM_SELECTED.IOPins.name(), false);
+                        mItemSelected = ITEM_SELECTED.IOPins;
                     }
                     break;
                 case R.id.nav_shop:
@@ -427,4 +435,8 @@ public class BluActivity extends AppCompatActivity {
         }, 5000);
     }
 
+    @Override
+    public void onBluSensorClicked(ITEM_SELECTED itemSelected) {
+        onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(itemSelected.ordinal()));
+    }
 }

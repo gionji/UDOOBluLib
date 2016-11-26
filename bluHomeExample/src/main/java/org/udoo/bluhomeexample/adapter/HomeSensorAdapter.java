@@ -4,11 +4,13 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import org.udoo.bluhomeexample.R;
 import org.udoo.bluhomeexample.databinding.ExtSensorItemBinding;
 import org.udoo.bluhomeexample.databinding.IntSensorItemBinding;
+import org.udoo.bluhomeexample.interfaces.ITouchOnList;
 import org.udoo.bluhomeexample.model.BluSensor;
 import org.udoo.bluhomeexample.model.IntBluSensor;
 
@@ -22,8 +24,11 @@ public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final static int VIEW_EXT_TYPE = 0 , VIEW_INT_TYPE = 1;
     private final static int LAST_EXT_POS = 4;
     private List<BluSensor> mDataSet;
+    private ITouchOnList<BluSensor> mITouchOnList;
 
-
+    public void setITouchOnList(ITouchOnList<BluSensor> iTouchOnList){
+        mITouchOnList = iTouchOnList;
+    }
     private class ExternalSensorViewHolder extends RecyclerView.ViewHolder {
         private ExtSensorItemBinding mViewBinding;
 
@@ -90,8 +95,21 @@ public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         BluSensor bluSensor = mDataSet.get(position);
         if(holder instanceof ExternalSensorViewHolder){
             ((ExternalSensorViewHolder) holder).mViewBinding.setSensorExt(bluSensor);
-        }else if(holder instanceof InternalSensorViewHolder){
-            ((InternalSensorViewHolder) holder).mViewBinding.setSensorInt((IntBluSensor)bluSensor);
+            ((ExternalSensorViewHolder) holder).mViewBinding.getRoot().setOnClickListener(onClickListener(bluSensor));
+        }else if(holder instanceof InternalSensorViewHolder) {
+            ((InternalSensorViewHolder) holder).mViewBinding.setSensorInt((IntBluSensor) bluSensor);
+            ((InternalSensorViewHolder) holder).mViewBinding.getRoot().setOnClickListener(onClickListener(bluSensor));
         }
+    }
+
+
+    private View.OnClickListener onClickListener(final BluSensor bluSensor){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mITouchOnList != null)
+                    mITouchOnList.onClickItem(bluSensor);
+            }
+        };
     }
 }
