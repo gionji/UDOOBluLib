@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.udoo.bluhomeexample.R;
+import org.udoo.bluhomeexample.activity.BluActivity.ITEM_SELECTED;
 import org.udoo.bluhomeexample.databinding.ExtSensorItemBinding;
 import org.udoo.bluhomeexample.databinding.IntSensorItemBinding;
 import org.udoo.bluhomeexample.interfaces.ITouchOnList;
@@ -20,15 +21,16 @@ import java.util.List;
  * Created by harlem88 on 09/10/16.
  */
 
-public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-    private final static int VIEW_EXT_TYPE = 0 , VIEW_INT_TYPE = 1;
+public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final static int VIEW_EXT_TYPE = 0, VIEW_INT_TYPE = 1;
     private final static int LAST_EXT_POS = 4;
     private List<BluSensor> mDataSet;
     private ITouchOnList<BluSensor> mITouchOnList;
 
-    public void setITouchOnList(ITouchOnList<BluSensor> iTouchOnList){
+    public void setITouchOnList(ITouchOnList<BluSensor> iTouchOnList) {
         mITouchOnList = iTouchOnList;
     }
+
     private class ExternalSensorViewHolder extends RecyclerView.ViewHolder {
         private ExtSensorItemBinding mViewBinding;
 
@@ -47,17 +49,17 @@ public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public HomeSensorAdapter(List<BluSensor> bluSensors){
+    public HomeSensorAdapter(List<BluSensor> bluSensors) {
         mDataSet = bluSensors;
     }
 
-    public void addSensors(List<BluSensor> bluSensors){
+    public void addSensors(List<BluSensor> bluSensors) {
         mDataSet.clear();
         mDataSet.addAll(bluSensors);
         notifyDataSetChanged();
     }
 
-    public void updateSensor(int position, BluSensor bluSensor){
+    public void updateSensor(int position, BluSensor bluSensor) {
         mDataSet.remove(position);
         mDataSet.add(position, bluSensor);
         notifyItemChanged(position);
@@ -65,7 +67,7 @@ public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return position  < LAST_EXT_POS? VIEW_EXT_TYPE : VIEW_INT_TYPE;
+        return position < LAST_EXT_POS ? VIEW_EXT_TYPE : VIEW_INT_TYPE;
     }
 
     public GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
@@ -75,7 +77,7 @@ public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private GridLayoutManager.SpanSizeLookup spanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
         @Override
         public int getSpanSize(int position) {
-            return position  < LAST_EXT_POS? 2 : 1;
+            return position < LAST_EXT_POS ? 2 : 1;
         }
     };
 
@@ -93,21 +95,29 @@ public class HomeSensorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         BluSensor bluSensor = mDataSet.get(position);
-        if(holder instanceof ExternalSensorViewHolder){
+        if (holder instanceof ExternalSensorViewHolder) {
             ((ExternalSensorViewHolder) holder).mViewBinding.setSensorExt(bluSensor);
             ((ExternalSensorViewHolder) holder).mViewBinding.getRoot().setOnClickListener(onClickListener(bluSensor));
-        }else if(holder instanceof InternalSensorViewHolder) {
-            ((InternalSensorViewHolder) holder).mViewBinding.setSensorInt((IntBluSensor) bluSensor);
-            ((InternalSensorViewHolder) holder).mViewBinding.getRoot().setOnClickListener(onClickListener(bluSensor));
+        } else if (holder instanceof InternalSensorViewHolder) {
+            InternalSensorViewHolder internalSensorViewHolder = ((InternalSensorViewHolder) holder);
+            internalSensorViewHolder.mViewBinding.setSensorInt((IntBluSensor) bluSensor);
+            internalSensorViewHolder.mViewBinding.getRoot().setOnClickListener(onClickListener(bluSensor));
+            if (bluSensor.itemSelected == ITEM_SELECTED.IOPins) {
+                internalSensorViewHolder.mViewBinding.containerExtValue.setVisibility(View.GONE);
+                internalSensorViewHolder.mViewBinding.imageBck.setAlpha(1f);
+            } else {
+                internalSensorViewHolder.mViewBinding.containerExtValue.setVisibility(View.VISIBLE);
+                internalSensorViewHolder.mViewBinding.imageBck.setAlpha(0.2f);
+            }
         }
     }
 
 
-    private View.OnClickListener onClickListener(final BluSensor bluSensor){
+    private View.OnClickListener onClickListener(final BluSensor bluSensor) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mITouchOnList != null)
+                if (mITouchOnList != null)
                     mITouchOnList.onClickItem(bluSensor);
             }
         };

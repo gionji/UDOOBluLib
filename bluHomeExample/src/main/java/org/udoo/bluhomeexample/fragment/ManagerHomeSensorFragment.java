@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import org.udoo.bluhomeexample.BluHomeApplication;
 import org.udoo.bluhomeexample.R;
-import org.udoo.bluhomeexample.activity.BluActivity;
 import org.udoo.bluhomeexample.activity.BluActivity.ITEM_SELECTED;
 import org.udoo.bluhomeexample.adapter.HomeSensorAdapter;
 import org.udoo.bluhomeexample.databinding.FragmentSensorHomeBinding;
@@ -23,7 +22,6 @@ import org.udoo.bluhomeexample.interfaces.IFragmentToBluActivity;
 import org.udoo.bluhomeexample.interfaces.ITouchOnList;
 import org.udoo.bluhomeexample.model.BluSensor;
 import org.udoo.bluhomeexample.model.IntBluSensor;
-import org.udoo.bluhomeexample.model.Led;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.INotificationListener;
 import org.udoo.udooblulib.interfaces.OnBluOperationResult;
@@ -97,35 +95,11 @@ public class ManagerHomeSensorFragment extends UdooFragment {
         mHomeSensorAdapter.setITouchOnList(new ITouchOnList<BluSensor>() {
             @Override
             public void onClickItem(BluSensor item) {
-                if(mIFragmentToBluActivity != null)
+                if (mIFragmentToBluActivity != null)
                     mIFragmentToBluActivity.onBluSensorClicked(item.itemSelected);
             }
         });
-
-//        mIFragmentToActivity = (IFragmentToActivity) getActivity();
-//        mLedAdapter.setItemCLickListner(new LedAdapter.ItemCLickListner() {
-//            @Override
-//            public void onItemClickListener(int pos) {
-
-//                Led led = mLeds[pos];
-//                byte func = led.onoff.get() ? Constant.LED_OFF : Constant.LED_ON;
-//                if (mIBleBrickOp != null && mIBleBrickOp.turnLed(pos + 1, func, 100))
-//                    led.onoff.set(func == Constant.LED_ON);
     }
-//
-//            @Override
-//            public void onBlinkListener(int pos, boolean blink) {
-//                Led led = mLeds[pos];
-//                byte func = led.blink.get() ? Constant.LED_OFF : Constant.BLINK_ON;
-//                if (mIBleBrickOp != null && mIBleBrickOp.turnLed(pos + 1, func, 100)) {
-//                    if (func == Constant.LED_OFF) {
-//                        led.blink.set(false);
-//                        led.onoff.set(false);
-//                    } else led.blink.set(true);
-//                }
-//            }
-//        });
-
 
     @Override
     public void onStart() {
@@ -137,24 +111,9 @@ public class ManagerHomeSensorFragment extends UdooFragment {
         mHomeSensorAdapter.addSensors(mBluSensors);
     }
 
-    private Led[] getLedsDefault() {
-//        Led[] leds = new Led[3];
-//        Led led = Led.BuilderDefault();
-//        led.color.set(Color.GREEN);
-//        leds[0] = led;
-//        led = Led.BuilderDefault();
-//        led.color.set(Color.YELLOW);
-//        leds[1] = led;
-//        led = Led.BuilderDefault();
-//        led.color.set(Color.RED);
-//        leds[2] = led;
-
-        return null;
-    }
-
     private void addExtSensors() {
-        mBluSensors.add(0, BluSensor.Builder(getString(R.string.temperature), getResources().getDrawable(R.drawable.temperature), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP),  ITEM_SELECTED.TEMPERATURE));
-        mBluSensors.add(1, BluSensor.Builder(getString(R.string.ambient_light), getResources().getDrawable(R.drawable.ic_light), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.AMB_LIG) ,ITEM_SELECTED.AMBLIGHT));
+        mBluSensors.add(0, BluSensor.Builder(getString(R.string.temperature), getResources().getDrawable(R.drawable.temperature), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP), ITEM_SELECTED.TEMPERATURE));
+        mBluSensors.add(1, BluSensor.Builder(getString(R.string.ambient_light), getResources().getDrawable(R.drawable.ic_light), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.AMB_LIG), ITEM_SELECTED.AMBLIGHT));
         mBluSensors.add(2, BluSensor.Builder(getString(R.string.humidity), getResources().getDrawable(R.drawable.ic_humidity), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.HUM), ITEM_SELECTED.HUMIDITY));
         mBluSensors.add(3, BluSensor.Builder(getString(R.string.barometer), getResources().getDrawable(R.drawable.barometer), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.BAR), ITEM_SELECTED.BAROMETER));
     }

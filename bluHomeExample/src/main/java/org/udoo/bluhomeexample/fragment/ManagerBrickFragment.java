@@ -41,6 +41,7 @@ public abstract class ManagerBrickFragment extends UdooFragment{
         super.onViewCreated(view, savedInstanceState);
         setBrickModel();
         mVieBinding.setBrick(mBrickModel);
+        mVieBinding.progressValueBrick.setMax(getProgressMax());
     }
 
     @BindingAdapter({"brick"})
@@ -55,6 +56,7 @@ public abstract class ManagerBrickFragment extends UdooFragment{
         @Override
         public void onNext(byte[] value) {
              mBrickModel.value.set(conversionByte(value));
+             mVieBinding.progressValueBrick.setProgress(getProgressValue(mBrickModel.value.get()));
         }
 
         @Override
@@ -95,4 +97,8 @@ public abstract class ManagerBrickFragment extends UdooFragment{
     public abstract void unSubscribeOnDestroy();
 
     public abstract String conversionByte(byte[] value);
+
+    public abstract int getProgressValue(String value);
+
+    public abstract int getProgressMax();
 }

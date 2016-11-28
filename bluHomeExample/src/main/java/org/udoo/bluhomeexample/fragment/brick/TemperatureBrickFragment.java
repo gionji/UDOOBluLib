@@ -12,6 +12,10 @@ import org.udoo.udooblulib.sensor.UDOOBLESensor;
 
 public class TemperatureBrickFragment extends ManagerBrickFragment {
 
+    private static final int MIN = -20;
+    private static final int MAX = 85;
+
+    private final static int SAMPLES = 100;
 
     public static UdooFragment Builder(String address){
         return Builder(new TemperatureBrickFragment(), address);
@@ -36,4 +40,17 @@ public class TemperatureBrickFragment extends ManagerBrickFragment {
     public String conversionByte(byte[] value) {
         return "" + UDOOBLESensor.TEMPERATURE.convertTemp(value);
     }
+
+    @Override
+    public int getProgressValue(String value) {
+        int iValue = Integer.parseInt(value);
+        return iValue + Math.abs(MIN);
+    }
+
+    @Override
+    public int getProgressMax() {
+        return SAMPLES;
+    }
+
+
 }

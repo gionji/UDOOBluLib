@@ -16,7 +16,16 @@ import org.udoo.udooblulib.sensor.UDOOBLESensor;
 
 public class HumidityBrickFragment extends ManagerBrickFragment {
 
-    public static UdooFragment Builder(String address){
+    /**
+     * 0 - 100 % RH
+     */
+
+    private static final int MIN = 0;
+    private static final int MAX = 100;
+
+    private final static int SAMPLES = 100;
+
+    public static UdooFragment Builder(String address) {
         return Builder(new HumidityBrickFragment(), address);
     }
 
@@ -38,5 +47,18 @@ public class HumidityBrickFragment extends ManagerBrickFragment {
     @Override
     public String conversionByte(byte[] value) {
         return "" + UDOOBLESensor.HUMIDITY.convertHumidity(value);
+    }
+
+    @Override
+    public int getProgressValue(String value) {
+        int iValue = Integer.parseInt(value);
+        if (iValue < MIN) iValue = MIN;
+        else if (iValue > MAX) iValue = MAX;
+        return iValue;
+    }
+
+    @Override
+    public int getProgressMax() {
+        return SAMPLES;
     }
 }
