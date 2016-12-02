@@ -100,7 +100,8 @@ public class TIOADManager implements IBleDeviceListener{
     private static final int OAD_BLOCK_SIZE = 16;
     private static final int HAL_FLASH_WORD_SIZE = 4;
     private static final int OAD_BUFFER_SIZE = 2 + OAD_BLOCK_SIZE;
-    private static final int OAD_BLOCKS_PER_PAGE = HAL_FLASH_WORD_SIZE / OAD_BLOCK_SIZE;
+    private static final int HAL_FLASH_PAGE_SIZE = 4096;
+    private static final int OAD_BLOCKS_PER_PAGE = 4096 / OAD_BLOCK_SIZE;
     private static final int OAD_IMG_HDR_SIZE = 8;
     private static final long TIMER_INTERVAL = 1000;
 
@@ -141,7 +142,6 @@ public class TIOADManager implements IBleDeviceListener{
     // Housekeeping
     private boolean mServiceOk = false;
     private boolean mProgramming = false;
-    private boolean mTestOK = false;
     private Context mContext;
     private ParcelFileDescriptor mOADFile;
 
@@ -282,7 +282,7 @@ public class TIOADManager implements IBleDeviceListener{
             public void onError(UdooBluException runtimeException) {}
         });
 
-        mProgInfo.reset();
+        mProgInfo.reset(mFileImgHdr.len);
         mTimer = new Timer();
         mTimerTask = new ProgTimerTask();
         mTimer.scheduleAtFixedRate(mTimerTask, 0, TIMER_INTERVAL);
@@ -421,6 +421,10 @@ public class TIOADManager implements IBleDeviceListener{
             mOadBuffer[1] = Conversion.hiUint16(mProgInfo.iBlocks);
             System.arraycopy(mFileBuffer, mProgInfo.iBytes, mOadBuffer, 2, OAD_BLOCK_SIZE);
 
+
+            Log.i(TAG, "block 0 " + mOadBuffer[0]);
+            Log.i(TAG, "block 1 " + mOadBuffer[1]);
+
             boolean success = mBluManager.writeCharacteristicNonBlock(mAddress, mCharBlock, mOadBuffer);
 
             String msg = "";
@@ -434,7 +438,7 @@ public class TIOADManager implements IBleDeviceListener{
                 if (mProgInfo.iBlocks == mProgInfo.nBlocks) {
 
                     mProgramming = false;
-                    Log.i(TAG, "Programming finished at block " + (mProgInfo.iBlocks + 1) + "\n");
+                    Log.i(TAG, "Programming finished at block " + (mProgInfo.iBlocks ) + "\n");
                 }
             } else {
                 mProgramming = false;
@@ -490,13 +494,14 @@ public class TIOADManager implements IBleDeviceListener{
 
         ImgHdr(byte[] buf, int fileLen) {
             //len in words each is HAL_FLASH_WORD_SIZE
-            this.len = (fileLen / (16 / 4));
+            this.len = (short) Math.ceil(fileLen / (16.0f / 4));
             this.ver = 0;
 
             this.uid[0] = this.uid[1] = this.uid[2] = this.uid[3] = 'E';
             this.addr = 0;
             this.imgType = 1; //EFL_OAD_IMG_TYPE_APP
-            this.crc0 = calcImageCRC((int)0,buf);
+            this.crc0 = calcImageCRC((int) 0, mProgInfo.calculateBlocks(this.len), buf);
+            Log.i(TAG, "calcImageCRC: " + this.crc0);
             crc1 = (short)0xFFFF;
             Log.d("FwUpdateActivity_CC26xx","ImgHdr.len = " + this.len);
             Log.d("FwUpdateActivity_CC26xx","ImgHdr.ver = " + this.ver);
@@ -524,13 +529,14 @@ public class TIOADManager implements IBleDeviceListener{
             return tmp;
         }
 
-        short calcImageCRC(int page, byte[] buf) {
+        short calcImageCRC(int page, short nBlocksTot, byte[] buf) {
             short crc = 0;
-            long addr = page * 0x01000;
+            long addr = page * 0x1000;
 
             byte pageBeg = (byte)page;
-            byte pageEnd = (byte)(this.len / (0x01000 / 4));
-            int osetEnd = ((this.len - (pageEnd * (0x01000 / 4))) * 4);
+
+            byte pageEnd =(byte) (nBlocksTot / OAD_BLOCKS_PER_PAGE);
+            int numRemBytes = (nBlocksTot - (pageEnd * OAD_BLOCKS_PER_PAGE)) * OAD_BLOCK_SIZE;
 
             pageEnd += pageBeg;
 
@@ -544,9 +550,11 @@ public class TIOADManager implements IBleDeviceListener{
                         //through the loop
                         oset += 3;
                     }
-                    else if ((page == pageEnd) && (oset == osetEnd)) {
+                    else if ((page == pageEnd) && (oset == numRemBytes)) {
+
                         crc = this.crc16(crc,(byte)0x00);
                         crc = this.crc16(crc,(byte)0x00);
+
 
                         return crc;
                     }
@@ -579,7 +587,6 @@ public class TIOADManager implements IBleDeviceListener{
             }
             return crc;
         }
-
     }
 
     private class ProgInfo {
@@ -588,11 +595,15 @@ public class TIOADManager implements IBleDeviceListener{
         short nBlocks = 0; // Total number of blocks
         int iTimeElapsed = 0; // Time elapsed in milliseconds
 
-        void reset() {
+        void reset(int len) {
             iBytes = 0;
             iBlocks = 0;
             iTimeElapsed = 0;
-            nBlocks = (short)  (mFileImgHdr.len / (OAD_BLOCK_SIZE / HAL_FLASH_WORD_SIZE));
+            nBlocks = calculateBlocks(len);
+        }
+
+        short calculateBlocks (int len){
+            return (short)  Math.ceil(len / ((float)OAD_BLOCK_SIZE / HAL_FLASH_WORD_SIZE));
         }
     }
 
