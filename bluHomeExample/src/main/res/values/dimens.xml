@@ -12,4 +12,5 @@
     <dimen name="item_margin">4dp</dimen>
     <dimen name="dim_ic_sensor_ext_item">48dp</dimen>
     <dimen name="dim_ic_sensor_int_item">32dp</dimen>
+    <dimen name="fab_elevation">6dp</dimen>
 </resources>

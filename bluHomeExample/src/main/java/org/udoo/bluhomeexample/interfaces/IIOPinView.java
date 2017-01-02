@@ -11,4 +11,5 @@ public interface IIOPinView {
     void showProgress(boolean show);
     void updateIOPinDigital(IOPin ioPin);
     void updateIOPinAnalog(IOPin ioPin);
+    void dismissAnimation();
 }

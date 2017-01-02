@@ -48,35 +48,35 @@ public class OADPresenter implements TIOADManager.IOADEvents{
     public void onStart(IOADActivityView ioadActivityView){
         mIoadActivityView = ioadActivityView;
 
-        mIoadActivityView.enableOADUpload(true);
-//
-//        if(firmwares == null || firmwares.size() == 0){
-//            if(mIoadActivityView != null){
-//                mIoadActivityView.showProgress("Download firmwares", false);
-//                mIoadActivityView.enableOADUpload(false);
-//            }
-//
-//            RequestManager.GetAODFirmwares(new OnResult<List<OADModel>>() {
-//                @Override
-//                public void onSuccess(List<OADModel> o) {
-//                    firmwares.clear();
-//                    firmwares.addAll(o);
-//                    if(mIoadActivityView != null){
-//                        mIoadActivityView.dismissProgress();
-//                        mIoadActivityView.addFirmwares(firmwares);
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(Throwable throwable) {
-//                    //TODO
-//                    if(mIoadActivityView != null){
-//                        mIoadActivityView.dismissProgress();
-//                        Log.e("onError: OAD", throwable.getMessage());
-//                    }
-//                }
-//            });
-//        }
+        mIoadActivityView.enableOADUpload(false);
+
+        if(firmwares == null || firmwares.size() == 0){
+            if(mIoadActivityView != null){
+                mIoadActivityView.showProgress("Download firmwares", false);
+                mIoadActivityView.enableOADUpload(false);
+            }
+
+            RequestManager.GetAODFirmwares(new OnResult<List<OADModel>>() {
+                @Override
+                public void onSuccess(List<OADModel> o) {
+                    firmwares.clear();
+                    firmwares.addAll(o);
+                    if(mIoadActivityView != null){
+                        mIoadActivityView.dismissProgress();
+                        mIoadActivityView.addFirmwares(firmwares);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    //TODO
+                    if(mIoadActivityView != null){
+                        mIoadActivityView.dismissProgress();
+                        Log.e("onError: OAD", throwable.getMessage());
+                    }
+                }
+            });
+        }
     }
 
     public void setOADInfo(ParcelFileDescriptor file){

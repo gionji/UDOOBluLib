@@ -203,7 +203,7 @@ public class BluScanPresenter implements SwipeRefreshLayout.OnRefreshListener, O
             if (mIBluScanView != null)
                 mIBluScanView.showDialog(mBluSaveDialog);
         }else{
-            if (mIBluScanView != null)
+            if (item.isConnected() && mIBluScanView != null)
                 mIBluScanView.onConnectPage(item);
         }
     }

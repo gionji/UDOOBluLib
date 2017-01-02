@@ -17,21 +17,23 @@ public class BleItemViewModel {
         if (isConnected != null) {}
     }
 
-    @BindingAdapter({"rssi"})
-    public static void setRssi(ImageView view, String sRrssi) {
+    @BindingAdapter({"bind:rssi", "bind:connect"})
+    public static void setRssi(ImageView view, String sRrssi, boolean isConnected) {
         if (sRrssi != null) {
             int rssi = Integer.parseInt(sRrssi);
+            int res ;
             if (rssi > -55) {
-                view.setImageResource(R.drawable.wifiquattro);
+                res = isConnected ? R.drawable.rssi4_b : R.drawable.signal_4;
             } else if (rssi > -75) {
-                view.setImageResource(R.drawable.wifitre);
+                res = isConnected ? R.drawable.rssi3_b : R.drawable.signal_3;
             } else if (rssi > -85) {
-                view.setImageResource(R.drawable.wifidue);
+                res = isConnected ? R.drawable.rssi2_b : R.drawable.signal_2;
             } else if (rssi > -96) {
-                view.setImageResource(R.drawable.wifiuno);
+                res = isConnected ? R.drawable.rssi1_b : R.drawable.signal_1;
             } else {
-                view.setImageResource(R.drawable.wifinone);
+                res = isConnected ? R.drawable.norssi_b : R.drawable.signal_none;
             }
+            view.setImageResource(res);
         }
     }
 }

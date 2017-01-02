@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stepModel"
+            type="org.udoo.bluhomeexample.model.IOPinStepModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingEnd="@dimen/min_space_material"
+        android:paddingStart="@dimen/min_space_material">
+
+        <TextView
+            android:id="@+id/stepper_idx"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/circle_fab"
+            android:gravity="center"
+            android:text="@{stepModel.step}"
+            android:textColor="@android:color/white"
+            tools:text="1" />
+
+        <TextView
+            android:id="@+id/stepper_text"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_toEndOf="@id/stepper_idx"
+            android:text="@{stepModel.text}"
+            tools:text="Lorem ipsum" />
+
+
+        <LinearLayout
+            android:id="@+id/stepper_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/stepper_text"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/db_space_material"
+            android:layout_toEndOf="@id/stepper_idx"
+            android:background="@drawable/rect_str"
+            android:orientation="vertical"
+            android:padding="@dimen/min_space_material"
+            android:visibility="gone" />
+
+
+        <Button
+            android:id="@+id/btn_stepper_continue"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/stepper_container"
+            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/min_space_material"
+            android:layout_toEndOf="@id/stepper_idx"
+            android:text="@string/btn_continue" />
+
+        <Button
+            android:id="@+id/btn_stepper_cancel"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/stepper_container"
+            android:layout_marginTop="@dimen/min_space_material"
+            android:layout_toEndOf="@id/btn_stepper_continue"
+            android:text="@android:string/cancel" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/btn_stepper_continue"
+            android:layout_alignEnd="@id/stepper_idx"
+            android:layout_alignStart="@id/stepper_idx"
+            android:layout_below="@id/stepper_idx"
+            android:layout_marginTop="@dimen/min_space_material"
+            android:layout_marginBottom="@dimen/min_space_material"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/stepper_vert_view"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/divider" />
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

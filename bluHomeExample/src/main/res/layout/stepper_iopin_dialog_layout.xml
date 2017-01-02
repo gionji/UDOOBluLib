@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_step_dial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/min_space_material"
+        android:layout_toStartOf="@+id/radio_group_step_iopin"
+        android:drawableEnd="@android:drawable/arrow_down_float"
+        android:text="A0" />
+
+
+    <RadioGroup
+        android:id="@+id/radio_group_step_iopin"
+        android:layout_width="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/min_space_material">
+
+        <RadioButton
+            android:id="@+id/radio_btn_iopin_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iopin_out"
+            android:textColor="@color/secondary_text" />
+
+        <RadioButton
+            android:id="@+id/radio_btn_iopin_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iopin_in"
+            android:textColor="@color/secondary_text" />
+
+        <RadioButton
+            android:id="@+id/radio_btn_iopin_analog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iopin_analog"
+            android:textColor="@color/secondary_text" />
+
+        <RadioButton
+            android:id="@+id/radio_btn_iopin_pwm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/iopin_pwm"
+            android:textColor="@color/secondary_text" />
+    </RadioGroup>
+</RelativeLayout>

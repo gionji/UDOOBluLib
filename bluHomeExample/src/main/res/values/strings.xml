@@ -34,9 +34,18 @@
     <string name="buy">buy</string>
     <string name="brick">brick</string>
     <string name="buy_all_accessories">buy all accessories</string>
-
-
+    <string name="btn_continue">continue</string>
 
     <!--<string name="title_section5">Barometer</string>-->
     <!--<string name="title_section6">Temperature</string>-->
+
+    <array name="stepper_io_array">
+        <item>Click + Button to add new I/O PIN configuration</item>
+        <item>Choose the I/O and its configuration: Output, Input, Analog Read and PWM. Then click Save</item>
+        <item>OUTPUT: select if you want to enable or disable the I/O</item>
+        <item>INPUT: select if you want to enable or disable the I/O</item>
+        <item>ANALOG READ: select if you want to enable or disable the I/O</item>
+        <item>PWM: Control the Frequency and Duty cycle. Then press refresh.</item>
+        <item>DONE!</item>
+    </array>
 </resources>

@@ -2,6 +2,7 @@ package org.udoo.bluhomeexample;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import org.udoo.bluhomeexample.model.Led;
 import org.udoo.udooblulib.sensor.Constant;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,21 @@ public class BluItemAdapter extends RecyclerView.Adapter<BluItemAdapter.BluItemV
     private ItemCLickListener mItemCLickListener;
     private Map<String, Led[]> ledItemMap;
 
+    public BluItemAdapter(List<BluItem> myDataset) {
+        mDataset = new ArrayList<>(myDataset.size());
+
+        for(BluItem bluItem : myDataset)
+            mDataset.add(BluItem.Builder(bluItem));
+
+        ledItemMap = new HashMap<>();
+        Collections.sort(mDataset, BluItemComparator);
+
+        for (BluItem bluItem : mDataset) {
+            ledItemMap.put(bluItem.address, buildLeds());
+        }
+
+    }
+
     public void clear() {
         mDataset.clear();
         ledItemMap.clear();
@@ -41,32 +59,52 @@ public class BluItemAdapter extends RecyclerView.Adapter<BluItemAdapter.BluItemV
     }
 
     public void addDevice(BluItem bluItem) {
-        mDataset.add(bluItem);
+        mDataset.add(BluItem.Builder(bluItem));
+        Collections.sort(mDataset, BluItemComparator);
+        notifyDataSetChanged();
+
         ledItemMap.put(bluItem.address, buildLeds());
     }
 
     public void addDevices(List<BluItem> bluItems) {
-        mDataset.clear();
-        mDataset.addAll(bluItems);
+        clear();
+        mDataset = new ArrayList<>(bluItems.size());
 
-        for(BluItem bluItem : mDataset){
+        for(BluItem bluItem : bluItems)
+            mDataset.add(BluItem.Builder(bluItem));
+
+        Collections.sort(mDataset, BluItemComparator);
+        notifyDataSetChanged();
+
+        for (BluItem bluItem : mDataset) {
             ledItemMap.put(bluItem.address, buildLeds());
         }
     }
 
     public void updateDevice(BluItem bluItem) {
-        for(int i = 0; i<mDataset.size(); i++) {
-            if(mDataset.get(i).address.equalsIgnoreCase(bluItem.address)){
+        boolean reorder = false;
+        int idx = 0;
+        for (int i = 0; i < mDataset.size(); i++) {
+            if (mDataset.get(i).address.equalsIgnoreCase(bluItem.address)) {
+                BluItem tmpBlu = mDataset.get(i);
+                reorder = (bluItem.isFound() != tmpBlu.isFound()) || (bluItem.isConnected() != tmpBlu.isConnected());
                 mDataset.remove(i);
-                mDataset.add(i, bluItem);
-                notifyItemChanged(i);
+                mDataset.add(i, BluItem.Builder(bluItem));
+                idx = i;
                 i = mDataset.size();
             }
+        }
+        if (reorder) {
+            Collections.sort(mDataset, BluItemComparator);
+            notifyDataSetChanged();
+        }else {
+            notifyItemChanged(idx);
         }
     }
 
     public interface ItemCLickListener {
         void onItemClickListener(BluItem bluItem);
+
         void onItemLedClickListener(BluItem bluItem, Led led);
     }
 
@@ -86,16 +124,6 @@ public class BluItemAdapter extends RecyclerView.Adapter<BluItemAdapter.BluItemV
         public HomeBluItemLayoutBinding getBinding() {
             return itemBinding;
         }
-    }
-
-    public BluItemAdapter(List<BluItem> myDataset) {
-        mDataset = myDataset;
-        ledItemMap = new HashMap<>();
-
-        for(BluItem bluItem : mDataset){
-            ledItemMap.put(bluItem.address, buildLeds());
-        }
-
     }
 
     @Override
@@ -128,8 +156,6 @@ public class BluItemAdapter extends RecyclerView.Adapter<BluItemAdapter.BluItemV
             binding.btnLedYellow.setOnClickListener(ledClickListener(blu, leds[1]));
             binding.btnLedRed.setOnClickListener(ledClickListener(blu, leds[2]));
         }
-//        if(blu.isConnected())
-//            holder.itemBinding.getRoot().setBackgroundColor(blu.color);
     }
 
     @Override
@@ -137,11 +163,11 @@ public class BluItemAdapter extends RecyclerView.Adapter<BluItemAdapter.BluItemV
         return mDataset.size();
     }
 
-    private View.OnClickListener ledClickListener(final BluItem bluItem, final Led led){
+    private View.OnClickListener ledClickListener(final BluItem bluItem, final Led led) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mItemCLickListener != null){
+                if (mItemCLickListener != null) {
                     led.blink.set(!led.blink.get());
                     mItemCLickListener.onItemLedClickListener(bluItem, led);
                 }
@@ -149,8 +175,7 @@ public class BluItemAdapter extends RecyclerView.Adapter<BluItemAdapter.BluItemV
         };
     }
 
-
-    private Led[] buildLeds(){
+    private Led[] buildLeds() {
         Led[] leds = new Led[3];
         Led led = Led.BuilderDefault();
         led.color.set(Color.GREEN);
@@ -166,7 +191,26 @@ public class BluItemAdapter extends RecyclerView.Adapter<BluItemAdapter.BluItemV
         leds[2] = led;
         return leds;
     }
+
+    public static Comparator<BluItem> BluItemComparator
+            = new Comparator<BluItem>() {
+
+        public int compare(BluItem blu1, BluItem blu2) {
+            if (blu1.isConnected() && blu2.isConnected()) {
+                return blu1.name.compareTo(blu2.name);
+            }
+            if (blu1.isConnected()) return -1;
+            else if (blu2.isConnected()) return 1;
+            else {
+                if (blu1.isFound() && blu2.isFound()) {
+                    return blu1.name.compareTo(blu2.name);
+                }
+                if (blu1.isFound()) return -1;
+                else if (blu2.isFound()) return 1;
+
+                return blu1.name.compareTo(blu2.name);
+            }
+        }
+
+    };
 }
-
-
-

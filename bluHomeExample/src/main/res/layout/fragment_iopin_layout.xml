@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/activity_vertical_margin"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/text_empty"
-            android:layout_width="match_parent"
-            style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:text="Click '+' button to add, new iopin configuration."
-            android:layout_height="wrap_content" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_gpio"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_vertical_margin"
             android:scrollbars="vertical" />
 
-
-        <ImageButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/btn_add_iopin"
-            style="@style/Widget.Design.FloatingActionButton"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/activity_vertical_margin"
             android:backgroundTint="@color/accent"
-            android:src="@drawable/ic_add" />
-
+            android:src="@drawable/ic_add"
+            app:borderWidth="0dp"
+            app:elevation="@dimen/fab_elevation"
+            app:fabSize="normal"
+            app:pressedTranslationZ="12dp"
+            app:rippleColor="@android:color/background_dark" />
     </FrameLayout>
 </layout>

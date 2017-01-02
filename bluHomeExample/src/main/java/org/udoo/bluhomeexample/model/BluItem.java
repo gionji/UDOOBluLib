@@ -49,6 +49,18 @@ public class BluItem implements Parcelable {
         return bluItem;
     }
 
+    public static BluItem Builder(BluItem bluItem) {
+        BluItem newBluItem = new BluItem();
+        newBluItem.name = bluItem.name;
+        newBluItem.address = bluItem.address;
+        newBluItem.rssi = bluItem.rssi;
+        newBluItem.color = bluItem.color;
+        newBluItem.connected = bluItem.connected;
+        newBluItem.found = bluItem.found;
+        newBluItem.paired = bluItem.paired;
+        return newBluItem;
+    }
+
     public boolean isFound() {
         return found;
     }

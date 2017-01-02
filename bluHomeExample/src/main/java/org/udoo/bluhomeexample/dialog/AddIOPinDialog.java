@@ -1,11 +1,13 @@
 package org.udoo.bluhomeexample.dialog;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +36,7 @@ public class AddIOPinDialog extends DialogFragment {
     private IOPin.IOPIN_MODE mIOPinMode;
     private OnResult<IOPin> mOnResult;
 
-    public void setResultCallback(OnResult<IOPin> onResult){
+    public void setResultCallback(OnResult<IOPin> onResult) {
         mOnResult = onResult;
     }
 
@@ -51,8 +53,22 @@ public class AddIOPinDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.setCanceledOnTouchOutside(false);
+
+        dialog.setOnKeyListener(onKeyListener);
         return dialog;
     }
+
+    private DialogInterface.OnKeyListener onKeyListener = new DialogInterface.OnKeyListener() {
+        @Override
+        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                if (mOnResult != null) mOnResult.onSuccess(null);
+                dismiss();
+                return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -72,11 +88,10 @@ public class AddIOPinDialog extends DialogFragment {
                     mIOPinMode = null;
                     mViewBinding.radioBtnIopinAnalog.setEnabled(false);
                     mViewBinding.btnSave.setEnabled(false);
-                } else{
+                } else {
                     mViewBinding.radioBtnIopinAnalog.setEnabled(true);
                     mViewBinding.btnSave.setEnabled(true);
                 }
-
                 mIOPin = IOPin.IOPIN_PIN.valueOf(iopin);
             }
 
@@ -110,7 +125,7 @@ public class AddIOPinDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 dismiss();
-                if(mOnResult != null){
+                if (mOnResult != null) {
                     mOnResult.onSuccess(IOPin.Builder(mIOPin, mIOPinMode));
                 }
             }

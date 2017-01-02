@@ -26,7 +26,7 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
  * Created by harlem88 on 23/11/16.
  */
 
-public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValueCallback{
+public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValueCallback {
     private UdooBluManager mUdooBluManager;
     private String mAddress;
     private IIOPinView mIioPinView;
@@ -37,7 +37,7 @@ public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValue
     private short mAnalogPos;
 
 
-    public IOPINPresenter(String address, BluHomeApplication bluHomeApplication, IIOPinView iIOPinView){
+    public IOPINPresenter(String address, BluHomeApplication bluHomeApplication, IIOPinView iIOPinView) {
         mAddress = address;
         mUdooBluManager = bluHomeApplication.getBluManager();
         mIioPinView = iIOPinView;
@@ -48,14 +48,18 @@ public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValue
 
     @Override
     public void onSuccess(final IOPin pin) {
-        if(mIioPinView != null)
-            mIioPinView.showProgress(true);
+        if (mIioPinView != null) {
+            mIioPinView.dismissAnimation();
+        }
 
-        if(mUdooBluManager!= null)
+        if (mUdooBluManager != null && pin != null) {
+            if(mIioPinView != null){
+                mIioPinView.showProgress(true);
+            }
             mUdooBluManager.setIoPinMode(mAddress, new OnBluOperationResult<Boolean>() {
                 @Override
                 public void onSuccess(Boolean aBoolean) {
-                    if(mIioPinView != null){
+                    if (mIioPinView != null) {
                         mIioPinView.addIOPin(pin);
                         addPin(pin);
                         mIioPinView.showProgress(false);
@@ -64,24 +68,25 @@ public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValue
 
                 @Override
                 public void onError(UdooBluException runtimeException) {
-                    if(mIioPinView != null){
+                    if (mIioPinView != null) {
                         mIioPinView.showProgress(false);
                     }
 
                     //TODO error
-                    Log.e(TAG, "onError: "+ runtimeException.getReason());
+                    Log.e(TAG, "onError: " + runtimeException.getReason());
                 }
             }, pin);
+        }
     }
 
     @Override
     public void onError(Throwable throwable) {
-        if(mIioPinView != null){
+        if (mIioPinView != null) {
             mIioPinView.showProgress(false);
         }
 
         //TODO error
-        Log.e(TAG, "onError: "+ throwable.getMessage());
+        Log.e(TAG, "onError: " + throwable.getMessage());
     }
 
     private void addPin(final IOPin pin) {
@@ -101,7 +106,7 @@ public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValue
     }
 
 
-    private INotificationListener<byte[]> analogListener =  new INotificationListener<byte[]>() {
+    private INotificationListener<byte[]> analogListener = new INotificationListener<byte[]>() {
         @Override
         public void onNext(byte[] value) {
 
@@ -109,7 +114,7 @@ public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValue
             ioPin.analogValue = UDOOBLESensor.IOPIN_ANALOG.convertADC(value);
 
             Log.i(TAG, "onNext: analogListener" + ioPin.analogValue);
-            if(mIioPinView != null)
+            if (mIioPinView != null)
                 mIioPinView.updateIOPinAnalog(ioPin);
 
             if (mPinsAnalog.size() > 1) {
@@ -124,12 +129,12 @@ public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValue
     };
 
 
-    private INotificationListener<byte[]> digitalListener =  new INotificationListener<byte[]>() {
+    private INotificationListener<byte[]> digitalListener = new INotificationListener<byte[]>() {
         @Override
         public void onNext(byte[] value) {
             IOPin[] pins = new IOPin[mPinsDigital.size()];
             pins = mPinsDigital.toArray(pins);
-            boolean iopins [] = UDOOBLESensor.IOPIN_DIGITAL.convertIOPinDigital(value, pins);
+            boolean iopins[] = UDOOBLESensor.IOPIN_DIGITAL.convertIOPinDigital(value, pins);
             Log.i(TAG, "onNext: digitalListener" + iopins);
             for (int i = 0; i < pins.length; i++) {
                 if (pins[i].digitalValue != (iopins[i] ? IOPin.IOPIN_DIGITAL_VALUE.HIGH : IOPin.IOPIN_DIGITAL_VALUE.LOW)) {
@@ -148,20 +153,22 @@ public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValue
 
     @Override
     public void onDigitalOutputPinValueListener(IOPin.IOPIN_PIN pin, IOPin.IOPIN_DIGITAL_VALUE value) {
-        Log.i(TAG, "onDigitalOutputPinValueListener: " + pin +" " + value);
+        Log.i(TAG, "onDigitalOutputPinValueListener: " + pin + " " + value);
 
         mUdooBluManager.writeDigital(mAddress, new OnBluOperationResult<Boolean>() {
             @Override
-            public void onSuccess(Boolean aBoolean) {}
+            public void onSuccess(Boolean aBoolean) {
+            }
 
             @Override
-            public void onError(UdooBluException runtimeException) {}
+            public void onError(UdooBluException runtimeException) {
+            }
         }, IOPin.Builder(pin, value));
     }
 
     @Override
     public void onPwmPinListener(IOPin.IOPIN_PIN pin, int freq, int duty) {
-        Log.i(TAG, "onPwmPinListener: " + pin +" " + freq + " " + duty);
+        Log.i(TAG, "onPwmPinListener: " + pin + " " + freq + " " + duty);
 
         mUdooBluManager.writePwm(mAddress, pin, freq, duty, new OnBluOperationResult<Boolean>() {
             @Override
@@ -170,11 +177,12 @@ public class IOPINPresenter implements OnResult<IOPin>, IOPinAdapter.IIOPinValue
             }
 
             @Override
-            public void onError(UdooBluException runtimeException) {}
+            public void onError(UdooBluException runtimeException) {
+            }
         });
     }
 
-    private void resetAnalogIndex(){
+    private void resetAnalogIndex() {
         mAnalogPos = mAnalogPos == mPinsAnalog.size() ? 0 : mAnalogPos++;
         mUdooBluManager.setPinAnalogPwmIndex(mAddress, mPinsAnalog.get(mAnalogPos), new OnBluOperationResult<Boolean>() {
             @Override
