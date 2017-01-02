@@ -14,14 +14,14 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/min_space_material"
+        android:layout_margin="@dimen/space_material"
         android:elevation="@dimen/cardview_default_elevation">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/min_space_material">
+            android:padding="@dimen/space_material">
 
             <ImageView
                 android:id="@+id/image"
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/min_space_material"
+                android:layout_marginStart="@dimen/space_material"
                 android:layout_toEndOf="@id/image"
                 android:alpha="@{sensorExt.isDetect ? 1.0f : 0.5f}"
                 android:text="@{sensorExt.name}"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/min_space_material"
+                android:layout_marginStart="@dimen/space_material"
                 android:text="@{sensorExt.value}"
                 android:visibility="@{sensorExt.isDetect ? View.VISIBLE : View.GONE}"
                 tools:text="231"/>
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/min_space_material"
+                android:layout_marginEnd="@dimen/space_material"
                 android:visibility="@{sensorExt.isDetect ? View.GONE : View.VISIBLE}"
                 android:src="@drawable/ic_shop_24dp" />
 

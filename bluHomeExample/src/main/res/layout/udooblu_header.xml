@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         android:background="@{bluItem.color}"
         android:paddingTop="@dimen/dim_nav_top"
-        android:paddingBottom="@dimen/db_space_material"
+        android:paddingBottom="@dimen/space_material_2"
         android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin">
 
@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_margin="@dimen/min_space_material"
+            android:layout_margin="@dimen/space_material"
             android:layout_weight="1"
             android:orientation="vertical">
 

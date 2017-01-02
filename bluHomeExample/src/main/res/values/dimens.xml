@@ -2,15 +2,23 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="min_space_material">8dp</dimen>
-    <dimen name="db_space_material">16dp</dimen>
+    <dimen name="space_material">8dp</dimen>
+    <dimen name="space_material_2">16dp</dimen>
     <dimen name="dim_item_icon">64dp</dimen>
     <dimen name="dim_nav_top">48dp</dimen>
-    <dimen name="tr_space_material">24dp</dimen>
-    <dimen name="qd_space_material">32dp</dimen>
+    <dimen name="space_material_3">24dp</dimen>
+    <dimen name="space_material_4">32dp</dimen>
+    <dimen name="space_material_5">40dp</dimen>
+    <dimen name="space_material_6">48dp</dimen>
+    <dimen name="space_material_7">56dp</dimen>
+    <dimen name="space_material_8">64dp</dimen>
+    <dimen name="space_material_9">72dp</dimen>
+    <dimen name="space_material_10">80dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="item_margin">4dp</dimen>
     <dimen name="dim_ic_sensor_ext_item">48dp</dimen>
     <dimen name="dim_ic_sensor_int_item">32dp</dimen>
     <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="circle_tutorial">8dp</dimen>
+    <dimen name="system_bar_height">24dp</dimen>
 </resources>

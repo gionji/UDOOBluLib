@@ -19,8 +19,8 @@
             android:id="@+id/image_brick"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginStart="@dimen/db_space_material"
-            android:layout_marginTop="@dimen/tr_space_material"
+            android:layout_marginStart="@dimen/space_material_2"
+            android:layout_marginTop="@dimen/space_material_3"
             android:src="@{brick.resourceImg}"
             tools:src="@drawable/temperature" />
 
@@ -28,8 +28,8 @@
             android:id="@+id/text_name_brick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/db_space_material"
-            android:layout_marginTop="@dimen/qd_space_material"
+            android:layout_marginStart="@dimen/space_material_2"
+            android:layout_marginTop="@dimen/space_material_4"
             android:layout_toEndOf="@id/image_brick"
             android:textStyle="bold"
             style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -41,9 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/image_brick"
-            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginStart="@dimen/space_material_2"
             style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:layout_marginTop="@dimen/db_space_material"
+            android:layout_marginTop="@dimen/space_material_2"
             android:layout_toEndOf="@id/image_brick"
             app:brick="@{brick.value}"
             tools:text="Temperature" />
@@ -55,9 +55,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_value_brick"
-            android:layout_marginEnd="@dimen/qd_space_material"
-            android:layout_marginStart="@dimen/db_space_material"
-            android:layout_marginTop="@dimen/db_space_material"
+            android:layout_marginEnd="@dimen/space_material_4"
+            android:layout_marginStart="@dimen/space_material_2"
+            android:layout_marginTop="@dimen/space_material_2"
             android:layout_toEndOf="@id/image_brick" />
 
         <View
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@id/progress_value_brick"
-            android:layout_marginTop="@dimen/qd_space_material"
+            android:layout_marginTop="@dimen/space_material_4"
             android:background="@color/divider" />
 
         <ImageView
@@ -73,8 +73,8 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_below="@+id/divider_brick"
-            android:layout_marginStart="@dimen/db_space_material"
-            android:layout_marginTop="@dimen/qd_space_material"
+            android:layout_marginStart="@dimen/space_material_2"
+            android:layout_marginTop="@dimen/space_material_4"
             android:src="@drawable/ic_shop_24dp" />
 
         <TextView
@@ -83,8 +83,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/divider_brick"
             style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:layout_marginStart="@dimen/db_space_material"
-            android:layout_marginTop="@dimen/qd_space_material"
+            android:layout_marginStart="@dimen/space_material_2"
+            android:layout_marginTop="@dimen/space_material_4"
             android:textStyle="bold"
             android:layout_toEndOf="@id/image_brick"
             android:text="@string/shop" />
@@ -95,8 +95,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/image_shop_brick"
-            android:layout_marginEnd="@dimen/qd_space_material"
-            android:layout_marginStart="@dimen/db_space_material"
+            android:layout_marginEnd="@dimen/space_material_4"
+            android:layout_marginStart="@dimen/space_material_2"
             android:layout_toEndOf="@id/image_brick"
             android:drawableStart="@drawable/ic_shop_24dp"
             android:text='@{brick.name}' />
@@ -107,9 +107,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/btn_shop_brick"
-            android:layout_marginEnd="@dimen/qd_space_material"
-            android:layout_marginStart="@dimen/db_space_material"
-            android:layout_marginTop="@dimen/db_space_material"
+            android:layout_marginEnd="@dimen/space_material_4"
+            android:layout_marginStart="@dimen/space_material_2"
+            android:layout_marginTop="@dimen/space_material_2"
             android:layout_toEndOf="@id/image_brick"
             android:drawableStart="@drawable/ic_shop_24dp"
             android:text='@string/buy_all_accessories'

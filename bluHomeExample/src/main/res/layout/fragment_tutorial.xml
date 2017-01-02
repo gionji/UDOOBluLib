@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="model"
+            type="org.udoo.bluhomeexample.model.TutorialBluModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/space_material"
+        tools:background="@color/primary">
+
+        <ImageView
+            android:id="@+id/tutorial_image"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/space_material_3"
+            android:src="@{model.imageRes}"
+            tools:src="@drawable/udoo_blu_carousel_1" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tutorial_text"
+            android:layout_marginBottom="@dimen/space_material_2"
+            android:gravity="center"
+            android:text="@{model.title}"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+            android:textColor="@android:color/white"
+            tools:text="@string/tutorial_blu_title_1" />
+
+        <TextView
+            android:id="@+id/tutorial_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/space_material_10"
+            android:gravity="bottom|center_horizontal"
+            android:text="@{model.text}"
+            android:textColor="@android:color/white"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            tools:text="@string/tutorial_blu_text_1" />
+    </RelativeLayout>
+</layout>

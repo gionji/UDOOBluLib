@@ -10,12 +10,12 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/db_space_material"
+        android:layout_margin="@dimen/space_material_2"
         android:elevation="@dimen/cardview_default_elevation">
 
         <RelativeLayout
-            android:layout_marginTop="@dimen/min_space_material"
-            android:layout_marginBottom="@dimen/min_space_material"
+            android:layout_marginTop="@dimen/space_material"
+            android:layout_marginBottom="@dimen/space_material"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -30,7 +30,7 @@
                     android:id="@id/image"
                     android:layout_width="@dimen/dim_ic_sensor_int_item"
                     android:layout_height="@dimen/dim_ic_sensor_int_item"
-                    android:layout_marginStart="@dimen/min_space_material"
+                    android:layout_marginStart="@dimen/space_material"
                     android:src="@{sensorInt.resourceImg}"
                     tools:src="@drawable/accelerometer" />
 
@@ -41,7 +41,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_height="wrap_content"
                     android:text="@{sensorInt.name}"
-                    android:layout_marginStart="@dimen/min_space_material"
+                    android:layout_marginStart="@dimen/space_material"
                     tools:text="Accelerometer" />
             </LinearLayout>
 
@@ -73,8 +73,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/min_space_material"
-                    android:layout_marginStart="@dimen/min_space_material">
+                    android:layout_marginEnd="@dimen/space_material"
+                    android:layout_marginStart="@dimen/space_material">
 
                     <TextView
                         android:id="@+id/sensor_x"

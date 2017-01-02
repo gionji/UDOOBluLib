@@ -11,8 +11,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:paddingStart="@dimen/min_space_material"
-        android:paddingEnd="@dimen/min_space_material"
+        android:paddingStart="@dimen/space_material"
+        android:paddingEnd="@dimen/space_material"
         android:paddingTop="@dimen/item_margin"
         android:paddingBottom="@dimen/item_margin"
         android:layout_height="150dp">
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/min_space_material">
+            android:padding="@dimen/space_material">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                 android:id="@+id/text_descr"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/min_space_material"
+                android:layout_marginTop="@dimen/space_material"
                 android:text="@{oadModel.description}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 tools:text="Temperature humidity ecc.." />

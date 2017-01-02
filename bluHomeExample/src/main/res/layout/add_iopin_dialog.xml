@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/spinner_iopin"
-            android:layout_marginTop="@dimen/min_space_material">
+            android:layout_marginTop="@dimen/space_material">
 
             <RadioButton
                 android:id="@+id/radio_btn_iopin_out"

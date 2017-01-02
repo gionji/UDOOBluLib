@@ -8,7 +8,7 @@
         android:id="@+id/txt_step_dial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/min_space_material"
+        android:layout_margin="@dimen/space_material"
         android:layout_toStartOf="@+id/radio_group_step_iopin"
         android:drawableEnd="@android:drawable/arrow_down_float"
         android:text="A0" />
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/min_space_material">
+        android:layout_marginStart="@dimen/space_material">
 
         <RadioButton
             android:id="@+id/radio_btn_iopin_out"

@@ -36,16 +36,28 @@
     <string name="buy_all_accessories">buy all accessories</string>
     <string name="btn_continue">continue</string>
 
+    <string name="stepper_io_str_1">Click + Button to add new I/O PIN configuration</string>
+    <string name="stepper_io_str_2">Choose the I/O and its configuration: Output, Input, Analog Read and PWM. Then click Save</string>
+    <string name="stepper_io_str_3">OUTPUT: select if you want to enable or disable the I/O</string>
+    <string name="stepper_io_str_4">INPUT: select if you want to enable or disable the I/O</string>
+    <string name="stepper_io_str_5">ANALOG READ: select if you want to enable or disable the I/O</string>
+    <string name="stepper_io_str_6">PWM: Control the Frequency and Duty cycle. Then press refresh.</string>
+    <string name="stepper_io_str_7">DONE!</string>
+
+    <string name="tutorial_blu_title_1">Wear your world</string>
+    <string name="tutorial_blu_text_1">UDOO BLU is a flexible extension for your Internet of Things platform. Press Next to start configuring your first UDOO BLU.</string>
+
+    <string name="tutorial_blu_title_2">Insert the Battery</string>
+    <string name="tutorial_blu_text_2">Insert the Battery Button into the Battery holder placed behind the 3 LEDs.</string>
+
+    <string name="tutorial_blu_title_3">Wait for the LEDs to Blink</string>
+    <string name="tutorial_blu_text_3">Once the Battery is plugged the three LEDs will start blinking. If you don’t see them blink just unplug and replug the Battery.</string>
+
+    <string name="tutorial_blu_title_4">Pick your BLU</string>
+    <string name="tutorial_blu_text_4">Now your UDOO is in listening mode. Pair your UDOO BLU from the Home screen. If you don’t see any just refresh the page swiping it down.</string>
+    <string name="guide">tutorial</string>
+
     <!--<string name="title_section5">Barometer</string>-->
     <!--<string name="title_section6">Temperature</string>-->
 
-    <array name="stepper_io_array">
-        <item>Click + Button to add new I/O PIN configuration</item>
-        <item>Choose the I/O and its configuration: Output, Input, Analog Read and PWM. Then click Save</item>
-        <item>OUTPUT: select if you want to enable or disable the I/O</item>
-        <item>INPUT: select if you want to enable or disable the I/O</item>
-        <item>ANALOG READ: select if you want to enable or disable the I/O</item>
-        <item>PWM: Control the Frequency and Duty cycle. Then press refresh.</item>
-        <item>DONE!</item>
-    </array>
 </resources>

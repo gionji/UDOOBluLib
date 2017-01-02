@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_pin"
-            android:layout_marginTop="@dimen/min_space_material"
+            android:layout_marginTop="@dimen/space_material"
             android:text="@{iopin.mode.name}"
             tools:text="INPUT" />
 
@@ -46,7 +46,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@color/divider"
-            android:padding="@dimen/min_space_material"
+            android:padding="@dimen/space_material"
             android:text='@{ iopin.mode ==MODE.ANALOG?  "" +iopin.analogValue : iopin.digitalValue.name}'
             android:visibility="@{(iopin.mode ==MODE.ANALOG || iopin.mode ==MODE.DIGITAL_INPUT)? View.VISIBLE : View.GONE}"
             tools:text="HIGH" />
