@@ -29,7 +29,7 @@
         android:layout_marginStart="@dimen/space_material"
         android:layout_marginTop="@dimen/space_material"
         android:alpha="@{blu.isFound ? 1.0f : 0.5f}"
-        android:backgroundTint="@{blu.isConnected ? blu.color : @android:color/white}"
+        app:bluState="@{blu}"
         android:elevation="@dimen/cardview_default_elevation">
 
         <LinearLayout

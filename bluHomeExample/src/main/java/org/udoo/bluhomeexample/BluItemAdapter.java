@@ -1,11 +1,16 @@
 package org.udoo.bluhomeexample;
 
+import android.animation.Animator;
+import android.content.res.ColorStateList;
+import android.databinding.BindingAdapter;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import org.udoo.bluhomeexample.databinding.HomeBluItemLayoutBinding;
 import org.udoo.bluhomeexample.model.BluItem;
@@ -18,11 +23,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import static org.udoo.udooblulib.sensor.Constant.GREEN_LED;
-import static org.udoo.udooblulib.sensor.Constant.RED_LED;
-import static org.udoo.udooblulib.sensor.Constant.YELLOW_LED;
 
 /**
  * Created by harlem88 on 16/02/16.
@@ -213,4 +213,29 @@ public class BluItemAdapter extends RecyclerView.Adapter<BluItemAdapter.BluItemV
         }
 
     };
+
+    @BindingAdapter("bluState")
+    public static void setBluState(ViewGroup view, BluItem bluItem) {
+        if (bluItem.isConnected()) {
+            animateRevealColor(view, bluItem.color);
+        } else {
+            view.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), android.R.color.white));
+        }
+    }
+
+    private static void animateRevealColor(ViewGroup viewLayer, int color) {
+        int cx = (viewLayer.getLeft() + viewLayer.getRight()) / 2;
+        int cy = (viewLayer.getTop() + viewLayer.getBottom()) / 2;
+        animateRevealColorFromCoordinates(viewLayer, cx, cy, color);
+    }
+
+    private static void animateRevealColorFromCoordinates(ViewGroup viewRoot, int x, int y, int color) {
+        float finalRadius = (float) Math.hypot(viewRoot.getWidth(), viewRoot.getHeight());
+        Animator anim = ViewAnimationUtils.createCircularReveal(viewRoot, x, y, 0, finalRadius);
+        viewRoot.setBackgroundTintList(ColorStateList.valueOf(color));
+        anim.setDuration(600);
+        anim.setInterpolator(new AccelerateDecelerateInterpolator());
+        anim.start();
+
+    }
 }
