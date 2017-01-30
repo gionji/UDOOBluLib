@@ -2,6 +2,7 @@ package org.udoo.bluhomeexample.activity;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +15,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +29,6 @@ import org.udoo.bluhomeexample.fragment.GyroscopeFragment;
 import org.udoo.bluhomeexample.fragment.MagnetometerFragment;
 import org.udoo.bluhomeexample.fragment.ManagerHomeSensorFragment;
 import org.udoo.bluhomeexample.fragment.ManagerIOPinsFragment;
-import org.udoo.bluhomeexample.fragment.TemperatureFragment;
 import org.udoo.bluhomeexample.fragment.brick.AmbientLuxBrickFragment;
 import org.udoo.bluhomeexample.fragment.brick.BarometerBrickFragment;
 import org.udoo.bluhomeexample.fragment.brick.HumidityBrickFragment;
@@ -37,7 +36,6 @@ import org.udoo.bluhomeexample.fragment.brick.TemperatureBrickFragment;
 import org.udoo.bluhomeexample.interfaces.BluListener;
 import org.udoo.bluhomeexample.interfaces.IFragmentToBluActivity;
 import org.udoo.bluhomeexample.model.BluItem;
-import org.udoo.bluhomeexample.model.BluSensor;
 import org.udoo.bluhomeexample.view.ViewHolderHeader;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.IBleDeviceListener;
@@ -52,7 +50,7 @@ import java.util.List;
  * Created by harlem88 on 28/06/16.
  */
 
-public class BluActivity extends AppCompatActivity implements IFragmentToBluActivity{
+public class BluActivity extends AppCompatActivity implements IFragmentToBluActivity {
     public static final String EXTRA_BLU_DEVICE = "BLU_ITEM";
     private BluItem mBluItem;
     private UdooBluManager mUdooBluManager;
@@ -75,6 +73,11 @@ public class BluActivity extends AppCompatActivity implements IFragmentToBluActi
         if (savedInstanceState == null) {
             mItemSelected = ITEM_SELECTED.NOITEM;
             mBluItem = getIntent().getParcelableExtra(EXTRA_BLU_DEVICE);
+        } else {
+            mPositionSelected = savedInstanceState.getInt("POSITION_SELECTED");
+            String item_selected = savedInstanceState.getString("ITEM_SELECTED");
+            if (item_selected != null && item_selected.length() > 0)
+                mItemSelected = ITEM_SELECTED.valueOf(item_selected);
         }
 
         setSupportActionBar(mViewBinding.toolbar);
@@ -99,7 +102,7 @@ public class BluActivity extends AppCompatActivity implements IFragmentToBluActi
 
         if (!mBluItem.isConnected())
             connect();
-        else{
+        else {
             onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(ITEM_SELECTED.HOME.ordinal()));
             mViewBinding.pbBusy.setVisibility(View.GONE);
 
@@ -111,7 +114,8 @@ public class BluActivity extends AppCompatActivity implements IFragmentToBluActi
                 }
 
                 @Override
-                public void onError(UdooBluException runtimeException) {}
+                public void onError(UdooBluException runtimeException) {
+                }
             });
             populateMenuItem();
         }
@@ -204,7 +208,6 @@ public class BluActivity extends AppCompatActivity implements IFragmentToBluActi
                 if (preMenuSelected.isChecked())
                     preMenuSelected.setChecked(false);
             }
-
             menuItem.setChecked(true);
 
             switch (menuItem.getItemId()) {
@@ -273,12 +276,7 @@ public class BluActivity extends AppCompatActivity implements IFragmentToBluActi
                     }
                     break;
                 case R.id.nav_shop:
-                    if (mItemSelected != ITEM_SELECTED.SHOP) {
-//                        mTitle = getString(R.string.title_section5);
-//                        showMainToolbar();
-//                        replaceFragmentAndInit(new ManagerIOPinsFragment(), ITEM_SELECTED.IOPins.name(), false);
-//                        mItemSelected = ITEM_SELECTED.IOPins;
-                    }
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.udoo.org/udoo-bricks/")));
                     break;
                 case R.id.nav_oad:
                     if (mItemSelected != ITEM_SELECTED.OAD) {
@@ -308,7 +306,6 @@ public class BluActivity extends AppCompatActivity implements IFragmentToBluActi
             return true;
         }
     };
-
 
     @Override
     public void onBackPressed() {
@@ -356,9 +353,18 @@ public class BluActivity extends AppCompatActivity implements IFragmentToBluActi
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        onNavigationItemSelectedListener.onNavigationItemSelected(getMenuItem(mItemSelected.ordinal()));
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("POSITION_SELECTED", mPositionSelected);
+
+        if (mItemSelected != null)
+            outState.putString("ITEM_SELECTED", mItemSelected.name());
     }
 
 
@@ -418,7 +424,7 @@ public class BluActivity extends AppCompatActivity implements IFragmentToBluActi
         public void onError(UdooBluException runtimeException) {
             mBluItem.setConnected(false);
             mViewBinding.pbBusy.setVisibility(View.GONE);
-            if(!isFinishing()) reTryConnection();
+            if (!isFinishing()) reTryConnection();
 
         }
     };
