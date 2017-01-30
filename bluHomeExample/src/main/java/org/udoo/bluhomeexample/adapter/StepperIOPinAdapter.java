@@ -102,8 +102,10 @@ public class StepperIOPinAdapter extends RecyclerView.Adapter<StepperIOPinAdapte
                 ViewDataBinding viewDataBinding = DataBindingUtil.inflate(LayoutInflater.from(holder.mViewBinding.getRoot().getContext()), ioPinStepModel.layout, null, false);
                 if (viewDataBinding instanceof IopinInputOutputLayoutBinding) {
                     ((IopinInputOutputLayoutBinding) (viewDataBinding)).setIopin(ioPinStepModel.ioPin);
+                    ((IopinInputOutputLayoutBinding) (viewDataBinding)).divider.setVisibility(View.GONE);
                 } else if (viewDataBinding instanceof IopinPwmRowLayoutBinding) {
                     ((IopinPwmRowLayoutBinding) (viewDataBinding)).setIopin(ioPinStepModel.ioPin);
+                    ((IopinPwmRowLayoutBinding) (viewDataBinding)).divider.setVisibility(View.GONE);
                 }
                 view = viewDataBinding.getRoot();
             } else {

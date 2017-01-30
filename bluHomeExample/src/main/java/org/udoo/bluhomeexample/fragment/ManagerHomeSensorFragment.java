@@ -1,6 +1,10 @@
 package org.udoo.bluhomeexample.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -95,11 +99,16 @@ public class ManagerHomeSensorFragment extends UdooFragment {
         mHomeSensorAdapter.setITouchOnList(new ITouchOnList<BluSensor>() {
             @Override
             public void onClickItem(BluSensor item) {
-                if (mIFragmentToBluActivity != null)
-                    mIFragmentToBluActivity.onBluSensorClicked(item.itemSelected);
+                if (item.isDetect) {
+                    if (mIFragmentToBluActivity != null)
+                        mIFragmentToBluActivity.onBluSensorClicked(item.itemSelected);
+                } else {
+                    showShopDialog(item.urlShop);
+                }
             }
         });
     }
+
 
     @Override
     public void onStart() {
@@ -112,10 +121,10 @@ public class ManagerHomeSensorFragment extends UdooFragment {
     }
 
     private void addExtSensors() {
-        mBluSensors.add(0, BluSensor.Builder(getString(R.string.temperature), getResources().getDrawable(R.drawable.temperature), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP), ITEM_SELECTED.TEMPERATURE));
-        mBluSensors.add(1, BluSensor.Builder(getString(R.string.ambient_light), getResources().getDrawable(R.drawable.ic_light), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.AMB_LIG), ITEM_SELECTED.AMBLIGHT));
-        mBluSensors.add(2, BluSensor.Builder(getString(R.string.humidity), getResources().getDrawable(R.drawable.ic_humidity), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.HUM), ITEM_SELECTED.HUMIDITY));
-        mBluSensors.add(3, BluSensor.Builder(getString(R.string.barometer), getResources().getDrawable(R.drawable.barometer), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.BAR), ITEM_SELECTED.BAROMETER));
+        mBluSensors.add(0, BluSensor.Builder(getString(R.string.temperature), getResources().getDrawable(R.drawable.temperature), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.TEMP), ITEM_SELECTED.TEMPERATURE, getString(R.string.url_shop_brick_temperature)));
+        mBluSensors.add(1, BluSensor.Builder(getString(R.string.ambient_light), getResources().getDrawable(R.drawable.ic_light), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.AMB_LIG), ITEM_SELECTED.AMBLIGHT, getString(R.string.url_shop_brick_ambientLight)));
+        mBluSensors.add(2, BluSensor.Builder(getString(R.string.humidity), getResources().getDrawable(R.drawable.ic_humidity), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.HUM), ITEM_SELECTED.HUMIDITY, getString(R.string.url_shop_brick_humidity)));
+        mBluSensors.add(3, BluSensor.Builder(getString(R.string.barometer), getResources().getDrawable(R.drawable.barometer), mUdooBluManager.isSensorDetected(UdooBluManager.SENSORS.BAR), ITEM_SELECTED.BAROMETER, getString(R.string.url_shop_brick_barometer)));
     }
 
     private void addIntSensors() {
@@ -388,5 +397,29 @@ public class ManagerHomeSensorFragment extends UdooFragment {
     public void onPause() {
         super.onPause();
         unsubscribeNotification();
+    }
+
+    private void showShopDialog(final String urlShop) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.dialog_shop_brick_title));
+        builder.setMessage(getString(R.string.dialog_shop_brick_message));
+        builder.setCancelable(false);
+        builder.setPositiveButton(getString(R.string.dialog_shop_brick_btn_positive), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlShop));
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNeutralButton(getString(R.string.dialog_shop_brick_btn_negative), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
     }
 }

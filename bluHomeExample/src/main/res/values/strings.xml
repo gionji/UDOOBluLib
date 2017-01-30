@@ -56,6 +56,15 @@
     <string name="tutorial_blu_title_4">Pick your BLU</string>
     <string name="tutorial_blu_text_4">Now your UDOO is in listening mode. Pair your UDOO BLU from the Home screen. If you don’t see any just refresh the page swiping it down.</string>
     <string name="guide">tutorial</string>
+    <string name="no_blu_detected">no blu detected</string>
+    <string name="url_shop_brick_barometer">http://shop.udoo.org/accessories/barometric-altimeter-temp-sensor-kit-for-neo.html</string>
+    <string name="url_shop_brick_temperature">http://shop.udoo.org/accessories/temperature-sensor-kit-for-neo.html</string>
+    <string name="url_shop_brick_humidity">http://shop.udoo.org/humidity-sensor-kit.html</string>
+    <string name="url_shop_brick_ambientLight">http://shop.udoo.org/light-sensor-kit.html</string>
+    <string name="dialog_shop_brick_title">Buy the Bricks</string>
+    <string name="dialog_shop_brick_message">In order to use this function you need to buy the specific brick. Go to www.shop.udoo.org and buy it!</string>
+    <string name="dialog_shop_brick_btn_negative">NO THANKS!</string>
+    <string name="dialog_shop_brick_btn_positive">GO TO UDOO SHOP</string>
 
     <!--<string name="title_section5">Barometer</string>-->
     <!--<string name="title_section6">Temperature</string>-->

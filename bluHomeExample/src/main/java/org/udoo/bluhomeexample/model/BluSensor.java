@@ -14,15 +14,17 @@ public class BluSensor {
     public boolean isDetect;
     public String value;
     public ITEM_SELECTED itemSelected;
+    public String urlShop;
 
     public BluSensor(){}
 
-    public static BluSensor Builder(String name, Drawable imgResource, boolean isDetect, ITEM_SELECTED itemSelected){
+    public static BluSensor Builder(String name, Drawable imgResource, boolean isDetect, ITEM_SELECTED itemSelected, String urlShop){
         BluSensor bluSensor = new BluSensor();
         bluSensor.name = name;
         bluSensor.resourceImg = imgResource;
         bluSensor.isDetect = isDetect;
         bluSensor.itemSelected = itemSelected;
+        bluSensor.urlShop = urlShop;
         return bluSensor;
     }
 }

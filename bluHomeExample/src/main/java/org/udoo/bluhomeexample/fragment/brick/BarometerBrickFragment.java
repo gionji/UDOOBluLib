@@ -31,7 +31,7 @@ public class BarometerBrickFragment extends ManagerBrickFragment {
 
     @Override
     public void setBrickModel() {
-        mBrickModel = BrickModel.Builder("Barometer", getResources().getDrawable(R.drawable.barometer), "");
+        mBrickModel = BrickModel.Builder("Barometer", getResources().getDrawable(R.drawable.barometer), getString(R.string.url_shop_brick_barometer));
     }
 
     @Override

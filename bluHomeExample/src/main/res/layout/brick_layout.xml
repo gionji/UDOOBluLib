@@ -8,6 +8,8 @@
         <variable
             name="brick"
             type="org.udoo.bluhomeexample.model.BrickModel" />
+
+        <variable name="presenter" type="org.udoo.bluhomeexample.presenter.BrickPresenter" />
     </data>
 
     <RelativeLayout
@@ -98,7 +100,8 @@
             android:layout_marginEnd="@dimen/space_material_4"
             android:layout_marginStart="@dimen/space_material_2"
             android:layout_toEndOf="@id/image_brick"
-            android:drawableStart="@drawable/ic_shop_24dp"
+            android:drawableStart="@drawable/ic_shop_white"
+            android:onClick="@{(theView) -> presenter.onBrickShopClick(theView, brick.urlBrick)}"
             android:text='@{brick.name}' />
 
         <Button
@@ -111,7 +114,8 @@
             android:layout_marginStart="@dimen/space_material_2"
             android:layout_marginTop="@dimen/space_material_2"
             android:layout_toEndOf="@id/image_brick"
-            android:drawableStart="@drawable/ic_shop_24dp"
+            android:drawableStart="@drawable/ic_shop_white"
+            android:onClick="@{(theView) -> presenter.onAllBrickShopClick(theView)}"
             android:text='@string/buy_all_accessories'
             />
     </RelativeLayout>

@@ -12,7 +12,7 @@
             android:id="@+id/list_gpio"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/space_material"
             android:scrollbars="vertical" />
 
         <android.support.design.widget.FloatingActionButton
@@ -28,5 +28,14 @@
             app:fabSize="normal"
             app:pressedTranslationZ="12dp"
             app:rippleColor="@android:color/background_dark" />
+
+        <FrameLayout
+            android:id="@+id/layer_animation_iopin"
+            android:elevation="@dimen/fab_elevation"
+            android:layout_width="match_parent"
+            android:alpha="0.7"
+            android:visibility="gone"
+            android:background="@color/accent"
+            android:layout_height="match_parent"/>
     </FrameLayout>
 </layout>

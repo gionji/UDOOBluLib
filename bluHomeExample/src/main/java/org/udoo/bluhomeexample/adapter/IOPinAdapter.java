@@ -72,6 +72,11 @@ public class IOPinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    public void remove(int pos){
+        mDataSet.remove(pos);
+        notifyItemRemoved(pos);
+    }
+
     public void addIOPins(List<IOPin> ioPins){
         mDataSet.clear();
         mDataSet.addAll(ioPins);

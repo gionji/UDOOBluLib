@@ -31,7 +31,7 @@ public class AmbientLuxBrickFragment extends ManagerBrickFragment {
 
     @Override
     public void setBrickModel() {
-        mBrickModel = BrickModel.Builder("AmbientLight", getResources().getDrawable(R.drawable.ic_light), "");
+        mBrickModel = BrickModel.Builder("AmbientLight", getResources().getDrawable(R.drawable.ic_light), getString(R.string.url_shop_brick_ambientLight));
     }
 
     @Override

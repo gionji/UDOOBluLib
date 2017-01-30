@@ -12,13 +12,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_vertical_margin">
+        android:paddingTop="@dimen/space_material">
 
         <TextView
             android:id="@+id/text_mode"
             style="@style/Base.TextAppearance.AppCompat.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
             android:text="PWM" />
 
         <TextView
@@ -26,7 +27,7 @@
             style="@style/Base.TextAppearance.AppCompat.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_material"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
             android:layout_toEndOf="@+id/text_mode"
             android:text="@{iopin.pin.name}"
             android:textStyle="bold"
@@ -37,25 +38,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_mode"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
             android:layout_marginTop="@dimen/space_material"
             android:text="Frequency" />
 
         <ImageButton
+            android:id="@+id/btn_sync_pwm"
             style="@style/Base.Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
-            android:tint="@android:color/white"
-            android:src="@drawable/ic_sync"
-            android:id="@+id/btn_sync_pwm"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_height="wrap_content" />
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
+            android:src="@drawable/ic_sync"
+            android:tint="@android:color/white" />
 
         <SeekBar
             android:id="@+id/seek_bar_frequency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="24000"
             android:layout_below="@+id/title_freq"
-            android:layout_marginTop="@dimen/item_margin" />
+            android:layout_marginTop="@dimen/item_margin"
+            android:max="24000" />
 
         <TextView
             android:id="@+id/title_min_freq"
@@ -63,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/seek_bar_frequency"
             android:layout_below="@id/seek_bar_frequency"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
             android:text="0 Hz" />
 
         <TextView
@@ -70,8 +74,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/seek_bar_frequency"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/seek_bar_frequency"
+            android:layout_centerHorizontal="true"
             android:text="0 Hz" />
 
         <TextView
@@ -80,6 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/seek_bar_frequency"
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
             android:text="24 MHz" />
 
 
@@ -88,6 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/title_min_freq"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
             android:layout_marginTop="@dimen/space_material"
             android:text="Duty cycle" />
 
@@ -95,23 +101,24 @@
             android:id="@+id/seek_bar_duty_cycle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="100"
             android:layout_below="@+id/title_duty_cycle"
-            android:layout_marginTop="@dimen/item_margin" />
+            android:layout_marginTop="@dimen/item_margin"
+            android:max="100" />
 
         <TextView
             android:id="@+id/title_min_duty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/seek_bar_duty_cycle"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
             android:text="0 %" />
 
         <TextView
             android:id="@+id/title_value_duty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/seek_bar_duty_cycle"
+            android:layout_centerHorizontal="true"
             android:text="0 %" />
 
         <TextView
@@ -120,7 +127,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/seek_bar_duty_cycle"
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
             android:text="100 %" />
 
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/title_max_duty"
+            android:layout_marginTop="@dimen/space_material"
+            android:background="@color/divider" />
     </RelativeLayout>
 </layout>

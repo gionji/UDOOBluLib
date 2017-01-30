@@ -31,7 +31,7 @@ public class HumidityBrickFragment extends ManagerBrickFragment {
 
     @Override
     public void setBrickModel() {
-        mBrickModel = BrickModel.Builder("Humidity", getResources().getDrawable(R.drawable.ic_humidity), "");
+        mBrickModel = BrickModel.Builder("Humidity", getResources().getDrawable(R.drawable.ic_humidity), getString(R.string.url_shop_brick_humidity));
     }
 
     @Override

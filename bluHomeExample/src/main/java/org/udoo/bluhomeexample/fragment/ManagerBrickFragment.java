@@ -4,19 +4,22 @@ import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.udoo.bluhomeexample.R;
 import org.udoo.bluhomeexample.databinding.BrickLayoutBinding;
 import org.udoo.bluhomeexample.model.BrickModel;
+import org.udoo.bluhomeexample.presenter.BrickPresenter;
 import org.udoo.bluhomeexample.util.BindableString;
 import org.udoo.udooblulib.exceptions.UdooBluException;
 import org.udoo.udooblulib.interfaces.INotificationListener;
 import org.udoo.udooblulib.interfaces.OnBluOperationResult;
+
+import static org.udoo.bluhomeexample.R.id.view;
 
 /**
  * Created by harlem88 on 26/11/16.
@@ -41,6 +44,7 @@ public abstract class ManagerBrickFragment extends UdooFragment{
         super.onViewCreated(view, savedInstanceState);
         setBrickModel();
         mVieBinding.setBrick(mBrickModel);
+        mVieBinding.setPresenter(new BrickPresenter());
         mVieBinding.progressValueBrick.setMax(getProgressMax());
     }
 
@@ -50,7 +54,6 @@ public abstract class ManagerBrickFragment extends UdooFragment{
             view.setText(value.get());
         }
     }
-
 
     protected INotificationListener<byte[]> iNotificationListener = new INotificationListener<byte[]>() {
         @Override

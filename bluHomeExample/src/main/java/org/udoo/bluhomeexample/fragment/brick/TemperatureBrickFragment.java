@@ -23,7 +23,7 @@ public class TemperatureBrickFragment extends ManagerBrickFragment {
 
     @Override
     public void setBrickModel() {
-        mBrickModel = BrickModel.Builder("Temperature", getResources().getDrawable(R.drawable.temperature), "");
+        mBrickModel = BrickModel.Builder("Temperature", getResources().getDrawable(R.drawable.temperature), getString(R.string.url_shop_brick_temperature));
     }
 
     @Override

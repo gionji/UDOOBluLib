@@ -97,6 +97,7 @@ public class ScanBluFragment extends Fragment implements IBluScanView{
 
     @Override
     public void addDevice(BluItem bluItem) {
+        mViewBinding.textNoBlus.setVisibility(View.GONE);
         mBleItemAdapter.addDevice(bluItem);
         mBleItemAdapter.notifyDataSetChanged();
     }
@@ -108,6 +109,7 @@ public class ScanBluFragment extends Fragment implements IBluScanView{
 
     @Override
     public void addDevices(List<BluItem> bluItems) {
+        mViewBinding.textNoBlus.setVisibility(View.GONE);
         mBleItemAdapter.addDevices(bluItems);
         mBleItemAdapter.notifyDataSetChanged();
     }

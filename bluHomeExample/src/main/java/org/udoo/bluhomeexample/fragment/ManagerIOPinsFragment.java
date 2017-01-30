@@ -12,6 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.transition.TransitionManager;
@@ -49,6 +51,7 @@ public class ManagerIOPinsFragment extends UdooFragment implements IIOPinView, S
     private ProgressDialog mProgressDialog;
     private LinearLayoutManager mLinearLayoutManager;
     private boolean isStepperinView;
+    private ItemTouchHelper mItemTouchHelper;
 
 
     public static UdooFragment Builder(String address) {
@@ -83,7 +86,7 @@ public class ManagerIOPinsFragment extends UdooFragment implements IIOPinView, S
         stepperIOPinAdapter.setIOnStepperIOPin(this);
         mViewBinding.listGpio.setAdapter(stepperIOPinAdapter);
         isStepperinView = true;
-
+        mItemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         mIoPinAdapter.setIioPinValueCallback(mIOIopinPresenter);
 
         setListener();
@@ -107,23 +110,32 @@ public class ManagerIOPinsFragment extends UdooFragment implements IIOPinView, S
 
     @Override
     public void addIOPin(final IOPin ioPin) {
-        if(isStepperinView){
-
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), mLinearLayoutManager.getOrientation());
-            dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider));
-            mViewBinding.listGpio.addItemDecoration(dividerItemDecoration);
-
-            mViewBinding.listGpio.removeAllViews();
-            mViewBinding.listGpio.setAdapter(mIoPinAdapter);
-            isStepperinView = false;
-        }
         mUIHandler.post(new Runnable() {
             @Override
             public void run() {
+                if (isStepperinView) {
+                    mViewBinding.listGpio.removeAllViews();
+                    mViewBinding.listGpio.setAdapter(mIoPinAdapter);
+                    isStepperinView = false;
+                    mItemTouchHelper.attachToRecyclerView(mViewBinding.listGpio);
+                }
                 mIoPinAdapter.addIOPin(ioPin);
             }
         });
     }
+
+    private ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            int swipedPosition = viewHolder.getAdapterPosition();
+            if(!isStepperinView) mIoPinAdapter.remove(swipedPosition);
+        }
+    };
 
     @Override
     public void showProgress(boolean show) {
@@ -155,7 +167,8 @@ public class ManagerIOPinsFragment extends UdooFragment implements IIOPinView, S
 
     @Override
     public void dismissAnimation() {
-        mViewBinding.root.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
+        mViewBinding.layerAnimationIopin.setVisibility(View.GONE);
+        mViewBinding.btnAddIopin.show();
     }
 
     @Override
@@ -174,13 +187,13 @@ public class ManagerIOPinsFragment extends UdooFragment implements IIOPinView, S
         transition.addListener(new Transition.TransitionListener() {
             @Override
             public void onTransitionStart(Transition transition) {
+
             }
 
             @Override
             public void onTransitionEnd(Transition transition) {
-                animateRevealColor(mViewBinding.root, R.color.accent);
-//                body.setText(R.string.reveal_body3);
-//                body.setTextColor(ContextCompat.getColor(RevealActivity.this, R.color.theme_red_background));
+                mViewBinding.btnAddIopin.hide();
+                animateRevealColor(mViewBinding.root);
                 mViewBinding.btnAddIopin.setLayoutParams(originalParams);
                 showAddIOPinDialog(new AddIOPinDialog());
             }
@@ -204,17 +217,17 @@ public class ManagerIOPinsFragment extends UdooFragment implements IIOPinView, S
         mViewBinding.btnAddIopin.setLayoutParams(layoutParams);
     }
 
-    private void animateRevealColor(ViewGroup viewRoot, @ColorRes int color) {
-        int cx = (viewRoot.getLeft() + viewRoot.getRight()) / 2;
-        int cy = (viewRoot.getTop() + viewRoot.getBottom()) / 2;
-        animateRevealColorFromCoordinates(viewRoot, color, cx, cy);
+    private void animateRevealColor(ViewGroup viewLayer) {
+        int cx = (viewLayer.getLeft() + viewLayer.getRight()) / 2;
+        int cy = (viewLayer.getTop() + viewLayer.getBottom()) / 2;
+        animateRevealColorFromCoordinates(viewLayer, cx, cy);
     }
 
-    private Animator animateRevealColorFromCoordinates(ViewGroup viewRoot, @ColorRes int color, int x, int y) {
+    private Animator animateRevealColorFromCoordinates(ViewGroup viewRoot, int x, int y) {
         float finalRadius = (float) Math.hypot(viewRoot.getWidth(), viewRoot.getHeight());
 
         Animator anim = ViewAnimationUtils.createCircularReveal(viewRoot, x, y, 0, finalRadius);
-        viewRoot.setBackgroundColor(ContextCompat.getColor(getContext(), color));
+        mViewBinding.layerAnimationIopin.setVisibility(View.VISIBLE);
         anim.setDuration(getResources().getInteger(R.integer.anim_duration_long));
         anim.setInterpolator(new AccelerateDecelerateInterpolator());
         anim.start();
